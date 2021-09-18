@@ -1,5 +1,6 @@
 package com.sooni.postapi.domain
 
+import au.com.console.kassava.kotlinToString
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -14,7 +15,16 @@ class Vehicle(
     val type: VehicleType,
     val icon: String,
     val local_icon: String
-)
+) {
+    override fun toString() = kotlinToString(properties = Vehicle.toStringProperties)
+    companion object {
+        private val equalsAndHashCodeProperties = arrayOf(Vehicle::id)
+        private val toStringProperties = arrayOf(
+            Vehicle::id,
+            Vehicle::name
+        )
+    }
+}
 
 enum class VehicleType {
     RAIL,
