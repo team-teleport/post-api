@@ -19,14 +19,12 @@ class User(
     var email: String,
     @Column(nullable = false)
     var password: String,
-    @Column(name = "defualt_route")
-    var defaultRoute: String? = null
+    var defaultRoute: String? = null,
+    var profileImage: String? = null,
 ) {
-    @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 
-    @Column(name = "updated_at")
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now()
 

@@ -3,10 +3,12 @@ package com.sooni.postapi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class SunganLike (
+class SunganLike(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
@@ -18,7 +20,11 @@ class SunganLike (
     @ManyToOne
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
-        ) {
+) {
+
+    @CreatedDate
+    val createdAt: LocalDateTime = LocalDateTime.now()
+
     override fun toString() = kotlinToString(properties = SunganLike.toStringProperties)
 
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)

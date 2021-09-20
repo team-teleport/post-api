@@ -15,10 +15,18 @@ class Comment (
     val id: Long,
     @Column(nullable = false)
     val content: String,
+
     @OneToOne
     @JoinColumn(name = "user_id")
-    val author: User,
+    val user: User,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sungan_id")
+    val sungan: Sungan
         ) {
+    @OneToMany
+    val likes: MutableList<CommentLike> = ArrayList()
+
     @Column
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
@@ -37,7 +45,7 @@ class Comment (
         private val toStringProperties = arrayOf(
             Comment::id,
             Comment::content,
-            Comment::author,
+            Comment::user,
             Comment::createdAt
         )
     }

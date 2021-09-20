@@ -3,13 +3,15 @@ package com.sooni.postapi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sooni.postapi.dto.*
+import org.hibernate.annotations.ColumnDefault
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class Sungan (
+class Sungan(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
@@ -17,7 +19,7 @@ class Sungan (
     @Column(nullable = false)
     var title: String,
 
-    var content: String,
+    var text: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -29,9 +31,22 @@ class Sungan (
 
     var emoji: String?,
 
-    @OneToOne
-    var hashTag: MainHashTag?
+    @ManyToOne
+    var hashTag: MainHashTag? = null,
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    var defailHashTag: MutableList<DetailHashTag> = ArrayList()
 ) {
+    @OneToMany
+    val contents: MutableList<SunganContent> = ArrayList()
+
+    @Column
+    @ColumnDefault("0")
+    val readCnt: Long = 0
+
+    @OneToMany
+    val comments: MutableList<Comment> = ArrayList()
+
     @Column
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
@@ -39,6 +54,50 @@ class Sungan (
     @Column
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now()
+
+    fun convertToVo(): SunganVo =
+        SunganVo(
+            this.title,
+            this.text,
+            this.contents.map { content ->
+                SunganContentVo(
+                    content.type,
+                    content.url
+                )
+            },
+            this.emoji,
+            this.hashTag,
+            this.defailHashTag,
+            UserVo(
+                this.user.id,
+                this.user.name,
+                this.user.profileImage
+            ),
+            this.comments.map { comment ->
+                CommentVo(
+                    comment.id,
+                    UserVo(
+                        comment.user.id,
+                        comment.user.name,
+                        comment.user.profileImage
+                    ),
+                    comment.content,
+                    comment.createdAt,
+                    comment.updatedAt,
+                    comment.likes.map { like ->
+                        CommentLikeVo(
+                            comment.id,
+                            UserVo(
+                                like.user.id,
+                                like.user.name,
+                                like.user.profileImage
+                            ),
+                            like.createdAt
+                        )
+                    }
+                )
+            }
+        )
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 
@@ -50,6 +109,7 @@ class Sungan (
         private val equalsAndHashCodeProperties = arrayOf(Sungan::id)
         private val toStringProperties = arrayOf(
             Sungan::id,
+            Sungan::vehicle,
             Sungan::title,
             Sungan::user,
             Sungan::createdAt

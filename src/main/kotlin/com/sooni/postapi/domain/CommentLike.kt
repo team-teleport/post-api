@@ -3,10 +3,13 @@ package com.sooni.postapi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class CommentLike (
+class CommentLike(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
@@ -15,22 +18,25 @@ class CommentLike (
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
     val comment: Comment
-        ) {
-        override fun toString() = kotlinToString(properties = CommentLike.toStringProperties)
+) {
+    @CreatedDate
+    val createdAt: LocalDateTime = LocalDateTime.now()
 
-        override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
+    override fun toString() = kotlinToString(properties = CommentLike.toStringProperties)
 
-        override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
+    override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
 
-        companion object {
-                private val equalsAndHashCodeProperties = arrayOf(CommentLike::id)
-                private val toStringProperties = arrayOf(
-                        CommentLike::id,
-                        CommentLike::user,
-                        CommentLike::comment
-                )
-        }
+    override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
+
+    companion object {
+        private val equalsAndHashCodeProperties = arrayOf(CommentLike::id)
+        private val toStringProperties = arrayOf(
+            CommentLike::id,
+            CommentLike::user,
+            CommentLike::comment
+        )
+    }
 }
