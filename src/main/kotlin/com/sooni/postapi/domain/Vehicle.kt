@@ -1,10 +1,7 @@
 package com.sooni.postapi.domain
 
 import au.com.console.kassava.kotlinToString
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 class Vehicle(
@@ -12,6 +9,8 @@ class Vehicle(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     val name: String, // "Bus"
+
+    @Enumerated
     val type: VehicleType,
     val icon: String,
     val local_icon: String

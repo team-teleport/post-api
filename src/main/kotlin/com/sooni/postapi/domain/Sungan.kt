@@ -43,15 +43,15 @@ class Sungan(
     var detailHashTags: MutableList<DetailHashTag> = ArrayList()
 ) {
     @OneToMany(mappedBy = "sungan")
-    val contents: MutableList<SunganContent> = ArrayList()
+    var contents: MutableList<SunganContent> = ArrayList()
 
     @Column
     @ColumnDefault("0")
-    val readCnt: Long = 0
+    var readCnt: Long = 0
 
     @Column
     @ColumnDefault("0")
-    val likeCnt: Long = 0
+    var likeCnt: Long = 0
 
     @OneToMany(mappedBy = "sungan")
     val comments: MutableList<Comment> = ArrayList()
@@ -105,7 +105,9 @@ class Sungan(
                         )
                     }
                 )
-            }
+            },
+            this.readCnt,
+            this.likeCnt,
         )
 
     override fun toString() = kotlinToString(properties = toStringProperties)

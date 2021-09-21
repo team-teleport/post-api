@@ -19,6 +19,7 @@ class SunganService(
 ) {
     fun readSunganById(user: User, id: Long): SunganDto {
         val sungan = sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        sungan.readCnt += 1
         return SunganDto(
             user == sungan.user,
             sungan.convertToVo()

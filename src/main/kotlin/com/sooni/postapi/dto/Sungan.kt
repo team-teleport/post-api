@@ -20,7 +20,9 @@ data class SunganVo(
     val mainHashTag: MainHashTag?,
     val detailHashTag: List<DetailHashTag>,
     val user: UserVo,
-    val comments: List<CommentVo>
+    val comments: List<CommentVo>,
+    val readCnt: Long,
+    val likeCnt: Long,
 ) {
 
     }

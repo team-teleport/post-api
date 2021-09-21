@@ -12,9 +12,9 @@ import javax.persistence.*
 class Comment (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    var id: Long,
     @Column(nullable = false)
-    val content: String,
+    var content: String,
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -25,7 +25,7 @@ class Comment (
     val sungan: Sungan
         ) {
     @OneToMany(mappedBy = "comment")
-    val likes: MutableList<CommentLike> = ArrayList()
+    var likes: MutableList<CommentLike> = ArrayList()
 
     @Column(name = "created_at")
     @CreatedDate
@@ -33,7 +33,8 @@ class Comment (
 
     @Column(name = "updated_at")
     @LastModifiedDate
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    var updatedAt: LocalDateTime = LocalDateTime.now()
+
     override fun toString() = kotlinToString(properties = toStringProperties)
 
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
