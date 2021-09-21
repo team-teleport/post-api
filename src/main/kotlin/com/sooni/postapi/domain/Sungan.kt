@@ -49,6 +49,10 @@ class Sungan(
     @ColumnDefault("0")
     val readCnt: Long = 0
 
+    @Column
+    @ColumnDefault("0")
+    val likeCnt: Long = 0
+
     @OneToMany(mappedBy = "sungan")
     val comments: MutableList<Comment> = ArrayList()
 
