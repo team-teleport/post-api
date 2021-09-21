@@ -11,7 +11,6 @@ class DetailHashTag(
     @Column(unique = true, nullable = false)
     val name: String,
 
-    @ManyToOne
-    @JoinColumn(name = "sungan_id")
-    val sungan: Sungan
+    @ManyToMany(mappedBy = "detailHashTags")
+    val sungan: MutableList<Sungan> = ArrayList()
 )

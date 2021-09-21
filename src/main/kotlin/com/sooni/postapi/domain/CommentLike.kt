@@ -22,6 +22,7 @@ class CommentLike(
     @JoinColumn(name = "comment_id", nullable = false)
     val comment: Comment
 ) {
+    @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 

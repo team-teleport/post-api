@@ -24,14 +24,14 @@ class Comment (
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
         ) {
-    @OneToMany
+    @OneToMany(mappedBy = "comment")
     val likes: MutableList<CommentLike> = ArrayList()
 
-    @Column
+    @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 
-    @Column
+    @Column(name = "updated_at")
     @LastModifiedDate
     val updatedAt: LocalDateTime = LocalDateTime.now()
     override fun toString() = kotlinToString(properties = toStringProperties)

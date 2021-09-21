@@ -22,6 +22,7 @@ class SunganLike(
     val sungan: Sungan
 ) {
 
+    @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 

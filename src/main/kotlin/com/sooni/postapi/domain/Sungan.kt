@@ -32,26 +32,31 @@ class Sungan(
     var emoji: String?,
 
     @ManyToOne
-    var hashTag: MainHashTag? = null,
+    var mainHashTag: MainHashTag? = null,
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    var defailHashTag: MutableList<DetailHashTag> = ArrayList()
+    @ManyToMany
+    @JoinTable(
+        name = "sungan_detail_hashtags",
+        joinColumns = [JoinColumn(name = "sungan_id")],
+        inverseJoinColumns = [JoinColumn(name = "detailHashTag_id")]
+    )
+    var detailHashTags: MutableList<DetailHashTag> = ArrayList()
 ) {
-    @OneToMany
+    @OneToMany(mappedBy = "sungan")
     val contents: MutableList<SunganContent> = ArrayList()
 
     @Column
     @ColumnDefault("0")
     val readCnt: Long = 0
 
-    @OneToMany
+    @OneToMany(mappedBy = "sungan")
     val comments: MutableList<Comment> = ArrayList()
 
-    @Column
+    @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 
-    @Column
+    @Column(name = "updated_at")
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
@@ -66,8 +71,8 @@ class Sungan(
                 )
             },
             this.emoji,
-            this.hashTag,
-            this.defailHashTag,
+            this.mainHashTag,
+            this.detailHashTags,
             UserVo(
                 this.user.id,
                 this.user.name,

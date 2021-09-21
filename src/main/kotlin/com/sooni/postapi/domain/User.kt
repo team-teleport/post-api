@@ -22,9 +22,14 @@ class User(
     var defaultRoute: String? = null,
     var profileImage: String? = null,
 ) {
+    @OneToMany(mappedBy = "user")
+    val sungans: MutableList<Sungan> = ArrayList()
+
+    @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 
+    @Column(name = "updated_at")
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
