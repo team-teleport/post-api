@@ -12,10 +12,6 @@ import javax.persistence.*
 
 @Entity
 class Sungan(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-
     @Column(nullable = false)
     var title: String,
 
@@ -30,9 +26,9 @@ class Sungan(
     var vehicle: Vehicle,
 
     var emoji: String?,
-
+) {
     @ManyToOne
-    var mainHashTag: MainHashTag? = null,
+    var mainHashTag: MainHashTag? = null
 
     @ManyToMany
     @JoinTable(
@@ -41,7 +37,11 @@ class Sungan(
         inverseJoinColumns = [JoinColumn(name = "detailHashTag_id")]
     )
     var detailHashTags: MutableList<DetailHashTag> = ArrayList()
-) {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
     @OneToMany(mappedBy = "sungan")
     var contents: MutableList<SunganContent> = ArrayList()
 
@@ -66,6 +66,7 @@ class Sungan(
 
     fun convertToVo(): SunganVo =
         SunganVo(
+            this.id!!,
             this.title,
             this.text,
             this.contents.map { content ->
