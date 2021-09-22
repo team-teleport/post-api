@@ -5,10 +5,7 @@ import com.sooni.postapi.application.support.SunganException
 import com.sooni.postapi.domain.DetailHashTag
 import com.sooni.postapi.domain.Sungan
 import com.sooni.postapi.domain.User
-import com.sooni.postapi.dto.CreateSunganRequestDto
-import com.sooni.postapi.dto.PatchSunganRequestDto
-import com.sooni.postapi.dto.ReadSunganDto
-import com.sooni.postapi.dto.SunganDto
+import com.sooni.postapi.dto.*
 import com.sooni.postapi.repository.*
 import org.springframework.stereotype.Service
 
@@ -81,5 +78,14 @@ class SunganService(
             true,
             sungan.convertToVo()
         )
+    }
+
+    fun destroySungan(user: User, id: Long): SunganVo {
+        val sungan =
+            sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        if (user != sungan.user) throw SunganException(SunganError.FORBIDDEN)
+        val vo = sungan.convertToVo() // sungan을 리포지토리로 delete하면 여기서도 사용 불가, vo에 저장해놓기
+        sunganRepository.delete(sungan)
+        return vo
     }
 }

@@ -2,12 +2,11 @@ package com.sooni.postapi.controller
 
 import com.sooni.postapi.application.support.SunganResponse
 import com.sooni.postapi.domain.User
-import com.sooni.postapi.dto.CreateSunganRequestDto
-import com.sooni.postapi.dto.PatchSunganRequestDto
-import com.sooni.postapi.dto.ReadSunganDto
-import com.sooni.postapi.dto.SunganDto
+import com.sooni.postapi.dto.*
 import com.sooni.postapi.service.SunganService
-import io.swagger.annotations.*
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiParam
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -32,4 +31,10 @@ class SunganController(
     @ApiOperation(value = "순간 수정하기 API")
     fun patchSungan(user: User, @RequestBody patchSunganRequestDto: PatchSunganRequestDto): SunganResponse<SunganDto> =
         SunganResponse(sunganService.updateSungan(user, patchSunganRequestDto))
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "순간 삭제하기 API")
+    fun deleteSungan(user: User, @PathVariable(value = "id") sunganId: Long): SunganResponse<SunganVo> {
+        return SunganResponse(sunganService.destroySungan(user, sunganId))
+    }
 }
