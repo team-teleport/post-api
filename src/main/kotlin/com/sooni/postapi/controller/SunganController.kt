@@ -16,5 +16,6 @@ class SunganController(
 ) {
     @GetMapping("/{id}")
     fun getSungan(user: User, @PathVariable(name = "id") id: Long): SunganResponse<SunganDto> =
-        SunganResponse(sunganService.readSunganById(user, id))
+    fun getSungan(user: User?, @PathVariable(name = "id") id: Long): SunganResponse<SunganDto> =
+        SunganResponse(sunganService.readSunganById(ReadSunganDto(user, id)))
 }

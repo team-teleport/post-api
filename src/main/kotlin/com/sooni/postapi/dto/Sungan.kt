@@ -31,3 +31,8 @@ data class SunganContentVo(
     val contentType: SunganContent.ContentType,
     val url: String,
 )
+
+data class ReadSunganDto(
+    val user: User?,
+    val sunganId: Long
+)
