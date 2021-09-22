@@ -40,7 +40,6 @@ class TokenService {
             .setSigningKey(getPublicKey(publicKeyPEM))
             .parseClaimsJws(token)
             .body
-        println(claims)
         return TokenPayload(
             claims.get("user_id", Integer::class.java).toLong(),
             claims.get("expires_at", String::class.java).replace(" UTC", "").toLocalDateTime()!!
@@ -55,7 +54,6 @@ class TokenService {
                 .appendPattern("yyyy-MM-dd HH:mm:ss") // #1
                 .appendFraction(ChronoField.MILLI_OF_SECOND, 0, 9, true) // #2
                 .toFormatter()
-            println("String.toLocalDateTime(): $this")
             return LocalDateTime.parse(this, formatter)
         } catch (e: DateTimeParseException) {
             null
