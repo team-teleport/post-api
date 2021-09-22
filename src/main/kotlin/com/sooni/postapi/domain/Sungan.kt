@@ -77,7 +77,7 @@ class Sungan(
             },
             this.emoji,
             this.mainHashTag,
-            this.detailHashTags,
+            this.detailHashTags.map { dht -> dht.convertToVo() },
             UserVo(
                 this.user.id,
                 this.user.name,

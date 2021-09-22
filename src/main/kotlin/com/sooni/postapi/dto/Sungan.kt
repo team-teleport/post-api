@@ -1,5 +1,6 @@
 package com.sooni.postapi.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.sooni.postapi.domain.DetailHashTag
 import com.sooni.postapi.domain.MainHashTag
 import com.sooni.postapi.domain.SunganContent
@@ -13,6 +14,7 @@ data class SunganDto(
     val sungan: SunganVo
 )
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class SunganVo(
     val id: Long,
     val title: String,
@@ -20,7 +22,7 @@ data class SunganVo(
     val contents: List<SunganContentVo>,
     val emoji: String?,
     val mainHashTag: MainHashTag?,
-    val detailHashTag: List<DetailHashTag>,
+    val detailHashTag: List<DetailHashTagVo>,
     val user: UserVo,
     val comments: List<CommentVo>,
     val readCnt: Long,
@@ -50,4 +52,19 @@ data class CreateSunganRequestDto(
 data class ReadSunganDto(
     val user: User?,
     val sunganId: Long
+)
+
+data class PatchSunganRequestDto(
+    @ApiModelProperty(required = true, example = "1")
+    val sunganId: Long,
+    @ApiModelProperty(example = "수정된 제목입니다.")
+    val title: String?,
+    @ApiModelProperty(example = "수정된 내용입니다.")
+    val text: String?,
+    @ApiModelProperty(example = "😃")
+    val emoji: String?,
+    @ApiModelProperty(example = "1")
+    val mainHashTagId: Long?,
+    @ApiModelProperty
+    val detailHashTag: List<String>?
 )

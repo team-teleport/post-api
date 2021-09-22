@@ -1,5 +1,6 @@
 package com.sooni.postapi.domain
 
+import com.sooni.postapi.dto.DetailHashTagVo
 import javax.persistence.*
 
 @Entity
@@ -13,4 +14,6 @@ class DetailHashTag(
 
     @ManyToMany(mappedBy = "detailHashTags")
     val sungan: MutableList<Sungan> = ArrayList()
+
+    fun convertToVo() = DetailHashTagVo(this.id!!, this.name)
 }

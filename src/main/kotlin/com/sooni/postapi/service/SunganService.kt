@@ -6,6 +6,7 @@ import com.sooni.postapi.domain.DetailHashTag
 import com.sooni.postapi.domain.Sungan
 import com.sooni.postapi.domain.User
 import com.sooni.postapi.dto.CreateSunganRequestDto
+import com.sooni.postapi.dto.PatchSunganRequestDto
 import com.sooni.postapi.dto.ReadSunganDto
 import com.sooni.postapi.dto.SunganDto
 import com.sooni.postapi.repository.*
@@ -23,7 +24,8 @@ class SunganService(
 ) {
     fun readSunganById(readSunganDto: ReadSunganDto): SunganDto {
         val (user, id) = readSunganDto
-        val sungan = sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        val sungan =
+            sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         sungan.readCnt += 1
         return SunganDto(
             user != null && user == sungan.user,
@@ -48,6 +50,29 @@ class SunganService(
                 .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         }
         createSunganRequestDto.detailHashTag?.forEach {
+            sungan.detailHashTags += detailHashTagRepository.findByName(it) ?: detailHashTagRepository.save(
+                DetailHashTag(it)
+            )
+        }
+        return SunganDto(
+            true,
+            sungan.convertToVo()
+        )
+    }
+
+    fun updateSungan(user: User, patchSunganRequestDto: PatchSunganRequestDto): SunganDto {
+        val sungan = sunganRepository.findById(patchSunganRequestDto.sunganId)
+            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        if (user != sungan.user) throw SunganException(SunganError.FORBIDDEN)
+
+        sungan.title = patchSunganRequestDto.title ?: sungan.title
+        sungan.text = patchSunganRequestDto.text ?: sungan.text
+        sungan.mainHashTag = patchSunganRequestDto.mainHashTagId?.let {
+            mainHashTagRepository.findById(patchSunganRequestDto.mainHashTagId)
+                .orElseThrow { SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        }
+        sungan.emoji = patchSunganRequestDto.emoji ?: sungan.emoji
+        patchSunganRequestDto.detailHashTag?.forEach {
             sungan.detailHashTags += detailHashTagRepository.findByName(it) ?: detailHashTagRepository.save(
                 DetailHashTag(it)
             )
