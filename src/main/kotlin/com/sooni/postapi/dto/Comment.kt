@@ -1,5 +1,6 @@
 package com.sooni.postapi.dto
 
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -19,4 +20,11 @@ data class PostCommentRequestDto(
     val content: String,
     @ApiModelProperty(required = true, example = "1")
     val sunganId: Long
+)
+
+data class PatchCommentRequestDto(
+    @ApiModelProperty(required = true, example = "1")
+    val commentId: Long,
+    @ApiModelProperty(required = true, example = "수정된 댓글 내용입니다.")
+    val content: String
 )

@@ -3,6 +3,7 @@ package com.sooni.postapi.controller
 import com.sooni.postapi.application.support.SunganResponse
 import com.sooni.postapi.domain.User
 import com.sooni.postapi.dto.CommentVo
+import com.sooni.postapi.dto.PatchCommentRequestDto
 import com.sooni.postapi.dto.PostCommentRequestDto
 import com.sooni.postapi.service.CommentService
 import io.swagger.annotations.Api
@@ -24,4 +25,12 @@ class CommentController(
     @ApiModelProperty(value = "댓글 삭제하기 API")
     fun deleteComment(user: User, @PathVariable(value = "id") commentId: Long): SunganResponse<CommentVo> =
         SunganResponse(commentService.destroyComment(user, commentId))
+
+    @PatchMapping("")
+    @ApiModelProperty(value = "댓글 수정하기 API")
+    fun patchComment(
+        user: User,
+        @RequestBody patchCommentRequestDto: PatchCommentRequestDto
+    ): SunganResponse<CommentVo> =
+        SunganResponse(commentService.updateComment(user, patchCommentRequestDto))
 }

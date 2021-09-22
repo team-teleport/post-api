@@ -5,6 +5,7 @@ import com.sooni.postapi.application.support.SunganException
 import com.sooni.postapi.domain.Comment
 import com.sooni.postapi.domain.User
 import com.sooni.postapi.dto.CommentVo
+import com.sooni.postapi.dto.PatchCommentRequestDto
 import com.sooni.postapi.dto.PostCommentRequestDto
 import com.sooni.postapi.repository.CommentRepository
 import com.sooni.postapi.repository.SunganRepository
@@ -37,5 +38,14 @@ class CommentService(
         val vo = comment.convertToVo()
         commentRepository.delete(comment)
         return vo
+    }
+
+    fun updateComment(user: User, patchCommentRequestDto: PatchCommentRequestDto): CommentVo {
+        val comment = commentRepository.findById(patchCommentRequestDto.commentId)
+            .orElseThrow { SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        if (user != comment.user) throw SunganException(SunganError.FORBIDDEN)
+        comment.content = patchCommentRequestDto.content
+        commentRepository.save(comment)
+        return comment.convertToVo()
     }
 }
