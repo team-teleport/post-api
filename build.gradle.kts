@@ -41,6 +41,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
 }
 
 tasks.withType<KotlinCompile> {

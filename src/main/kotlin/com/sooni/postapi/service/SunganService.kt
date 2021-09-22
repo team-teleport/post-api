@@ -23,7 +23,7 @@ class SunganService(
 ) {
     fun readSunganById(readSunganDto: ReadSunganDto): SunganDto {
         val (user, id) = readSunganDto
-        val sungan = sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        val sungan = sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         sungan.readCnt += 1
         return SunganDto(
             user != null && user == sungan.user,
@@ -38,14 +38,14 @@ class SunganService(
                 createSunganRequestDto.text,
                 user,
                 vehicleRepository.findById(createSunganRequestDto.vehicleId).orElseThrow {
-                    SunganException(SunganError.BAD_REQUEST)
+                    SunganException(SunganError.BAD_REQUEST_INVALID_ID)
                 },
                 createSunganRequestDto.emoji
             )
         )
         sungan.mainHashTag = createSunganRequestDto.mainHashTagId?.let {
             mainHashTagRepository.findById(it)
-                .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+                .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         }
         createSunganRequestDto.detailHashTag?.forEach {
             sungan.detailHashTags += detailHashTagRepository.findByName(it) ?: detailHashTagRepository.save(
