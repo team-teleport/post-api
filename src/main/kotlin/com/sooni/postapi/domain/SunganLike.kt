@@ -3,16 +3,14 @@ package com.sooni.postapi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sooni.postapi.dto.SunganLikeVo
+import com.sooni.postapi.dto.UserVo
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 class SunganLike(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: User,
@@ -21,6 +19,9 @@ class SunganLike(
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
 ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
 
     @Column(name = "created_at")
     @CreatedDate
@@ -40,4 +41,7 @@ class SunganLike(
             SunganLike::sungan
         )
     }
+
+    fun convertToVo(): SunganLikeVo =
+        SunganLikeVo(this.id!!, this.sungan.id!!, UserVo(this.user.id!!, this.user.name, this.user.profileImage))
 }

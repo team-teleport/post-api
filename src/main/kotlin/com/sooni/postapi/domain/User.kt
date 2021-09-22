@@ -10,9 +10,6 @@ import javax.persistence.*
 
 @Entity
 class User(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
     @Column(nullable = false)
     var name: String,
     @Column(nullable = false, unique = true)
@@ -22,6 +19,10 @@ class User(
     var defaultRoute: String? = null,
     var profileImage: String? = null,
 ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
     @OneToMany(mappedBy = "user")
     val sungans: MutableList<Sungan> = ArrayList()
 

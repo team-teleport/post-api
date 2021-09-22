@@ -4,9 +4,6 @@ import javax.persistence.*
 
 @Entity
 class SunganContent (
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
     var url: String,
     var type: ContentType,
 
@@ -14,6 +11,10 @@ class SunganContent (
     @JoinColumn(name="sungan_id", nullable = true)
     var sungan: Sungan
 ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
     enum class ContentType {
         IMAGE,
         VIDEO,

@@ -10,9 +10,6 @@ import javax.persistence.*
 
 @Entity
 class Comment (
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
     @Column(nullable = false)
     var content: String,
 
@@ -24,6 +21,10 @@ class Comment (
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
         ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
     @OneToMany(mappedBy = "comment")
     var likes: MutableList<CommentLike> = ArrayList()
 

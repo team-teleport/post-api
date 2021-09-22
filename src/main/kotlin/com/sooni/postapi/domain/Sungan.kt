@@ -79,15 +79,15 @@ class Sungan(
             this.mainHashTag,
             this.detailHashTags.map { dht -> dht.convertToVo() },
             UserVo(
-                this.user.id,
+                this.user.id!!,
                 this.user.name,
                 this.user.profileImage
             ),
             this.comments.map { comment ->
                 CommentVo(
-                    comment.id,
+                    comment.id!!,
                     UserVo(
-                        comment.user.id,
+                        comment.user.id!!,
                         comment.user.name,
                         comment.user.profileImage
                     ),
@@ -96,9 +96,9 @@ class Sungan(
                     comment.updatedAt,
                     comment.likes.map { like ->
                         CommentLikeVo(
-                            comment.id,
+                            comment.id!!,
                             UserVo(
-                                like.user.id,
+                                like.user.id!!,
                                 like.user.name,
                                 like.user.profileImage
                             ),

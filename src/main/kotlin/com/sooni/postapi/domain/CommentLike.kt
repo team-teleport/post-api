@@ -10,10 +10,6 @@ import javax.persistence.*
 
 @Entity
 class CommentLike(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
@@ -22,6 +18,10 @@ class CommentLike(
     @JoinColumn(name = "comment_id", nullable = false)
     val comment: Comment
 ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
     @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
