@@ -3,13 +3,16 @@ package com.sooni.postapi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sooni.postapi.dto.CommentLikeVo
+import com.sooni.postapi.dto.CommentVo
+import com.sooni.postapi.dto.UserVo
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class Comment (
+class Comment(
     @Column(nullable = false)
     var content: String,
 
@@ -20,7 +23,7 @@ class Comment (
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
-        ) {
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
@@ -51,4 +54,23 @@ class Comment (
             Comment::createdAt
         )
     }
+
+    fun convertToVo(): CommentVo = CommentVo(
+        this.id!!,
+        UserVo(
+            this.user.id!!,
+            this.user.name,
+            this.user.profileImage
+        ),
+        this.content,
+        this.createdAt,
+        this.updatedAt,
+        this.likes.map { like ->
+            CommentLikeVo(
+                like.id!!,
+                UserVo(like.user.id!!, like.user.name, like.user.profileImage),
+                like.createdAt
+            )
+        }
+    )
 }
