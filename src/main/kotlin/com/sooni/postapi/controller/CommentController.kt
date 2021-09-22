@@ -7,10 +7,7 @@ import com.sooni.postapi.dto.PostCommentRequestDto
 import com.sooni.postapi.service.CommentService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("comment")
@@ -22,4 +19,9 @@ class CommentController(
     @ApiModelProperty(value = "댓글 생성하기 API")
     fun postComment(user: User, @RequestBody postCommentRequestDto: PostCommentRequestDto): SunganResponse<CommentVo> =
         SunganResponse(commentService.createComment(user, postCommentRequestDto))
+
+    @DeleteMapping("/{id}")
+    @ApiModelProperty(value = "댓글 삭제하기 API")
+    fun deleteComment(user: User, @PathVariable(value = "id") commentId: Long): SunganResponse<CommentVo> =
+        SunganResponse(commentService.destroyComment(user, commentId))
 }

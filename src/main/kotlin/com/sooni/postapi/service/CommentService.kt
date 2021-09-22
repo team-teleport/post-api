@@ -30,4 +30,12 @@ class CommentService(
         )
         return comment.convertToVo()
     }
+
+    fun destroyComment(user: User, id: Long): CommentVo {
+        val comment = commentRepository.findById(id).orElseThrow { SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        if (user != comment.user) throw SunganException(SunganError.FORBIDDEN)
+        val vo = comment.convertToVo()
+        commentRepository.delete(comment)
+        return vo
+    }
 }
