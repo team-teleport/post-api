@@ -4,7 +4,6 @@ import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sooni.postapi.dto.SunganLikeVo
-import com.sooni.postapi.dto.UserVo
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*

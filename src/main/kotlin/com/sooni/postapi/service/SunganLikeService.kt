@@ -17,7 +17,7 @@ class SunganLikeService(
         val sungan = sunganRepository.findById(sunganId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         val alreadyLike =
-            sunganLikeRepository.findByUserAndSungan(userId, sungan)?.let { throw SunganException(SunganError.DUPLICATE) }
+            sunganLikeRepository.findByUserIdAndSungan(userId, sungan)?.let { throw SunganException(SunganError.DUPLICATE) }
         val newLike = sunganLikeRepository.save(
             SunganLike(
                 userId, sungan

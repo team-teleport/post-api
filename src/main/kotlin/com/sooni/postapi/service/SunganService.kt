@@ -4,7 +4,6 @@ import com.sooni.postapi.application.support.SunganError
 import com.sooni.postapi.application.support.SunganException
 import com.sooni.postapi.domain.DetailHashTag
 import com.sooni.postapi.domain.Sungan
-import com.sooni.postapi.domain.User
 import com.sooni.postapi.dto.*
 import com.sooni.postapi.repository.*
 import org.springframework.stereotype.Service

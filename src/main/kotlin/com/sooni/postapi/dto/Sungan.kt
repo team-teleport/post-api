@@ -1,10 +1,8 @@
 package com.sooni.postapi.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.sooni.postapi.domain.DetailHashTag
 import com.sooni.postapi.domain.MainHashTag
 import com.sooni.postapi.domain.SunganContent
-import com.sooni.postapi.domain.User
 import io.swagger.annotations.ApiModelProperty
 
 class Sungan
