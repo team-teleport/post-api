@@ -20,22 +20,22 @@ class SunganService(
     val detailHashTagRepository: DetailHashTagRepository
 ) {
     fun readSunganById(readSunganDto: ReadSunganDto): SunganDto {
-        val (user, id) = readSunganDto
+        val (userId, id) = readSunganDto
         val sungan =
             sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         sungan.readCnt += 1
         return SunganDto(
-            user != null && user == sungan.user,
+            userId != null && userId == sungan.userId,
             sungan.convertToVo()
         )
     }
 
-    fun createSungan(user: User, createSunganRequestDto: CreateSunganRequestDto): SunganDto {
+    fun createSungan(userId: Long, createSunganRequestDto: CreateSunganRequestDto): SunganDto {
         val sungan = sunganRepository.save(
             Sungan(
                 createSunganRequestDto.title,
                 createSunganRequestDto.text,
-                user,
+                userId,
                 vehicleRepository.findById(createSunganRequestDto.vehicleId).orElseThrow {
                     SunganException(SunganError.BAD_REQUEST_INVALID_ID)
                 },
@@ -57,10 +57,10 @@ class SunganService(
         )
     }
 
-    fun updateSungan(user: User, patchSunganRequestDto: PatchSunganRequestDto): SunganDto {
+    fun updateSungan(userId: Long, patchSunganRequestDto: PatchSunganRequestDto): SunganDto {
         val sungan = sunganRepository.findById(patchSunganRequestDto.sunganId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        if (user != sungan.user) throw SunganException(SunganError.FORBIDDEN)
+        if (userId != sungan.userId) throw SunganException(SunganError.FORBIDDEN)
 
         sungan.title = patchSunganRequestDto.title ?: sungan.title
         sungan.text = patchSunganRequestDto.text ?: sungan.text
@@ -80,10 +80,10 @@ class SunganService(
         )
     }
 
-    fun destroySungan(user: User, id: Long): SunganVo {
+    fun destroySungan(userId: Long, id: Long): SunganVo {
         val sungan =
             sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        if (user != sungan.user) throw SunganException(SunganError.FORBIDDEN)
+        if (userId != sungan.userId) throw SunganException(SunganError.FORBIDDEN)
         val vo = sungan.convertToVo() // sungan을 리포지토리로 delete하면 여기서도 사용 불가, vo에 저장해놓기
         sunganRepository.delete(sungan)
         return vo

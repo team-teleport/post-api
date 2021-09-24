@@ -11,9 +11,7 @@ import javax.persistence.*
 
 @Entity
 class SunganLike(
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    val user: User,
+    val userId: Long,
 
     @ManyToOne
     @JoinColumn(name = "sungan_id")
@@ -37,11 +35,11 @@ class SunganLike(
         private val equalsAndHashCodeProperties = arrayOf(SunganLike::id)
         private val toStringProperties = arrayOf(
             SunganLike::id,
-            SunganLike::user,
+            SunganLike::userId,
             SunganLike::sungan
         )
     }
 
     fun convertToVo(): SunganLikeVo =
-        SunganLikeVo(this.id!!, this.sungan.id!!, UserVo(this.user.id!!, this.user.name, this.user.profileImage))
+        SunganLikeVo(this.id!!, this.sungan.id!!, userId)
 }

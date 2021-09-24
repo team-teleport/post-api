@@ -1,6 +1,5 @@
 package com.sooni.postapi.dto
 
-import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -8,7 +7,7 @@ class Comment
 
 data class CommentVo(
     val commentId: Long,
-    val user: UserVo,
+    val user: Long,
     val content: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,

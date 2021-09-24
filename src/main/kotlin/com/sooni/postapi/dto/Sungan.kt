@@ -23,7 +23,7 @@ data class SunganVo(
     val emoji: String?,
     val mainHashTag: MainHashTag?,
     val detailHashTag: List<DetailHashTagVo>,
-    val user: UserVo,
+    val userId: Long,
     val comments: List<CommentVo>,
     val readCnt: Long,
     val likeCnt: Long,
@@ -50,7 +50,7 @@ data class CreateSunganRequestDto(
 )
 
 data class ReadSunganDto(
-    val user: User?,
+    val userId: Long?,
     val sunganId: Long
 )
 

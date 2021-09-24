@@ -4,15 +4,12 @@ import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import org.springframework.data.annotation.CreatedDate
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 class CommentLike(
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    val userId: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
@@ -36,7 +33,7 @@ class CommentLike(
         private val equalsAndHashCodeProperties = arrayOf(CommentLike::id)
         private val toStringProperties = arrayOf(
             CommentLike::id,
-            CommentLike::user,
+            CommentLike::userId,
             CommentLike::comment
         )
     }
