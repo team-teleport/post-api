@@ -5,5 +5,5 @@ class Like
 data class SunganLikeVo (
     val id: Long,
     val sunganId: Long,
-    val user: UserVo
+    val userId: Long,
 )

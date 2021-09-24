@@ -17,9 +17,7 @@ class Sungan(
 
     var text: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    var user: User,
+    var userId: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", nullable = false)
@@ -78,30 +76,18 @@ class Sungan(
             this.emoji,
             this.mainHashTag,
             this.detailHashTags.map { dht -> dht.convertToVo() },
-            UserVo(
-                this.user.id!!,
-                this.user.name,
-                this.user.profileImage
-            ),
+            userId,
             this.comments.map { comment ->
                 CommentVo(
                     comment.id!!,
-                    UserVo(
-                        comment.user.id!!,
-                        comment.user.name,
-                        comment.user.profileImage
-                    ),
+                    userId,
                     comment.content,
                     comment.createdAt,
                     comment.updatedAt,
                     comment.likes.map { like ->
                         CommentLikeVo(
                             comment.id!!,
-                            UserVo(
-                                like.user.id!!,
-                                like.user.name,
-                                like.user.profileImage
-                            ),
+                            userId,
                             like.createdAt
                         )
                     }
@@ -123,7 +109,7 @@ class Sungan(
             Sungan::id,
             Sungan::vehicle,
             Sungan::title,
-            Sungan::user,
+            Sungan::userId,
             Sungan::createdAt
         )
     }

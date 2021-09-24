@@ -1,6 +1,5 @@
 package com.sooni.postapi.config
 
-import com.sooni.postapi.domain.User
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import springfox.documentation.builders.ApiInfoBuilder
@@ -22,7 +21,6 @@ class SwaggerConfig {
     @Bean
     fun api(): Docket =
         Docket(DocumentationType.OAS_30)
-            .ignoredParameterTypes(User::class.java)
             .apiInfo(apiInfo())
             .select()
             .apis(RequestHandlerSelectors.basePackage("com.sooni.postapi.controller"))
@@ -37,14 +35,14 @@ class SwaggerConfig {
         .build()
 
     private fun apiKey(): ApiKey = ApiKey(
-        "Authorization", "Authorization", "header"
+        "userId", "userId", "header"
     )
 
     private fun defaultAuth(): List<SecurityReference?> {
         val authorizationScope = AuthorizationScope("global", "accessEverything")
         val authorizationScopes: Array<AuthorizationScope?> = arrayOfNulls(1)
         authorizationScopes[0] = authorizationScope
-        return listOf(SecurityReference("Authorization", authorizationScopes)) // 키 이름이랑 동일하게
+        return listOf(SecurityReference("userId", authorizationScopes)) // 키 이름이랑 동일하게
     }
 
     private fun securityContext(): SecurityContext? = SecurityContext.builder()

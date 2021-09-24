@@ -5,7 +5,6 @@ import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sooni.postapi.dto.CommentLikeVo
 import com.sooni.postapi.dto.CommentVo
-import com.sooni.postapi.dto.UserVo
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
@@ -16,9 +15,7 @@ class Comment(
     @Column(nullable = false)
     var content: String,
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    val user: User,
+    val userId: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sungan_id")
@@ -50,25 +47,21 @@ class Comment(
         private val toStringProperties = arrayOf(
             Comment::id,
             Comment::content,
-            Comment::user,
+            Comment::userId,
             Comment::createdAt
         )
     }
 
     fun convertToVo(): CommentVo = CommentVo(
         this.id!!,
-        UserVo(
-            this.user.id!!,
-            this.user.name,
-            this.user.profileImage
-        ),
+        this.userId,
         this.content,
         this.createdAt,
         this.updatedAt,
         this.likes.map { like ->
             CommentLikeVo(
                 like.id!!,
-                UserVo(like.user.id!!, like.user.name, like.user.profileImage),
+                userId,
                 like.createdAt
             )
         }

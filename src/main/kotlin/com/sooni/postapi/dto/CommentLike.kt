@@ -6,6 +6,6 @@ class CommentLike
 
 data class CommentLikeVo (
     val commentId: Long,
-    val user: UserVo,
+    val userId: Long,
     val createdAt: LocalDateTime,
         )

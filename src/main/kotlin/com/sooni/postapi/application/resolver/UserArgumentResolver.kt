@@ -1,13 +1,7 @@
 package com.sooni.postapi.application.resolver
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.sooni.postapi.application.support.SunganError
-import com.sooni.postapi.application.support.SunganException
 import com.sooni.postapi.application.support.SunganResponse
-import com.sooni.postapi.domain.User
-import com.sooni.postapi.repository.UserRepository
-import com.sooni.postapi.service.TokenPayload
-import com.sooni.postapi.service.TokenService
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -19,11 +13,9 @@ import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
 class UserArgumentResolver(
-    val tokenService: TokenService,
-    val userRepository: UserRepository
 ) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
-        return parameter.parameterType == User::class.java
+        return parameter.parameterName == "userId"
     }
 
     @Throws(JsonProcessingException::class)
@@ -32,14 +24,7 @@ class UserArgumentResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
-    ): User? {
-        val token = webRequest.getHeader("Authorization") ?: return null
-        val payload: TokenPayload = tokenService.decodeToken(token)
-        if (tokenService.isTokenExpired(payload)) return null
-        val user =
-            userRepository.findById(payload.userId).orElseThrow { throw SunganException(SunganError.ENTITY_NOT_FOUND) }
-        return user
-    }
+    ): Long? = webRequest.getHeader("userId")?.toLong()
 
     @ExceptionHandler(JsonProcessingException::class)
     fun jsonException(e: Exception): SunganResponse<Unit> {

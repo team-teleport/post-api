@@ -1,10 +1,8 @@
 package com.sooni.postapi.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.sooni.postapi.domain.DetailHashTag
 import com.sooni.postapi.domain.MainHashTag
 import com.sooni.postapi.domain.SunganContent
-import com.sooni.postapi.domain.User
 import io.swagger.annotations.ApiModelProperty
 
 class Sungan
@@ -23,7 +21,7 @@ data class SunganVo(
     val emoji: String?,
     val mainHashTag: MainHashTag?,
     val detailHashTag: List<DetailHashTagVo>,
-    val user: UserVo,
+    val userId: Long,
     val comments: List<CommentVo>,
     val readCnt: Long,
     val likeCnt: Long,
@@ -50,7 +48,7 @@ data class CreateSunganRequestDto(
 )
 
 data class ReadSunganDto(
-    val user: User?,
+    val userId: Long?,
     val sunganId: Long
 )
 

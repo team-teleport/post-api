@@ -1,7 +1,6 @@
 package com.sooni.postapi.controller
 
 import com.sooni.postapi.application.support.SunganResponse
-import com.sooni.postapi.domain.User
 import com.sooni.postapi.dto.CommentVo
 import com.sooni.postapi.dto.PatchCommentRequestDto
 import com.sooni.postapi.dto.PostCommentRequestDto
@@ -9,6 +8,7 @@ import com.sooni.postapi.service.CommentService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
 import org.springframework.web.bind.annotation.*
+import springfox.documentation.annotations.ApiIgnore
 
 @RestController
 @RequestMapping("comment")
@@ -18,19 +18,19 @@ class CommentController(
 ) {
     @PostMapping("")
     @ApiModelProperty(value = "댓글 생성하기 API")
-    fun postComment(user: User, @RequestBody postCommentRequestDto: PostCommentRequestDto): SunganResponse<CommentVo> =
-        SunganResponse(commentService.createComment(user, postCommentRequestDto))
+    fun postComment(@ApiIgnore userId: Long, @RequestBody postCommentRequestDto: PostCommentRequestDto): SunganResponse<CommentVo> =
+        SunganResponse(commentService.createComment(userId, postCommentRequestDto))
 
     @DeleteMapping("/{id}")
     @ApiModelProperty(value = "댓글 삭제하기 API")
-    fun deleteComment(user: User, @PathVariable(value = "id") commentId: Long): SunganResponse<CommentVo> =
-        SunganResponse(commentService.destroyComment(user, commentId))
+    fun deleteComment(@ApiIgnore userId: Long, @PathVariable(value = "id") commentId: Long): SunganResponse<CommentVo> =
+        SunganResponse(commentService.destroyComment(userId, commentId))
 
     @PatchMapping("")
     @ApiModelProperty(value = "댓글 수정하기 API")
     fun patchComment(
-        user: User,
+        @ApiIgnore userId: Long,
         @RequestBody patchCommentRequestDto: PatchCommentRequestDto
     ): SunganResponse<CommentVo> =
-        SunganResponse(commentService.updateComment(user, patchCommentRequestDto))
+        SunganResponse(commentService.updateComment(userId, patchCommentRequestDto))
 }
