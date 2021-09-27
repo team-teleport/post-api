@@ -1,6 +1,8 @@
 package com.sungan.postApi.application.resolver
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.sungan.postApi.application.support.SunganError
+import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.application.support.SunganResponse
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpStatus
@@ -24,7 +26,13 @@ class UserArgumentResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
-    ): Long? = webRequest.getHeader("userId")?.toLong()
+    ): Long {
+        val userIdStr: String? = webRequest.getHeader("userId")
+        if (userIdStr == null && userIdStr?.length == 0) {
+            throw SunganException(SunganError.NOT_LOGIN)
+        }
+        return userIdStr!!.toLong()
+    }
 
     @ExceptionHandler(JsonProcessingException::class)
     fun jsonException(e: Exception): SunganResponse<Unit> {
