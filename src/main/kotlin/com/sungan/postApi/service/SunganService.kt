@@ -24,7 +24,7 @@ class SunganService(
             sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         sungan.readCnt += 1
         return SunganDto(
-            userId != null && userId == sungan.userId,
+            userId == sungan.userId,
             sungan.convertToVo()
         )
     }
