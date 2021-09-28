@@ -20,7 +20,7 @@ class SunganController(
     @GetMapping("/{id}")
     @ApiOperation(value = "순간 읽기 API")
     fun getSungan(
-        @ApiIgnore userId: Long?,
+        @ApiIgnore userId: Long,
         @ApiParam(example = "1") @PathVariable(name = "id", required = true) id: Long
     ) = SunganResponse(sunganService.readSunganById(ReadSunganDto(userId, id)))
 
