@@ -1,6 +1,7 @@
 package com.sungan.postApi.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.querydsl.core.annotations.QueryProjection
 import com.sungan.postApi.domain.MainHashTag
 import com.sungan.postApi.domain.SunganContent
 import io.swagger.annotations.ApiModelProperty
@@ -13,7 +14,7 @@ data class SunganDto(
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class SunganVo(
+class SunganVo @QueryProjection constructor(
     val id: Long,
     val title: String,
     val text: String,

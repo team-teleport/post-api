@@ -6,20 +6,16 @@ import javax.persistence.*
 @Entity
 class Vehicle(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-    val name: String, // "Bus"
-
+    val colorCode: String,
+    val name: String,
     @Enumerated
-    val type: VehicleType,
-    val icon: String,
-    val local_icon: String
+    val type: VehicleType
 ) {
     override fun toString() = kotlinToString(properties = Vehicle.toStringProperties)
     companion object {
-        private val equalsAndHashCodeProperties = arrayOf(Vehicle::id)
+        private val equalsAndHashCodeProperties = arrayOf(Vehicle::colorCode)
         private val toStringProperties = arrayOf(
-            Vehicle::id,
+            Vehicle::colorCode,
             Vehicle::name
         )
     }
