@@ -6,7 +6,9 @@ import javax.persistence.*
 @Entity
 class Vehicle(
     @Id
+    @Column(unique = true)
     val colorCode: String,
+    @Column(unique = true)
     val name: String,
     @Enumerated
     val type: VehicleType
