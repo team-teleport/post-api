@@ -4,6 +4,7 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.DetailHashTag
 import com.sungan.postApi.domain.Sungan
+import com.sungan.postApi.domain.UserViewdSungan
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
@@ -11,12 +12,10 @@ import org.springframework.stereotype.Service
 @Service
 class SunganService(
     val sunganRepository: SunganRepository,
-    val sunganContentsRepository: SunganContentsRepository,
-    val commentRepository: CommentRepository,
-    val commentLikeRepository: CommentLikeRepository,
     val mainHashTagRepository: MainHashTagRepository,
     val vehicleRepository: VehicleRepository,
-    val detailHashTagRepository: DetailHashTagRepository
+    val detailHashTagRepository: DetailHashTagRepository,
+    val userViewdSunganRepository: UserViewdSunganRepository
 ) {
     fun readSunganById(readSunganDto: ReadSunganDto): SunganDto {
         val (userId, id) = readSunganDto
@@ -87,4 +86,20 @@ class SunganService(
         sunganRepository.delete(sungan)
         return vo
     }
+
+    fun readMainSungans(userId: Long, getMainRequestDto: GetMainRequestDto): List<SunganVo> {
+        val sungans: MutableList<Sungan> =
+            sunganRepository.findMainByUserIdAndVehicleAndPaging(userId, getMainRequestDto)
+        return sungans.asSequence().map { sungan ->
+            userViewdSunganRepository.save(
+                UserViewdSungan(
+                    sungan,
+                    userId
+                )
+            )
+            sungan.convertToVo()
+        }.toList()
+    }
+
+
 }
