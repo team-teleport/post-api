@@ -54,6 +54,9 @@ class Sungan(
     @OneToMany(mappedBy = "sungan")
     val comments: MutableList<Comment> = ArrayList()
 
+    @OneToMany(mappedBy = "sungan")
+    val viewdUsers: MutableList<UserViewdSungan> = ArrayList()
+
     @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
