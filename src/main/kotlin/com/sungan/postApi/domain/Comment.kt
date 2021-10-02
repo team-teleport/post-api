@@ -58,12 +58,12 @@ class Comment(
         this.content,
         this.createdAt,
         this.updatedAt,
-        this.likes.map { like ->
+        this.likes.asSequence().map { like ->
             CommentLikeVo(
                 like.id!!,
                 userId,
                 like.createdAt
             )
-        }
+        }.toList()
     )
 }

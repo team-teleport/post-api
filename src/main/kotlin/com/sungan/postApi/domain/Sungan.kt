@@ -70,17 +70,17 @@ class Sungan(
             this.id!!,
             this.title,
             this.text,
-            this.contents.map { content ->
+            this.contents.asSequence().map { content ->
                 SunganContentVo(
                     content.type,
                     content.url
                 )
-            },
+            }.toList(),
             this.emoji,
             this.mainHashTag,
             this.detailHashTags.map { dht -> dht.convertToVo() },
             userId,
-            this.comments.map { comment ->
+            this.comments.asSequence().map { comment ->
                 CommentVo(
                     comment.id!!,
                     userId,
@@ -95,7 +95,7 @@ class Sungan(
                         )
                     }
                 )
-            },
+            }.toList(),
             this.readCnt,
             this.likeCnt,
         )
