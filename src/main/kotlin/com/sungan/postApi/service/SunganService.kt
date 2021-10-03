@@ -34,7 +34,7 @@ class SunganService(
                 createSunganRequestDto.title,
                 createSunganRequestDto.text,
                 userId,
-                vehicleRepository.findById(createSunganRequestDto.vehicleId).orElseThrow {
+                vehicleRepository.findById(createSunganRequestDto.vehicleName).orElseThrow {
                     SunganException(SunganError.BAD_REQUEST_INVALID_ID)
                 },
                 createSunganRequestDto.emoji
@@ -49,6 +49,7 @@ class SunganService(
                 DetailHashTag(it)
             )
         }
+        sunganRepository.save(sungan) // 더티체킹 일어나지 않음
         return SunganDto(
             true,
             sungan.convertToVo()
@@ -74,7 +75,7 @@ class SunganService(
         }
         return SunganDto(
             true,
-            sungan.convertToVo()
+            sunganRepository.save(sungan).convertToVo()
         )
     }
 
