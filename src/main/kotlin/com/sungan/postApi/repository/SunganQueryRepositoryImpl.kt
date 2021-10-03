@@ -14,10 +14,10 @@ class SunganQueryRepositoryImpl(
         getMainRequestDto: GetMainRequestDto
     ): MutableList<Sungan> {
         return query.selectFrom(sungan)
-            .where(sungan.id.lt(getMainRequestDto.lastSunganId),sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-            .leftJoin(userViewdSungan.sungan)
-            .on(userViewdSungan.sungan.eq(sungan))
-            .where(userViewdSungan.user_id.isNull)
+            .where(sungan.id.lt(getMainRequestDto.lastSunganId), sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .leftJoin(sungan.viewdUsers, userViewdSungan)
+            .on(userViewdSungan.userId.eq(userId))
+            .where(userViewdSungan.userId.isNull)
             .orderBy(sungan.createdAt.desc())
             .limit(10)
             .fetch()
