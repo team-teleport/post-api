@@ -3,7 +3,10 @@ package com.sungan.postApi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
-import com.sungan.postApi.dto.*
+import com.sungan.postApi.dto.CommentLikeVo
+import com.sungan.postApi.dto.CommentVo
+import com.sungan.postApi.dto.SunganContentVo
+import com.sungan.postApi.dto.SunganVo
 import org.hibernate.annotations.ColumnDefault
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -90,6 +93,7 @@ class Sungan(
                     comment.updatedAt,
                     comment.likes.map { like ->
                         CommentLikeVo(
+                            id!!,
                             comment.id!!,
                             userId,
                             like.createdAt
