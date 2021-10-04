@@ -9,7 +9,7 @@ import com.sungan.postApi.dto.GetMainRequestDto
 class SunganQueryRepositoryImpl(
     val query: JPAQueryFactory
 ) : SunganQueryRepository {
-    override fun findMainByUserIdAndVehicleAndPaging(
+    override fun findMainByUserIdAndVehicleOrderByCreateAt(
         userId: Long,
         getMainRequestDto: GetMainRequestDto
     ): MutableList<Sungan> {
@@ -19,6 +19,34 @@ class SunganQueryRepositoryImpl(
             .on(userViewdSungan.userId.eq(userId))
             .where(userViewdSungan.userId.isNull)
             .orderBy(sungan.createdAt.desc())
+            .limit(10)
+            .fetch()
+    }
+
+    override fun findMainByUserIdAndVehicleOrderByLikeCnt(
+        userId: Long,
+        getMainRequestDto: GetMainRequestDto
+    ): MutableList<Sungan> {
+        return query.selectFrom(sungan)
+            .where(sungan.id.lt(getMainRequestDto.lastSunganId), sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .leftJoin(sungan.viewdUsers, userViewdSungan)
+            .on(userViewdSungan.userId.eq(userId))
+            .where(userViewdSungan.userId.isNull)
+            .orderBy(sungan.likeCnt.desc())
+            .limit(10)
+            .fetch()
+    }
+
+    override fun findMainByUserIdAndVehicleOrderByReadCnt(
+        userId: Long,
+        getMainRequestDto: GetMainRequestDto
+    ): MutableList<Sungan> {
+        return query.selectFrom(sungan)
+            .where(sungan.id.lt(getMainRequestDto.lastSunganId), sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .leftJoin(sungan.viewdUsers, userViewdSungan)
+            .on(userViewdSungan.userId.eq(userId))
+            .where(userViewdSungan.userId.isNull)
+            .orderBy(sungan.readCnt.desc())
             .limit(10)
             .fetch()
     }
