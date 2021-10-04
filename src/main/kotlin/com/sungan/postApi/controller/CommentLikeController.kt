@@ -6,10 +6,8 @@ import com.sungan.postApi.dto.PostCommentLike
 import com.sungan.postApi.service.CommentLikeService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 
 @RestController
@@ -25,5 +23,15 @@ class CommentLikeController(
         @RequestBody postCommentLike: PostCommentLike
     ): SunganResponse<CommentLikeVo> {
         return SunganResponse(commentLikeService.createCommentLike(userId, postCommentLike.commentId))
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("댓글 좋아요를 취소하는 API")
+    fun deleteCommentLike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") commentLikeId: Long
+    ): SunganResponse<Unit> {
+        commentLikeService.destroyCommentLike(userId, commentLikeId)
+        return SunganResponse(HttpStatus.OK, "댓글 좋아요 취소 성공")
     }
 }
