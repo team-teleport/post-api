@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 
 @RestController
-@Api(tags = ["SunganController - 순간 관련 API"])
+@Api(tags = ["순간(글) 관련 API"])
 @RequestMapping("sungan")
 class SunganController(
     @Autowired

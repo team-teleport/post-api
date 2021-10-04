@@ -11,7 +11,7 @@ import springfox.documentation.annotations.ApiIgnore
 
 @RestController
 @RequestMapping("likes")
-@Api(tags = ["LikeController - 순간 좋아요 관련 API"])
+@Api(tags = ["순간 좋아요 관련 API"])
 class LikeController(
     val sunganLikeService: SunganLikeService
 ) {

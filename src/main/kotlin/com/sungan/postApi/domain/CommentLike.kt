@@ -3,6 +3,7 @@ package com.sungan.postApi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.dto.CommentLikeVo
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -22,6 +23,13 @@ class CommentLike(
     @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
+
+    fun convertToVo() = CommentLikeVo(
+        id!!,
+        comment.id!!,
+        userId,
+        createdAt
+    )
 
     override fun toString() = kotlinToString(properties = CommentLike.toStringProperties)
 

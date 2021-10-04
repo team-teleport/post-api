@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentLikeRepository: JpaRepository<CommentLike, Long> {
     fun findByComment(comment: Comment): MutableList<CommentLike>
+    fun findByUserIdAndComment(userId: Long, comment: Comment): CommentLike?
 }

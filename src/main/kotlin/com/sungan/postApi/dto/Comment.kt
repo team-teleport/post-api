@@ -7,7 +7,7 @@ class Comment
 
 data class CommentVo(
     val commentId: Long,
-    val user: Long,
+    val userId: Long,
     val content: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,

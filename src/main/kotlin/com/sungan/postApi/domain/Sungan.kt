@@ -3,7 +3,7 @@ package com.sungan.postApi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
-import com.sungan.postApi.dto.*
+import com.sungan.postApi.dto.SunganVo
 import org.hibernate.annotations.ColumnDefault
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -71,32 +71,12 @@ class Sungan(
             this.vehicle.convertToVo(),
             this.title,
             this.text,
-            this.contents.asSequence().map { content ->
-                SunganContentVo(
-                    content.type,
-                    content.url
-                )
-            }.toList(),
+            this.contents.asSequence().map { content -> content.convertToVo() }.toList(),
             this.emoji,
             this.mainHashTag,
             this.detailHashTags.map { dht -> dht.convertToVo() },
             userId,
-            this.comments.asSequence().map { comment ->
-                CommentVo(
-                    comment.id!!,
-                    userId,
-                    comment.content,
-                    comment.createdAt,
-                    comment.updatedAt,
-                    comment.likes.map { like ->
-                        CommentLikeVo(
-                            comment.id!!,
-                            userId,
-                            like.createdAt
-                        )
-                    }
-                )
-            }.toList(),
+            this.comments.asSequence().map { comment -> comment.convertToVo() }.toList(),
             this.readCnt,
             this.likeCnt,
         )

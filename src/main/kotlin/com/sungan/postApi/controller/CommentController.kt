@@ -12,7 +12,7 @@ import springfox.documentation.annotations.ApiIgnore
 
 @RestController
 @RequestMapping("comment")
-@Api(tags = ["CommentController - 댓글 관련 API"])
+@Api(tags = ["댓글 관련 API"])
 class CommentController(
     val commentService: CommentService
 ) {
