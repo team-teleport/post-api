@@ -1,5 +1,6 @@
 package com.sungan.postApi.domain
 
+import com.sungan.postApi.dto.SunganContentVo
 import javax.persistence.*
 
 @Entity
@@ -14,6 +15,11 @@ class SunganContent (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    fun convertToVo() = SunganContentVo(
+        type,
+        url
+    )
 
     enum class ContentType {
         IMAGE,

@@ -1,8 +1,10 @@
 package com.sungan.postApi.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.querydsl.core.annotations.QueryProjection
 import com.sungan.postApi.domain.MainHashTag
 import com.sungan.postApi.domain.SunganContent
+import com.sungan.postApi.domain.Vehicle
 import io.swagger.annotations.ApiModelProperty
 
 class Sungan
@@ -13,8 +15,9 @@ data class SunganDto(
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class SunganVo(
+class SunganVo @QueryProjection constructor(
     val id: Long,
+    val vehicle: VehicleVo,
     val title: String,
     val text: String,
     val contents: List<SunganContentVo>,
@@ -27,6 +30,12 @@ data class SunganVo(
     val likeCnt: Long,
 )
 
+data class VehicleVo(
+    val colorCode: String,
+    val name: String,
+    val Type: String,
+)
+
 data class SunganContentVo(
     val contentType: SunganContent.ContentType,
     val url: String,
@@ -37,13 +46,13 @@ data class CreateSunganRequestDto(
     val title: String,
     @ApiModelProperty(required = true, example = "내용입니다.")
     val text: String,
-    @ApiModelProperty(required = true, example = "1")
-    val vehicleId: Long,
+    @ApiModelProperty(required = true, example = "9호선")
+    val vehicleName: String,
     @ApiModelProperty(example = "😃")
     val emoji: String?,
     @ApiModelProperty(example = "1")
     val mainHashTagId: Long?,
-    @ApiModelProperty(example = "[\"상세태그1\", \"상세태그2\"]")
+    @ApiModelProperty(dataType = "[Ljava.lang.String;")
     val detailHashTag: List<String>?
 )
 
@@ -59,10 +68,10 @@ data class PatchSunganRequestDto(
     val title: String?,
     @ApiModelProperty(example = "수정된 내용입니다.")
     val text: String?,
-    @ApiModelProperty(example = "😃")
+    @ApiModelProperty(example = "🥶")
     val emoji: String?,
     @ApiModelProperty(example = "1")
     val mainHashTagId: Long?,
-    @ApiModelProperty
+    @ApiModelProperty(dataType = "[Ljava.lang.String;")
     val detailHashTag: List<String>?
 )

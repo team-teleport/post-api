@@ -3,11 +3,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.5.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.5.21"
-    kotlin("plugin.spring") version "1.5.21"
-    kotlin("plugin.jpa") version "1.5.21"
-    kotlin("plugin.allopen") version "1.3.71"
-    kotlin("plugin.noarg") version "1.3.71"
+
+    val kotlinVersion = "1.5.21"
+
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.jpa") version kotlinVersion
+    kotlin("plugin.allopen") version kotlinVersion
+    kotlin("plugin.noarg") version kotlinVersion
+    kotlin("kapt") version "1.3.61"
 }
 
 allOpen {
@@ -18,13 +22,15 @@ noArg {
     annotation("javax.persistence.Entity")
 }
 
-group = "com.sooni"
+group = "com.sungan"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
+val qeurydslVersion = "4.4.0"
 
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
+    maven("https://plugins.gradle.org/m2/")
 }
 
 dependencies {
@@ -34,15 +40,29 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
+
     implementation("com.github.consoleau:kassava:2.1.0")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("mysql:mysql-connector-java")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
+
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
+
+    // QueryDSL
+    implementation("com.querydsl:querydsl-jpa:$qeurydslVersion")
+    kapt("com.querydsl:querydsl-apt:$qeurydslVersion:jpa")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
+
+sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+    kotlin.srcDir("$buildDir/generated/source/kapt/main")
+}
+
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
@@ -53,4 +73,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }

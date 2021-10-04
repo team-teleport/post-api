@@ -6,8 +6,7 @@ import javax.persistence.*
 class UserViewdSungan(
     @ManyToOne
     val sungan: Sungan,
-    @Column
-    val user_id: Long
+    val userId: Long
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

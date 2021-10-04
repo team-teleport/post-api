@@ -1,47 +1,39 @@
 package com.sungan.postApi.domain
 
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.dto.VehicleVo
 import javax.persistence.*
 
 @Entity
 class Vehicle(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-    val name: String, // "Bus"
-
-    @Enumerated
-    val type: VehicleType,
-    val icon: String,
-    val local_icon: String
+    val name: String,
+    val colorCode: String,
+    @Enumerated(value = EnumType.STRING)
+    val type: VehicleType
 ) {
+    @OneToMany(mappedBy = "vehicle")
+    val sungans: MutableList<Sungan> = ArrayList()
+
     override fun toString() = kotlinToString(properties = Vehicle.toStringProperties)
     companion object {
-        private val equalsAndHashCodeProperties = arrayOf(Vehicle::id)
+        private val equalsAndHashCodeProperties = arrayOf(Vehicle::name)
         private val toStringProperties = arrayOf(
-            Vehicle::id,
-            Vehicle::name
+            Vehicle::colorCode,
+            Vehicle::name,
+            Vehicle::type
         )
     }
+
+    fun convertToVo() = VehicleVo(
+        colorCode,
+        name,
+        type.name
+    )
 }
 
 enum class VehicleType {
-    RAIL,
-    METRO_RAIL,
     SUBWAY,
-    TRAM,
-    MONORAIL,
-    HEAVY_RAIL,
-    COMMUTER_TRAIN,
-    HIGH_SPEED_TRAIN,
-    LONG_DISTANCE_TRAIN,
     BUS,
-    INTERCITY_BUS,
-    TROLLEYBUS,
-    SHARE_TAXI,
-    FERRY,
-    CABLE_CAR,
-    GONDOLA_LIFT,
-    FUNICULAR,
     OTHER
 }

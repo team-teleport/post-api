@@ -20,12 +20,12 @@ class Sungan(
     var userId: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id", nullable = false)
+    @JoinColumn(name = "vehicle_name", nullable = false)
     var vehicle: Vehicle,
 
     var emoji: String?,
 ) {
-    @ManyToOne
+    @ManyToOne()
     var mainHashTag: MainHashTag? = null
 
     @ManyToMany
@@ -68,19 +68,20 @@ class Sungan(
     fun convertToVo(): SunganVo =
         SunganVo(
             this.id!!,
+            this.vehicle.convertToVo(),
             this.title,
             this.text,
-            this.contents.map { content ->
+            this.contents.asSequence().map { content ->
                 SunganContentVo(
                     content.type,
                     content.url
                 )
-            },
+            }.toList(),
             this.emoji,
             this.mainHashTag,
             this.detailHashTags.map { dht -> dht.convertToVo() },
             userId,
-            this.comments.map { comment ->
+            this.comments.asSequence().map { comment ->
                 CommentVo(
                     comment.id!!,
                     userId,
@@ -95,7 +96,7 @@ class Sungan(
                         )
                     }
                 )
-            },
+            }.toList(),
             this.readCnt,
             this.likeCnt,
         )
