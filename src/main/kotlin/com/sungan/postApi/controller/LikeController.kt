@@ -23,7 +23,8 @@ class LikeController(
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "좋아요 취소하기 API")
-    fun deleteSunganLike(@ApiIgnore userId: Long, @PathVariable(value = "id") sunganId: Long): SunganResponse<Unit> {
+    fun deleteSunganLike(@ApiIgnore userId: Long, @PathVariable(value = "id") sunganLikeId: Long): SunganResponse<Unit> {
+        sunganLikeService.destroySunganLike(userId, sunganLikeId)
         return SunganResponse(HttpStatus.OK, "좋아요 취소 성공")
     }
 }

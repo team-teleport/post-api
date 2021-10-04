@@ -7,12 +7,14 @@ import com.sungan.postApi.dto.SunganLikeVo
 import com.sungan.postApi.repository.SunganLikeRepository
 import com.sungan.postApi.repository.SunganRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class SunganLikeService(
     val sunganLikeRepository: SunganLikeRepository,
     val sunganRepository: SunganRepository
 ) {
+    @Transactional
     fun createSunganLike(userId: Long, sunganId: Long): SunganLikeVo {
         val sungan = sunganRepository.findById(sunganId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
@@ -22,6 +24,18 @@ class SunganLikeService(
                 userId, sungan
             )
         )
+        sungan.likeCnt += 1
+        sunganRepository.save(sungan)
         return newLike.convertToVo()
+    }
+
+    @Transactional
+    fun destroySunganLike(userId: Long, sunganLikeId: Long) {
+        val sunganLike = sunganLikeRepository.findById(sunganLikeId)
+            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        if (sunganLike.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        sunganLike.sungan.likeCnt -= 1
+        sunganRepository.save(sunganLike.sungan)
+        sunganLikeRepository.delete(sunganLike)
     }
 }
