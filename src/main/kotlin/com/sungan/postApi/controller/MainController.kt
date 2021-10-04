@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 import springfox.documentation.annotations.ApiIgnore
 
 @RestController
-@Api(tags = ["MainController - 메인 피드 관련 API"])
+@Api(tags = ["메인 피드 관련 API"])
 @RequestMapping("main")
 class MainController(
     val sunganService: SunganService
