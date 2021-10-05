@@ -90,8 +90,13 @@ class SunganService(
     }
 
     fun readMainSungans(userId: Long, getMainRequestDto: GetMainRequestDto): List<SunganVo> {
-        val sungans: MutableList<Sungan> =
-            sunganRepository.findMainByUserIdAndVehicleAndPaging(userId, getMainRequestDto)
+        val orderBy = getMainRequestDto.orderBy
+        val sungans: MutableList<Sungan> = when (orderBy.name) {
+            "NEW" -> sunganRepository.findMainByUserIdAndVehicleOrderByCreateAt(userId, getMainRequestDto)
+            "LIKE" -> sunganRepository.findMainByUserIdAndVehicleOrderByLikeCnt(userId, getMainRequestDto)
+            "READ" -> sunganRepository.findMainByUserIdAndVehicleOrderByReadCnt(userId, getMainRequestDto)
+            else -> throw SunganException(SunganError.BAD_REQUEST)
+        }
         return sungans.asSequence().map { sungan ->
             userViewdSunganRepository.save(
                 UserViewdSungan(
