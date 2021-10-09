@@ -25,7 +25,8 @@ class Sungan(
 
     var emoji: String?,
 ) {
-    @ManyToOne()
+    @ManyToOne
+    @JoinColumn(name = "main_hashtag_id")
     var mainHashTag: MainHashTag? = null
 
     @ManyToMany
