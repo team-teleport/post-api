@@ -14,7 +14,7 @@ class SunganQueryRepositoryImpl(
         getMainRequestDto: GetMainRequestDto
     ): MutableList<Sungan> {
         return query.selectFrom(sungan)
-            .where(sungan.id.lt(getMainRequestDto.lastSunganId), sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
             .leftJoin(sungan.viewdUsers, userViewdSungan)
             .on(userViewdSungan.userId.eq(userId))
             .where(userViewdSungan.userId.isNull)
@@ -28,7 +28,7 @@ class SunganQueryRepositoryImpl(
         getMainRequestDto: GetMainRequestDto
     ): MutableList<Sungan> {
         return query.selectFrom(sungan)
-            .where(sungan.id.lt(getMainRequestDto.lastSunganId), sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
             .leftJoin(sungan.viewdUsers, userViewdSungan)
             .on(userViewdSungan.userId.eq(userId))
             .where(userViewdSungan.userId.isNull)
@@ -42,7 +42,7 @@ class SunganQueryRepositoryImpl(
         getMainRequestDto: GetMainRequestDto
     ): MutableList<Sungan> {
         return query.selectFrom(sungan)
-            .where(sungan.id.lt(getMainRequestDto.lastSunganId), sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
             .leftJoin(sungan.viewdUsers, userViewdSungan)
             .on(userViewdSungan.userId.eq(userId))
             .where(userViewdSungan.userId.isNull)
