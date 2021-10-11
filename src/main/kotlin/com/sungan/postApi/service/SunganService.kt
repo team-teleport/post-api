@@ -15,6 +15,7 @@ class SunganService(
     val mainHashTagRepository: MainHashTagRepository,
     val vehicleRepository: VehicleRepository,
     val detailHashTagRepository: DetailHashTagRepository,
+    val sunganLikeRepository: SunganLikeRepository,
     val userViewdSunganRepository: UserViewdSunganRepository
 ) {
     fun readSunganById(readSunganDto: ReadSunganDto): SunganDto {
@@ -89,24 +90,53 @@ class SunganService(
         return vo
     }
 
-    fun readMainSungans(userId: Long, getMainRequestDto: GetMainRequestDto): List<SunganVo> {
-        val orderBy = getMainRequestDto.orderBy
-        val sungans: MutableList<Sungan> = when (orderBy.name) {
-            "NEW" -> sunganRepository.findMainByUserIdAndVehicleOrderByCreateAt(userId, getMainRequestDto)
-            "LIKE" -> sunganRepository.findMainByUserIdAndVehicleOrderByLikeCnt(userId, getMainRequestDto)
-            "READ" -> sunganRepository.findMainByUserIdAndVehicleOrderByReadCnt(userId, getMainRequestDto)
-            else -> throw SunganException(SunganError.BAD_REQUEST)
-        }
+    fun readMainSungansBeforeId(
+        firstSunganId: Long,
+        userId: Long,
+        getMainRequestDto: GetMainRequestDto
+    ): List<SunganWithLikeByUser> {
+
+        val firstSungan = sunganRepository.findById(firstSunganId)
+            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+
+        val sungans = sunganRepository.findSungansBeforeFirstSunganPaging(getMainRequestDto, firstSungan)
         return sungans.asSequence().map { sungan ->
-            userViewdSunganRepository.save(
-                UserViewdSungan(
-                    sungan,
-                    userId
-                )
+            userViewdSunganRepository.save(UserViewdSungan(sungan, userId))
+            SunganWithLikeByUser(
+                sungan.convertToVo(),
+                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
             )
-            sungan.convertToVo()
         }.toList()
     }
 
+    fun readMainSungansAfterId(
+        lastSunganId: Long?,
+        userId: Long,
+        getMainRequestDto: GetMainRequestDto
+    ): List<SunganWithLikeByUser> {
+        if (lastSunganId == null) {
+            return findTopTen(userId, getMainRequestDto)
+        }
+        val lastSungan = sunganRepository.findById(lastSunganId)
+            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+        val sungans = sunganRepository.findSungansAfterLastSunganPaging(getMainRequestDto, lastSungan)
+        return sungans.asSequence().map { sungan ->
+            userViewdSunganRepository.save(UserViewdSungan(sungan, userId))
+            SunganWithLikeByUser(
+                sungan.convertToVo(),
+                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
+            )
+        }.toList()
+    }
 
+    fun findTopTen(userId: Long, getMainRequestDto: GetMainRequestDto): List<SunganWithLikeByUser> {
+        val sungans: MutableList<Sungan> = sunganRepository.findLimitSizeOrderByDesc(userId, getMainRequestDto)
+        return sungans.asSequence().map { sungan ->
+            userViewdSunganRepository.save(UserViewdSungan(sungan, userId))
+            SunganWithLikeByUser(
+                sungan.convertToVo(),
+                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
+            )
+        }.toList()
+    }
 }

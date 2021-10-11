@@ -1,13 +1,13 @@
 package com.sungan.postApi.controller
 
+import com.sungan.postApi.application.support.SunganResponse
 import com.sungan.postApi.dto.GetMainRequestDto
+import com.sungan.postApi.dto.SunganWithLikeByUser
 import com.sungan.postApi.service.SunganService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import io.swagger.annotations.ApiParam
+import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 
 @RestController
@@ -17,8 +17,26 @@ class MainController(
     val sunganService: SunganService
 ) {
 
-    @PostMapping("")
-    @ApiOperation(value = "메인의 순간 가져오기 API")
-    fun getMain(@ApiIgnore userId: Long, @RequestBody getMainRequestDto: GetMainRequestDto) =
-        sunganService.readMainSungans(userId, getMainRequestDto)
+    @ApiOperation(value = "이전에 봤던 순간들을 다시 받아요")
+    @PostMapping("/before")
+    fun getSungansBefore(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "이전 피드의 첫번째 순간 아이디") @RequestParam(
+            value = "firstId"
+        ) id: Long,
+        @RequestBody getMainRequestDto: GetMainRequestDto
+    ): SunganResponse<List<SunganWithLikeByUser>> =
+        SunganResponse(sunganService.readMainSungansBeforeId(firstSunganId = id, userId, getMainRequestDto))
+
+    @ApiOperation(value = "새로운 순간들을 받아요")
+    @PostMapping("/after")
+    fun getSungansAfter(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "이전 피드의 마지막 순간 아이디, 처음 피드에 들어오는 경우 id를 비워주세요") @RequestParam(
+            value = "lastId",
+            required = false
+        ) id: Long?,
+        @RequestBody getMainRequestDto: GetMainRequestDto
+    ): SunganResponse<List<SunganWithLikeByUser>> =
+        SunganResponse(sunganService.readMainSungansAfterId(lastSunganId = id, userId, getMainRequestDto))
 }

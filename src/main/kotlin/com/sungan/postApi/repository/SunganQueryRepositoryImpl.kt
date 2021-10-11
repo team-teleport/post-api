@@ -1,6 +1,8 @@
 package com.sungan.postApi.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.sungan.postApi.application.support.SunganError
+import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.QSungan.sungan
 import com.sungan.postApi.domain.QUserViewdSungan.userViewdSungan
 import com.sungan.postApi.domain.Sungan
@@ -9,45 +11,86 @@ import com.sungan.postApi.dto.GetMainRequestDto
 class SunganQueryRepositoryImpl(
     val query: JPAQueryFactory
 ) : SunganQueryRepository {
-    override fun findMainByUserIdAndVehicleOrderByCreateAt(
-        userId: Long,
-        getMainRequestDto: GetMainRequestDto
+    override fun findSungansAfterLastSunganPaging(
+        getMainRequestDto: GetMainRequestDto,
+        lastSungan: Sungan
     ): MutableList<Sungan> {
-        return query.selectFrom(sungan)
+        val query = query.selectFrom(sungan)
             .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-            .leftJoin(sungan.viewdUsers, userViewdSungan)
-            .on(userViewdSungan.userId.eq(userId))
-            .where(userViewdSungan.userId.isNull)
-            .orderBy(sungan.createdAt.desc())
-            .limit(10)
-            .fetch()
+        return when (getMainRequestDto.orderBy.name) {
+            "NEW" -> query
+                .where(sungan.createdAt.before(lastSungan.createdAt))
+                .orderBy(sungan.createdAt.desc())
+                .limit(getMainRequestDto.size)
+                .fetch()
+            "LIKE" -> query
+                .where(
+                    sungan.likeCnt.lt(lastSungan.likeCnt)
+                        .or(sungan.likeCnt.eq(lastSungan.likeCnt).and(sungan.createdAt.before(lastSungan.createdAt)))
+                )
+                .orderBy(sungan.likeCnt.desc())
+                .orderBy(sungan.createdAt.desc())
+                .limit(getMainRequestDto.size)
+                .fetch()
+            "READ" -> query
+                .where(
+                    sungan.readCnt.lt(lastSungan.readCnt)
+                        .or(sungan.readCnt.eq(lastSungan.readCnt).and(sungan.createdAt.before(lastSungan.createdAt)))
+                )
+                .orderBy(sungan.readCnt.desc())
+                .orderBy(sungan.createdAt.desc())
+                .limit(getMainRequestDto.size)
+                .fetch()
+            else -> throw SunganException(SunganError.BAD_REQUEST)
+        }
     }
 
-    override fun findMainByUserIdAndVehicleOrderByLikeCnt(
-        userId: Long,
-        getMainRequestDto: GetMainRequestDto
+    override fun findSungansBeforeFirstSunganPaging(
+        getMainRequestDto: GetMainRequestDto,
+        firstSungan: Sungan
     ): MutableList<Sungan> {
-        return query.selectFrom(sungan)
+        val query = query.selectFrom(sungan)
             .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-            .leftJoin(sungan.viewdUsers, userViewdSungan)
-            .on(userViewdSungan.userId.eq(userId))
-            .where(userViewdSungan.userId.isNull)
-            .orderBy(sungan.likeCnt.desc())
-            .limit(10)
-            .fetch()
+        return when (getMainRequestDto.orderBy.name) {
+            "NEW" -> query
+                .where(sungan.createdAt.after(firstSungan.createdAt))
+                .orderBy(sungan.createdAt.asc())
+                .limit(getMainRequestDto.size)
+                .fetch()
+            "LIKE" -> query
+                .where(
+                    sungan.likeCnt.gt(firstSungan.likeCnt)
+                        .or(sungan.likeCnt.eq(firstSungan.likeCnt).and(sungan.createdAt.after(firstSungan.createdAt)))
+                )
+                .orderBy(sungan.likeCnt.asc())
+                .orderBy(sungan.createdAt.asc())
+                .limit(getMainRequestDto.size)
+                .fetch()
+            "READ" -> query
+                .where(
+                    sungan.readCnt.gt(firstSungan.readCnt)
+                        .or(sungan.readCnt.eq(firstSungan.readCnt).and(sungan.createdAt.after(firstSungan.createdAt)))
+                )
+                .orderBy(sungan.readCnt.asc())
+                .orderBy(sungan.createdAt.asc())
+                .limit(getMainRequestDto.size)
+                .fetch()
+            else -> throw SunganException(SunganError.BAD_REQUEST)
+        }
     }
 
-    override fun findMainByUserIdAndVehicleOrderByReadCnt(
-        userId: Long,
-        getMainRequestDto: GetMainRequestDto
-    ): MutableList<Sungan> {
-        return query.selectFrom(sungan)
+    override fun findLimitSizeOrderByDesc(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan> {
+        var query = query.selectFrom(sungan)
             .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
             .leftJoin(sungan.viewdUsers, userViewdSungan)
             .on(userViewdSungan.userId.eq(userId))
             .where(userViewdSungan.userId.isNull)
-            .orderBy(sungan.readCnt.desc())
-            .limit(10)
-            .fetch()
+        query = when (getMainRequestDto.orderBy.name) {
+            "NEW" -> query.orderBy(sungan.createdAt.desc())
+            "LIKE" -> query.orderBy(sungan.likeCnt.desc())
+            "READ" -> query.orderBy(sungan.readCnt.desc())
+            else -> throw SunganException(SunganError.BAD_REQUEST)
+        }
+        return query.limit(getMainRequestDto.size).fetch()
     }
 }
