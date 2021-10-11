@@ -12,11 +12,13 @@ spring:
 ---
 
 spring:
-  profiles:
-    active: default
+  config:
+    activate:
+      on-profile: default
 
 ---
 
 spring:
-  profiles:
-    active: local-ky
+  config:
+    activate:
+      on-profile: local-ky
