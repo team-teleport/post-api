@@ -4,7 +4,7 @@ import com.sungan.postApi.domain.Sungan
 import com.sungan.postApi.dto.GetMainRequestDto
 
 interface SunganQueryRepository {
-    fun findMainByUserIdAndVehicleOrderByCreateAt(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan>
-    fun findMainByUserIdAndVehicleOrderByLikeCnt(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan>
-    fun findMainByUserIdAndVehicleOrderByReadCnt(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan>
+    fun findSungansAfterLastSunganPaging(getMainRequestDto: GetMainRequestDto, lastSungan: Sungan): MutableList<Sungan>
+    fun findSungansBeforeFirstSunganPaging(getMainRequestDto: GetMainRequestDto, firstSungan: Sungan): MutableList<Sungan>
+    fun findLimitSizeOrderByDesc(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan>
 }
