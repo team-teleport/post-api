@@ -35,19 +35,17 @@ class HotplaceController(
     fun getPlace(
         @ApiIgnore userId: Long,
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
-    ): SunganResponse<HotplaceVo> {
-        val hotplace = hotplaceService.readHotplace(userId, id)
-        return SunganResponse(hotplace)
-    }
+    ): SunganResponse<HotplaceWithLikeCommendCntVo> = SunganResponse(hotplaceService.readHotplace(userId, id))
+
 
     // TODO: 수정, 삭제
 
-    @GetMapping("{id}/comments")
+    @GetMapping("/{id}/comments")
     @ApiOperation(value = "핫플 댓글 전체 보기")
     fun getPlaceComments(
         @ApiIgnore userId: Long,
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
-    ): SunganResponse<List<HotplaceCommentVo>> {
-        return SunganResponse(hotplaceCommentService.readHotplaceCommentList(userId, id))
+    ): SunganResponse<List<HotplaceCommentVo>> =
+        SunganResponse(hotplaceCommentService.readHotplaceCommentList(userId, id))
     }
 }

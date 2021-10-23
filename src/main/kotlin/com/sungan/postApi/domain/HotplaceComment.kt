@@ -23,10 +23,11 @@ class HotplaceComment(
     @Column(nullable = false)
     val userId: Long = userId
 
-    @OneToMany(mappedBy = "")
+    @OneToMany(mappedBy = "hotplaceComment")
     var likes: MutableList<HotplaceCommentLike> = ArrayList()
 
     @OneToMany(mappedBy = "hotplaceComment")
+    @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<HotplaceNestedComment> = ArrayList()
 
     @CreatedDate
@@ -35,5 +36,10 @@ class HotplaceComment(
     @LastModifiedDate
     lateinit var updatedAt: LocalDateTime
 
-    fun convertToVo() = HotplaceCommentVo(id!!, content, userId, hotplace.id!!, nestedComments.map())
+    fun convertToVo() = HotplaceCommentVo(
+        id!!,
+        content,
+        userId,
+        hotplace.id!!,
+        nestedComments.map { nestedComment -> nestedComment.convertToVo() })
 }

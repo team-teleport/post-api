@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface HotplaceCommentRepository: JpaRepository<HotplaceComment, Long> {
     fun findByHotplaceOrderByCreatedAtDesc(hotplace: Hotplace): MutableList<HotplaceComment>
+    fun countByHotplace(hotplace: Hotplace): Long
 }

@@ -18,6 +18,13 @@ data class PostHotplaceReqDto(
     val place: String
 )
 
+data class HotplaceWithLikeCommendCntVo(
+    val hotplace: HotplaceVo,
+    val didLike: Boolean,
+    val likeCnt: Long,
+    val CommentCnt: Long
+)
+
 data class HotplaceCommentVo(
     val id: Long,
     val content: String,
