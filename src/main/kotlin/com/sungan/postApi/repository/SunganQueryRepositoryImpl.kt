@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.QSungan.sungan
-import com.sungan.postApi.domain.QUserViewdSungan.userViewdSungan
+import com.sungan.postApi.domain.QUserViewedSungan.userViewedSungan
 import com.sungan.postApi.domain.Sungan
 import com.sungan.postApi.dto.GetMainRequestDto
 
@@ -16,7 +16,7 @@ class SunganQueryRepositoryImpl(
         lastSungan: Sungan
     ): MutableList<Sungan> {
         val query = query.selectFrom(sungan)
-            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+//            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
         return when (getMainRequestDto.orderBy.name) {
             "NEW" -> query
                 .where(sungan.createdAt.before(lastSungan.createdAt))
@@ -50,7 +50,7 @@ class SunganQueryRepositoryImpl(
         firstSungan: Sungan
     ): MutableList<Sungan> {
         val query = query.selectFrom(sungan)
-            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+//            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
         return when (getMainRequestDto.orderBy.name) {
             "NEW" -> query
                 .where(sungan.createdAt.after(firstSungan.createdAt))
@@ -81,10 +81,10 @@ class SunganQueryRepositoryImpl(
 
     override fun findLimitSizeOrderByDesc(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan> {
         var query = query.selectFrom(sungan)
-            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-            .leftJoin(sungan.viewdUsers, userViewdSungan)
-            .on(userViewdSungan.userId.eq(userId))
-            .where(userViewdSungan.userId.isNull)
+//            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
+            .leftJoin(sungan.viewdUsers, userViewedSungan)
+            .on(userViewedSungan.userId.eq(userId))
+            .where(userViewedSungan.userId.isNull)
         query = when (getMainRequestDto.orderBy.name) {
             "NEW" -> query.orderBy(sungan.createdAt.desc())
             "LIKE" -> query.orderBy(sungan.likeCnt.desc())
