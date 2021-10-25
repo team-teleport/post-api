@@ -82,7 +82,7 @@ class SunganQueryRepositoryImpl(
     override fun findLimitSizeOrderByDesc(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan> {
         var query = query.selectFrom(sungan)
 //            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-            .leftJoin(sungan.viewdUsers, userViewedSungan)
+            .leftJoin(sungan.viewedUsers, userViewedSungan)
             .on(userViewedSungan.userId.eq(userId))
             .where(userViewedSungan.userId.isNull)
         query = when (getMainRequestDto.orderBy.name) {
