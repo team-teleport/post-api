@@ -4,9 +4,11 @@ import com.sungan.postApi.application.support.SunganResponse
 import com.sungan.postApi.dto.CommentVo
 import com.sungan.postApi.dto.PatchCommentRequestDto
 import com.sungan.postApi.dto.PostCommentRequestDto
+import com.sungan.postApi.dto.PostNestedCommentReqDto
 import com.sungan.postApi.service.CommentService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 
@@ -33,4 +35,15 @@ class CommentController(
         @RequestBody patchCommentRequestDto: PatchCommentRequestDto
     ): SunganResponse<CommentVo> =
         SunganResponse(commentService.updateComment(userId, patchCommentRequestDto))
+
+    @PostMapping("/{id}/reply")
+    @ApiModelProperty(value = "대댓글 달기 API")
+    fun postNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") commentId: Long,
+        @RequestBody postNestedCommentReqDto: PostNestedCommentReqDto
+    ): SunganResponse<Any> {
+        commentService.createNestedComment(userId, commentId, postNestedCommentReqDto.content)
+        return SunganResponse(HttpStatus.OK, "대댓글 생성 완료")
+    }
 }

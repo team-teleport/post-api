@@ -3,17 +3,20 @@ package com.sungan.postApi.service
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.Comment
+import com.sungan.postApi.domain.NestedComment
 import com.sungan.postApi.dto.CommentVo
 import com.sungan.postApi.dto.PatchCommentRequestDto
 import com.sungan.postApi.dto.PostCommentRequestDto
 import com.sungan.postApi.repository.CommentRepository
+import com.sungan.postApi.repository.NestedCommentRepository
 import com.sungan.postApi.repository.SunganRepository
 import org.springframework.stereotype.Service
 
 @Service
 class CommentService(
     val sunganRepository: SunganRepository,
-    val commentRepository: CommentRepository
+    val commentRepository: CommentRepository,
+    val nestedCommentRepository: NestedCommentRepository
 ) {
     fun createComment(userId: Long, postCommentRequestDto: PostCommentRequestDto): CommentVo {
         val sungan = sunganRepository.findById(postCommentRequestDto.sunganId).orElseThrow {
@@ -46,5 +49,17 @@ class CommentService(
         comment.content = patchCommentRequestDto.content
         commentRepository.save(comment)
         return comment.convertToVo()
+    }
+
+    fun createNestedComment(userId: Long, commentId: Long, content: String) {
+        val comment =
+            commentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        nestedCommentRepository.save(
+            NestedComment(
+                comment,
+                userId,
+                content
+            )
+        )
     }
 }

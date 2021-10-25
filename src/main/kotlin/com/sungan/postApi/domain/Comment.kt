@@ -5,6 +5,7 @@ import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sungan.postApi.dto.CommentLikeVo
 import com.sungan.postApi.dto.CommentVo
+import com.sungan.postApi.dto.NestedCommentVo
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
@@ -28,6 +29,9 @@ class Comment(
     @OneToMany(mappedBy = "comment")
     var likes: MutableList<CommentLike> = ArrayList()
 
+    @OneToMany(mappedBy = "comment")
+    var nestedComments: MutableList<NestedComment> = ArrayList()
+
     @Column(name = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
@@ -48,7 +52,8 @@ class Comment(
             Comment::id,
             Comment::content,
             Comment::userId,
-            Comment::createdAt
+            Comment::createdAt,
+            Comment::updatedAt
         )
     }
 
@@ -58,13 +63,7 @@ class Comment(
         this.content,
         this.createdAt,
         this.updatedAt,
-        this.likes.asSequence().map { like ->
-            CommentLikeVo(
-                like.id!!,
-                id!!,
-                userId,
-                like.createdAt
-            )
-        }.toList()
+        this.likes.size.toLong(),
+        this.nestedComments.asSequence().map { nestedComment -> nestedComment.convertToVo() }.toList()
     )
 }
