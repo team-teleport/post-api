@@ -1,28 +1,24 @@
 package com.sungan.postApi.domain
 
-import com.sungan.postApi.dto.ReportCommentVo
+import com.sungan.postApi.dto.ReportNestedCommentVo
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class ReportComment(
-    content: String,
-    report: Report,
+class ReportNestedComment(
+    @ManyToOne
+    @JoinColumn(name = "reposrt_comment_id")
+    var reportComment: ReportComment,
     @Column(nullable = false)
-    val userId: Long
-){
+    var content: String,
+    @Column(nullable = false)
+    var userId: Long
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
-
-    @Column(nullable = false)
-    var content: String = content
-
-    @ManyToOne
-    @JoinColumn(name = "report_id")
-    val report: Report = report
+    val id: Long = 0
 
     @CreatedDate
     lateinit var createdAt: LocalDateTime
@@ -30,10 +26,9 @@ class ReportComment(
     @LastModifiedDate
     lateinit var updatedAt: LocalDateTime
 
-    fun convertToVo() = ReportCommentVo(
-        id!!,
+    fun convertToVo() = ReportNestedCommentVo(
+        reportComment.id!!,
         userId,
-        reportId = report.id!!,
         content,
         createdAt,
         updatedAt
