@@ -46,6 +46,12 @@ data class PostReportCommentReqDto(
     val content: String,
 )
 
+data class PostReportNestedCommentReqDto(
+    val commentId: Long,
+    val userId: Long,
+    val content: String
+)
+
 data class ReportCommentWithLikeList(
     val comments: List<ReportCommentWithLike>
 )

@@ -1,10 +1,7 @@
 package com.sungan.postApi.controller
 
 import com.sungan.postApi.application.support.SunganResponse
-import com.sungan.postApi.dto.PostReportCommentReqDto
-import com.sungan.postApi.dto.PostReportReqDto
-import com.sungan.postApi.dto.ReportCommentWithLikeList
-import com.sungan.postApi.dto.ReportVo
+import com.sungan.postApi.dto.*
 import com.sungan.postApi.service.ReportService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -54,5 +51,15 @@ class ReportController(
     ): SunganResponse<ReportCommentWithLikeList> {
         val res = ReportCommentWithLikeList(reportService.readReportCommentsWithLikes(userId, id))
         return SunganResponse(res)
+    }
+
+    @PostMapping("/comment/reply")
+    @ApiOperation(value = "신고글 댓글에 대댓글 달기")
+    fun postReportNestedComment(
+        @ApiIgnore userId: Long,
+        @RequestBody postReportNestedCommentReqDto: PostReportNestedCommentReqDto
+    ): SunganResponse<Any> {
+        reportService.createNestedComment(userId, postReportNestedCommentReqDto)
+        return SunganResponse(HttpStatus.OK, "신고글 대댓글 달기 성공")
     }
 }
