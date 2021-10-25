@@ -1,8 +1,8 @@
 package com.sungan.postApi.dto
 
-import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.ReportType
-import com.sungan.postApi.domain.VehicleType
+import io.swagger.annotations.ApiModelProperty
+import java.time.LocalDateTime
 
 class Report
 
@@ -22,4 +22,40 @@ data class PostReportReqDto(
     val vehicleIdNum: String,
     val shouldBeUploaded: Boolean,
     val detail: String?
+)
+
+data class ReportCommentVo(
+    val id: Long,
+    val userId: Long,
+    val reportId: Long,
+    val content: String,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
+)
+
+data class ReportNestedCommentVo(
+    val commentId: Long,
+    val userId: Long,
+    val content: String,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
+)
+
+data class PostReportCommentReqDto(
+    val reportId: Long,
+    val content: String,
+)
+
+data class ReportCommentWithLikeList(
+    val comments: List<ReportCommentWithLike>
+)
+
+data class ReportCommentWithLike(
+    val content: String,
+    val userId: Long,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
+    val likeCnt: Long,
+    @ApiModelProperty(value = "유저가 좋아요를 눌렀는지 안눌렀는지")
+    val didLike: Boolean,
 )

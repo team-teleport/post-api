@@ -21,7 +21,7 @@ class HotplaceController(
     @PostMapping("")
     @ApiOperation(value = "핫플 올리기 API")
     fun postPlace(
-        userId: Long,
+        @ApiIgnore userId: Long,
         @RequestBody postHotplaceReqDto: PostHotplaceReqDto
     ): SunganResponse<Any> {
         hotplaceService.createHotplace(userId, postHotplaceReqDto)
