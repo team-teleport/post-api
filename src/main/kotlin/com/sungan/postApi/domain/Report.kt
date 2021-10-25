@@ -11,14 +11,15 @@ import javax.persistence.*
 class Report(
     @Column(nullable = false)
     var reportType: ReportType,
-    @Column(nullable = false)
-    var vehicleType: VehicleType,
-    @Column(nullable = false)
-    var vehicleIdNum: String,
+    @ManyToOne
+    @JoinColumn(name = "line2_station_id")
+    var station: Line2Station,
     @Column(nullable = false)
     var userId: Long,
+    @Column(nullable = false)
+    var shouldBeUploaded: Boolean,
     @Column(nullable = true)
-    var detail: String? = null
+    var detail: String? = null,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +47,13 @@ class Report(
         private val toStringProperties = arrayOf(
             Report::id,
             Report::reportType,
-            Report::vehicleIdNum,
+            Report::station,
             Report::likeCnt,
-            Report::readCnt
+            Report::readCnt,
+            Report::shouldBeUploaded
         )
     }
-    fun toVo() = ReportVo(id, reportType, userId, detail, vehicleType, vehicleIdNum, readCnt, likeCnt)
+    fun convertToVo() = ReportVo(id, reportType, userId, detail, station.convertToVo(), readCnt, likeCnt)
 }
 
 enum class ReportType {

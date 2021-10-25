@@ -15,13 +15,14 @@ class Sungan(
     @Column(nullable = false)
     var title: String,
 
+    @Column(nullable = false)
     var text: String,
 
+    @Column(nullable = false)
     var userId: Long,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_name", nullable = false)
-    var vehicle: Vehicle,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id", nullable = false)
+    var station: Line2Station,
 
     var emoji: String?,
 ) {
@@ -56,7 +57,7 @@ class Sungan(
     val comments: MutableList<Comment> = ArrayList()
 
     @OneToMany(mappedBy = "sungan")
-    val viewdUsers: MutableList<UserViewdSungan> = ArrayList()
+    val viewdUsers: MutableList<UserViewedSungan> = ArrayList()
 
     @Column(name = "created_at")
     @CreatedDate
@@ -69,7 +70,7 @@ class Sungan(
     fun convertToVo(): SunganVo =
         SunganVo(
             this.id!!,
-            this.vehicle.convertToVo(),
+            this.station.convertToVo(),
             this.title,
             this.text,
             this.contents.asSequence().map { content -> content.convertToVo() }.toList(),
@@ -92,10 +93,11 @@ class Sungan(
         private val equalsAndHashCodeProperties = arrayOf(Sungan::id)
         private val toStringProperties = arrayOf(
             Sungan::id,
-            Sungan::vehicle,
+            Sungan::station,
             Sungan::title,
             Sungan::userId,
-            Sungan::createdAt
+            Sungan::createdAt,
+            Sungan::updatedAt
         )
     }
 }

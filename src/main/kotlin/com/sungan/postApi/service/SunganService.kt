@@ -4,19 +4,21 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.DetailHashTag
 import com.sungan.postApi.domain.Sungan
-import com.sungan.postApi.domain.UserViewdSungan
+import com.sungan.postApi.domain.UserViewedSungan
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class SunganService(
     val sunganRepository: SunganRepository,
     val mainHashTagRepository: MainHashTagRepository,
-    val vehicleRepository: VehicleRepository,
     val detailHashTagRepository: DetailHashTagRepository,
     val sunganLikeRepository: SunganLikeRepository,
-    val userViewdSunganRepository: UserViewdSunganRepository
+    val userViewedSunganRepository: UserViewedSunganRepository,
+    val line2StationRepository: Line2StationRepository
 ) {
     fun readSunganById(readSunganDto: ReadSunganDto): SunganDto {
         val (userId, id) = readSunganDto
@@ -31,14 +33,15 @@ class SunganService(
     }
 
     fun createSungan(userId: Long, createSunganRequestDto: CreateSunganRequestDto): SunganDto {
+        val station = line2StationRepository.findByName(createSunganRequestDto.stationName) ?: throw SunganException(
+            SunganError.BAD_REQUEST
+        )
         val sungan = sunganRepository.save(
             Sungan(
                 createSunganRequestDto.title,
                 createSunganRequestDto.text,
                 userId,
-                vehicleRepository.findById(createSunganRequestDto.vehicleName).orElseThrow {
-                    SunganException(SunganError.BAD_REQUEST_INVALID_ID)
-                },
+                station,
                 createSunganRequestDto.emoji
             )
         )
@@ -101,7 +104,7 @@ class SunganService(
 
         val sungans = sunganRepository.findSungansBeforeFirstSunganPaging(getMainRequestDto, firstSungan)
         return sungans.asSequence().map { sungan ->
-            userViewdSunganRepository.save(UserViewdSungan(sungan, userId))
+            userViewedSunganRepository.save(UserViewedSungan(sungan, userId))
             SunganWithLikeByUser(
                 sungan.convertToVo(),
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
@@ -121,7 +124,7 @@ class SunganService(
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
         val sungans = sunganRepository.findSungansAfterLastSunganPaging(getMainRequestDto, lastSungan)
         return sungans.asSequence().map { sungan ->
-            userViewdSunganRepository.save(UserViewdSungan(sungan, userId))
+            userViewedSunganRepository.save(UserViewedSungan(sungan, userId))
             SunganWithLikeByUser(
                 sungan.convertToVo(),
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
@@ -132,7 +135,7 @@ class SunganService(
     fun findTopTen(userId: Long, getMainRequestDto: GetMainRequestDto): List<SunganWithLikeByUser> {
         val sungans: MutableList<Sungan> = sunganRepository.findLimitSizeOrderByDesc(userId, getMainRequestDto)
         return sungans.asSequence().map { sungan ->
-            userViewdSunganRepository.save(UserViewdSungan(sungan, userId))
+            userViewedSunganRepository.save(UserViewedSungan(sungan, userId))
             SunganWithLikeByUser(
                 sungan.convertToVo(),
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null

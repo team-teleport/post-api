@@ -8,7 +8,6 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
-import javax.websocket.server.PathParam
 
 @RestController
 @Api(tags = ["Report 관련 API"])
@@ -29,8 +28,8 @@ class ReportController(
     @ApiOperation(value = "신고 자세히 보기")
     fun getReport(
         @ApiIgnore userId: Long,
-        @PathParam(value = "id") reportId: Long
+        @PathVariable(value = "id") reportId: Long
     ): SunganResponse<ReportVo> {
-        return SunganResponse(reportService.)
+        return SunganResponse(reportService.readReport(userId, reportId))
     }
 }

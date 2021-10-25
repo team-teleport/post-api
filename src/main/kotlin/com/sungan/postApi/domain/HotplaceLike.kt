@@ -1,0 +1,20 @@
+package com.sungan.postApi.domain
+
+import javax.persistence.*
+
+@Entity
+class HotplaceLike(
+    userId: Long,
+    hotplace: Hotplace
+){
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
+    @Column(nullable = false)
+    val userId: Long = userId
+
+    @ManyToOne
+    @JoinColumn(name = "hotplace_id")
+    var hotplace: Hotplace = hotplace
+}

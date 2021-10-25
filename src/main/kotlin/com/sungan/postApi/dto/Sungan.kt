@@ -15,9 +15,9 @@ data class SunganDto(
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class SunganVo @QueryProjection constructor(
+data class SunganVo(
     val id: Long,
-    val vehicle: VehicleVo,
+    val station: Line2StationVo,
     val title: String,
     val text: String,
     val contents: List<SunganContentVo>,
@@ -46,8 +46,10 @@ data class CreateSunganRequestDto(
     val title: String,
     @ApiModelProperty(required = true, example = "내용입니다.")
     val text: String,
-    @ApiModelProperty(required = true, example = "9호선")
-    val vehicleName: String,
+//    @ApiModelProperty(required = true, example = "9호선")
+//    val vehicleName: String,
+    @ApiModelProperty(required = true, example = "성수")
+    val stationName: String,
     @ApiModelProperty(example = "😃")
     val emoji: String?,
     @ApiModelProperty(example = "1")
