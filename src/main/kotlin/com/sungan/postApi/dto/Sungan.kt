@@ -1,10 +1,8 @@
 package com.sungan.postApi.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.querydsl.core.annotations.QueryProjection
-import com.sungan.postApi.domain.MainHashTag
+import com.sungan.postApi.domain.SunganChannel
 import com.sungan.postApi.domain.SunganContent
-import com.sungan.postApi.domain.Vehicle
 import io.swagger.annotations.ApiModelProperty
 
 class Sungan
@@ -22,8 +20,6 @@ data class SunganVo(
     val text: String,
     val contents: List<SunganContentVo>,
     val emoji: String?,
-    val mainHashTag: MainHashTag?,
-    val detailHashTag: List<DetailHashTagVo>,
     val userId: Long,
     val comments: List<CommentVo>,
     val readCnt: Long,
@@ -42,20 +38,16 @@ data class SunganContentVo(
 )
 
 data class CreateSunganRequestDto(
-    @ApiModelProperty(required = true, example = "제목입니다.")
-    val title: String,
     @ApiModelProperty(required = true, example = "내용입니다.")
     val text: String,
+    @ApiModelProperty(required = true, example = "1")
+    val channelId: Long,
 //    @ApiModelProperty(required = true, example = "9호선")
 //    val vehicleName: String,
     @ApiModelProperty(required = true, example = "성수")
     val stationName: String,
     @ApiModelProperty(example = "😃")
-    val emoji: String?,
-    @ApiModelProperty(example = "1")
-    val mainHashTagId: Long?,
-    @ApiModelProperty(dataType = "[Ljava.lang.String;")
-    val detailHashTag: List<String>?
+    val emoji: String?
 )
 
 data class ReadSunganDto(
@@ -66,14 +58,8 @@ data class ReadSunganDto(
 data class PatchSunganRequestDto(
     @ApiModelProperty(required = true, example = "1")
     val sunganId: Long,
-    @ApiModelProperty(example = "수정된 제목입니다.")
-    val title: String?,
     @ApiModelProperty(example = "수정된 내용입니다.")
     val text: String?,
     @ApiModelProperty(example = "🥶")
-    val emoji: String?,
-    @ApiModelProperty(example = "1")
-    val mainHashTagId: Long?,
-    @ApiModelProperty(dataType = "[Ljava.lang.String;")
-    val detailHashTag: List<String>?
+    val emoji: String?
 )

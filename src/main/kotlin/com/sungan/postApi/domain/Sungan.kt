@@ -13,31 +13,17 @@ import javax.persistence.*
 @Entity
 class Sungan(
     @Column(nullable = false)
-    var title: String,
-
-    @Column(nullable = false)
     var text: String,
-
     @Column(nullable = false)
     var userId: Long,
-
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id", nullable = false)
     var station: Line2Station,
     @Column
     var emoji: String?,
-) {
     @ManyToOne
     @JoinColumn(name = "sungan_channel_id")
     var sunganChannel: SunganChannel
 ) {
-    @ManyToMany
-    @JoinTable(
-        name = "sungan_detail_hashtags",
-        joinColumns = [JoinColumn(name = "sungan_id")],
-        inverseJoinColumns = [JoinColumn(name = "detailHashTag_id")]
-    )
-    var detailHashTags: MutableList<DetailHashTag> = ArrayList()
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
@@ -57,7 +43,7 @@ class Sungan(
     val comments: MutableList<Comment> = ArrayList()
 
     @OneToMany(mappedBy = "sungan")
-    val viewdUsers: MutableList<UserViewedSungan> = ArrayList()
+    val viewedUsers: MutableList<UserViewedSungan> = ArrayList()
 
     @Column(name = "created_at")
     @CreatedDate
@@ -69,18 +55,16 @@ class Sungan(
 
     fun convertToVo(): SunganVo =
         SunganVo(
-            this.id!!,
-            this.station.convertToVo(),
-            this.title,
-            this.text,
-            this.contents.asSequence().map { content -> content.convertToVo() }.toList(),
-            this.emoji,
-            this.mainHashTag,
-            this.detailHashTags.map { dht -> dht.convertToVo() },
+            id!!,
+            station.convertToVo(),
+            sunganChannel,
+            text,
+            contents.asSequence().map { content -> content.convertToVo() }.toList(),
+            emoji,
             userId,
-            this.comments.asSequence().map { comment -> comment.convertToVo() }.toList(),
-            this.readCnt,
-            this.likeCnt,
+            comments.asSequence().map { comment -> comment.convertToVo() }.toList(),
+            readCnt,
+            likeCnt,
         )
 
     override fun toString() = kotlinToString(properties = toStringProperties)
@@ -94,7 +78,6 @@ class Sungan(
         private val toStringProperties = arrayOf(
             Sungan::id,
             Sungan::station,
-            Sungan::title,
             Sungan::userId,
             Sungan::createdAt,
             Sungan::updatedAt

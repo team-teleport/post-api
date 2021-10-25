@@ -24,7 +24,7 @@ class SunganLike(
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 
-    override fun toString() = kotlinToString(properties = SunganLike.toStringProperties)
+    override fun toString() = kotlinToString(properties = toStringProperties)
 
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
 
