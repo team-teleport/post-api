@@ -1,9 +1,7 @@
 package com.sungan.postApi.controller
 
 import com.sungan.postApi.application.support.SunganResponse
-import com.sungan.postApi.dto.HotplaceCommentVo
-import com.sungan.postApi.dto.HotplaceVo
-import com.sungan.postApi.dto.PostHotplaceReqDto
+import com.sungan.postApi.dto.*
 import com.sungan.postApi.service.HotplaceCommentService
 import com.sungan.postApi.service.HotplaceService
 import io.swagger.annotations.Api
@@ -46,6 +44,25 @@ class HotplaceController(
         @ApiIgnore userId: Long,
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
     ): SunganResponse<List<HotplaceCommentVo>> =
-        SunganResponse(hotplaceCommentService.readHotplaceCommentList(userId, id))
+        SunganResponse(hotplaceCommentService.readHotplaceCommentList(userId, id)) // 대댓글까지 전부 보여줌
+
+    @PostMapping("/comment")
+    @ApiOperation(value = "핫플에 댓글 달기")
+    fun postPlaceComment(
+        @ApiIgnore userId: Long,
+        @RequestBody postHotplaceCommentReqDto: PostHotplaceCommentReqDto
+    ): SunganResponse<Any> {
+        hotplaceCommentService.createHotplaceComment(userId, postHotplaceCommentReqDto)
+        return SunganResponse(HttpStatus.OK, "핫플 댓글 달기 성공")
+    }
+
+    @PostMapping("/comment/reply")
+    @ApiOperation(value = "핫플 댓글에 대댓글 달기")
+    fun postPlaceNestedComment(
+        @ApiIgnore userId: Long,
+        @RequestBody postHotplaceNestedCommentReqDto: PostHotplaceNestedCommentReqDto
+    ): SunganResponse<Any> {
+        hotplaceCommentService.createHotplaceNestedComment(userId, postHotplaceNestedCommentReqDto)
+        return SunganResponse(HttpStatus.OK, "핫플 대댓글 달기 성공")
     }
 }

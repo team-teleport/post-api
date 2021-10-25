@@ -32,7 +32,7 @@ class Hotplace(
 
     override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 
-    fun convertToVo() = HotplaceVo(id!!, title, text, userId, station.convertToVo(), place)
+    fun convertToVo() = HotplaceVo(id!!, title, text, userId, station.convertToVo(), place, createdAt, updatedAt)
 
     companion object {
         private val equalsAndHashCodeProperties = arrayOf(Hotplace::id)

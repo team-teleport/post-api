@@ -41,5 +41,8 @@ class HotplaceComment(
         content,
         userId,
         hotplace.id!!,
-        nestedComments.map { nestedComment -> nestedComment.convertToVo() })
+        nestedComments.map { nestedComment -> nestedComment.convertToVo() },
+        createdAt,
+        updatedAt
+    )
 }

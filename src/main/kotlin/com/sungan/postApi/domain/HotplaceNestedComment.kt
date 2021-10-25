@@ -1,6 +1,9 @@
 package com.sungan.postApi.domain
 
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -16,5 +19,11 @@ class HotplaceNestedComment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun convertToVo() = HotplaceNestedCommentVo(id!!, hotplaceComment.id!!, content, userId)
+    @CreatedDate
+    lateinit var createdAt: LocalDateTime
+
+    @LastModifiedDate
+    lateinit var  updatedAt: LocalDateTime
+
+    fun convertToVo() = HotplaceNestedCommentVo(id!!, hotplaceComment.id!!, content, userId, createdAt, updatedAt)
 }

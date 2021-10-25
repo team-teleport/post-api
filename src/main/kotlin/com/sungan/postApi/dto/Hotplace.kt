@@ -1,5 +1,7 @@
 package com.sungan.postApi.dto
 
+import java.time.LocalDateTime
+
 class Hotplace
 
 data class HotplaceVo(
@@ -8,7 +10,9 @@ data class HotplaceVo(
     val text: String,
     val userId: Long,
     val station: Line2StationVo,
-    val place: String
+    val place: String,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )
 
 data class PostHotplaceReqDto(
@@ -30,11 +34,18 @@ data class HotplaceCommentVo(
     val content: String,
     val userId: Long,
     val hotplaceId: Long,
-    val nestedComments: List<HotplaceNestedCommentVo>
+    val nestedComments: List<HotplaceNestedCommentVo>,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )
 
 data class PostHotplaceCommentReqDto(
     val hotplaceId: Long,
+    val content: String
+)
+
+data class PostHotplaceNestedCommentReqDto(
+    val commentId: Long,
     val content: String
 )
 
@@ -48,4 +59,6 @@ data class HotplaceNestedCommentVo(
     val hotplaceCommentId: Long,
     val content: String,
     val userId: Long,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )
