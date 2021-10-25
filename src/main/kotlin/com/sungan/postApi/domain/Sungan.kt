@@ -23,13 +23,13 @@ class Sungan(
 
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id", nullable = false)
     var station: Line2Station,
-
+    @Column
     var emoji: String?,
 ) {
     @ManyToOne
-    @JoinColumn(name = "main_hashtag_id")
-    var mainHashTag: MainHashTag? = null
-
+    @JoinColumn(name = "sungan_channel_id")
+    var sunganChannel: SunganChannel
+) {
     @ManyToMany
     @JoinTable(
         name = "sungan_detail_hashtags",

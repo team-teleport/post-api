@@ -18,7 +18,7 @@ data class SunganDto(
 data class SunganVo(
     val id: Long,
     val station: Line2StationVo,
-    val title: String,
+    val channel: SunganChannel,
     val text: String,
     val contents: List<SunganContentVo>,
     val emoji: String?,
