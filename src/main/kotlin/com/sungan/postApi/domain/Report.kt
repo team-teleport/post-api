@@ -20,7 +20,7 @@ class Report(
     var shouldBeUploaded: Boolean,
     @Column(nullable = true)
     var detail: String? = null,
-) {
+): PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
@@ -36,11 +36,11 @@ class Report(
     @OneToMany(mappedBy = "report")
     var likes: MutableList<ReportLike> = ArrayList()
 
-    override fun toString() = kotlinToString(properties = Report.toStringProperties)
+    override fun toString() = kotlinToString(properties = toStringProperties)
 
-    override fun equals(other: Any?) = kotlinEquals(other = other, properties = Report.equalsAndHashCodeProperties)
+    override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
 
-    override fun hashCode() = kotlinHashCode(properties = Report.equalsAndHashCodeProperties)
+    override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 
     companion object {
         private val equalsAndHashCodeProperties = arrayOf(Report::id)
@@ -53,7 +53,7 @@ class Report(
             Report::shouldBeUploaded
         )
     }
-    fun convertToVo() = ReportVo(id, reportType, userId, detail, station.convertToVo(), readCnt, likeCnt)
+    fun convertToVo() = ReportVo(id, reportType, userId, detail, station.convertToVo(), readCnt, likeCnt, createdAt, updatedAt)
 }
 
 enum class ReportType {

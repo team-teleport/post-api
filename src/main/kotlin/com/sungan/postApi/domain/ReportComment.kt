@@ -24,11 +24,14 @@ class ReportComment(
     @JoinColumn(name = "report_id")
     val report: Report = report
 
+    @OneToMany(mappedBy = "reportComment")
+    var nestedComments: MutableList<ReportNestedComment> = ArrayList()
+
     @CreatedDate
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    lateinit var updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = ReportCommentVo(
         id!!,

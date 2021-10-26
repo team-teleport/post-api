@@ -62,7 +62,16 @@ class ReportService(
                 comment.createdAt,
                 comment.updatedAt,
                 likeCnt,
-                reportCommentLikeRepository.findByReportCommentAndUserId(comment, userId) != null
+                reportCommentLikeRepository.findByReportCommentAndUserId(comment, userId) != null,
+                comment.nestedComments.map { nestedComment ->
+                    ReportNestedCommentVo(
+                        nestedComment.id,
+                        nestedComment.userId,
+                        nestedComment.content,
+                        nestedComment.createdAt,
+                        nestedComment.updatedAt
+                    )
+                }
             )
         }.toList()
     }
@@ -70,11 +79,13 @@ class ReportService(
     fun createNestedComment(userId: Long, postReportNestedCommentReqDto: PostReportNestedCommentReqDto) {
         val comment = reportCommentRepository.findById(postReportNestedCommentReqDto.commentId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        if(!comment.report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST) // 업로드 되지 않은 신고글일경우
-        reportNestedCommentRepository.save(ReportNestedComment(
-            comment,
-            postReportNestedCommentReqDto.content,
-            userId
-        ))
+        if (!comment.report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST) // 업로드 되지 않은 신고글일경우
+        reportNestedCommentRepository.save(
+            ReportNestedComment(
+                comment,
+                postReportNestedCommentReqDto.content,
+                userId
+            )
+        )
     }
 }

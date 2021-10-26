@@ -15,6 +15,7 @@ class HotplaceComment(
     val hotplace: Hotplace
 ) {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
     @Column(nullable = false)
@@ -31,10 +32,10 @@ class HotplaceComment(
     var nestedComments: MutableList<HotplaceNestedComment> = ArrayList()
 
     @CreatedDate
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    lateinit var updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = HotplaceCommentVo(
         id!!,

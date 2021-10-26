@@ -11,9 +11,9 @@ data class HotplaceVo(
     val userId: Long,
     val station: Line2StationVo,
     val place: String,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
-)
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime
+): PostBaseVo()
 
 data class PostHotplaceReqDto(
     val title: String,

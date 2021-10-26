@@ -16,15 +16,10 @@ class Hotplace(
     @Column var userId: Long,
     @ManyToOne @JoinColumn(name = "line2_station_id") var station: Line2Station,
     @Column var place: String
-) {
+): PostBaseEntity() {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-
-    @CreatedDate
-    val createdAt: LocalDateTime = LocalDateTime.now()
-
-    @LastModifiedDate
-    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 

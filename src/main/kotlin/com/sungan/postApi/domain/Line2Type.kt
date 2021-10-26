@@ -4,14 +4,12 @@ import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sungan.postApi.dto.Line2TypeVo
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 @Entity
 class Line2Type {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
     @Column
