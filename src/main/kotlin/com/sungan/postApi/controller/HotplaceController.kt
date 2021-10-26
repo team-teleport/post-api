@@ -56,6 +56,26 @@ class HotplaceController(
         return SunganResponse(HttpStatus.OK, "핫플 댓글 달기 성공")
     }
 
+    @PostMapping("/{id}/like")
+    @ApiOperation(value = "핫플 좋아요 누르기")
+    fun postPlaceLike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") hotplaceId: Long
+    ): SunganResponse<Any> {
+        hotplaceService.createHotplaceLike(userId, hotplaceId)
+        return SunganResponse(HttpStatus.OK, "핫플 좋아요 추가 성공")
+    }
+
+    @DeleteMapping("/{id}/like")
+    @ApiOperation(value = "핫플 좋아요 취소")
+    fun deletePlacelike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") hotplaceId: Long
+    ): SunganResponse<Any> {
+        hotplaceService.destroyHotplaceLike(userId, hotplaceId)
+        return SunganResponse(HttpStatus.OK, "핫플 좋아요 취소 성공")
+    }
+
     @PostMapping("/comment/reply")
     @ApiOperation(value = "핫플 댓글에 대댓글 달기")
     fun postPlaceNestedComment(
