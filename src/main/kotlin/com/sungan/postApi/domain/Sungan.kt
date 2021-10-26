@@ -57,6 +57,8 @@ class Sungan(
             comments.asSequence().map { comment -> comment.convertToVo() }.toList(),
             readCnt,
             likeCnt,
+            createdAt,
+            updatedAt
         )
 
     override fun toString() = kotlinToString(properties = toStringProperties)

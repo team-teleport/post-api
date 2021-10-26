@@ -9,7 +9,7 @@ import javax.persistence.*
 @Entity
 class ReportNestedComment(
     @ManyToOne
-    @JoinColumn(name = "reposrt_comment_id")
+    @JoinColumn(name = "report_comment_id")
     var reportComment: ReportComment,
     @Column(nullable = false)
     var content: String,
@@ -21,10 +21,10 @@ class ReportNestedComment(
     val id: Long = 0
 
     @CreatedDate
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    lateinit var updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = ReportNestedCommentVo(
         reportComment.id!!,

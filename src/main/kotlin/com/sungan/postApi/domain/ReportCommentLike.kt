@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 class ReportCommentLike(
-    reportcomment: ReportComment,
+    reportComment: ReportComment,
     userId: Long
 ) {
     @Id
@@ -19,7 +19,7 @@ class ReportCommentLike(
 
     @ManyToOne
     @JoinColumn(name = "report_comment_id")
-    val reportComment: ReportComment = reportcomment
+    val reportComment: ReportComment = reportComment
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 

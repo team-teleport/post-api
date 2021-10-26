@@ -6,10 +6,10 @@ import java.time.LocalDateTime
 import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
-open class PostBaseEntity {
+class PostBaseEntity {
     @CreatedDate
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    lateinit var updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 }

@@ -21,10 +21,10 @@ class NestedComment(
     var id: Long = 0
 
     @CreatedDate
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    lateinit var updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = NestedCommentVo(
         id,

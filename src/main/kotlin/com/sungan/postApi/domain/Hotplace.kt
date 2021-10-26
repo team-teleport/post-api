@@ -18,6 +18,7 @@ class Hotplace(
     @Column var place: String
 ): PostBaseEntity() {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
     override fun toString() = kotlinToString(properties = toStringProperties)
