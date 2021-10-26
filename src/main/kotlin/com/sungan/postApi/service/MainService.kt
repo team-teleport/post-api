@@ -11,6 +11,12 @@ class MainService(
     val sunganRepository: SunganRepository,
     val reportRepository: ReportRepository,
     val hotplaceRepository: HotplaceRepository,
+    val sunganLikeRepository: SunganLikeRepository,
+    val reportLikeRepository: ReportLikeRepository,
+    val hotplaceLikeRepository: HotplaceLikeRepository,
+    val commentRepository: CommentRepository,
+    val reportCommentRepository: ReportCommentRepository,
+    val hotplaceCommentRepository: HotplaceCommentRepository
 ) {
     fun getMySunganList(userId: Long): MutableList<PostBaseVo> {
         val list: MutableList<PostBaseVo> = ArrayList()
@@ -20,4 +26,17 @@ class MainService(
         list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
         return list
     }
-}
+    fun getSunganWithLikeByUserAndBestComment(
+        userId: Long,
+        now: LocalDateTime
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val sungans = sunganRepository.findByCreatedAtBetween(now.minusDays(1), now)
+        return sungans.map { sungan ->
+            PostBaseWithLikeByUserAndBestComment(
+                sungan.convertToVo(),
+                PostType.SUNGAN,
+                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+            )
+        }
+    }

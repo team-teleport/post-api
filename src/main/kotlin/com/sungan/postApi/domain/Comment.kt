@@ -30,6 +30,7 @@ class Comment(
     var likes: MutableList<CommentLike> = ArrayList()
 
     @OneToMany(mappedBy = "comment")
+    @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<NestedComment> = ArrayList()
 
     @Column(name = "created_at")
