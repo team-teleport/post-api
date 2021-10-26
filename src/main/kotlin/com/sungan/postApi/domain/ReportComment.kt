@@ -25,6 +25,10 @@ class ReportComment(
     val report: Report = report
 
     @OneToMany(mappedBy = "reportComment")
+    var likes: MutableList<ReportCommentLike> = ArrayList()
+
+    @OneToMany(mappedBy = "reportComment")
+    @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<ReportNestedComment> = ArrayList()
 
     @CreatedDate

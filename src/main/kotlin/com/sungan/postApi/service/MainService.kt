@@ -1,10 +1,11 @@
 package com.sungan.postApi.service
 
 import com.sungan.postApi.dto.PostBaseVo
-import com.sungan.postApi.repository.HotplaceRepository
-import com.sungan.postApi.repository.ReportRepository
-import com.sungan.postApi.repository.SunganRepository
+import com.sungan.postApi.dto.PostBaseWithLikeByUserAndBestComment
+import com.sungan.postApi.dto.PostType
+import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class MainService(
@@ -37,6 +38,21 @@ class MainService(
                 PostType.SUNGAN,
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
                 commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+            )
+        }
+    }
+
+    fun getReportWithLikeByUserAndBestComment(
+        userId: Long,
+        now: LocalDateTime
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val reports = reportRepository.findByCreatedAtBetween(now.minusDays(1), now)
+        return reports.map { report ->
+            PostBaseWithLikeByUserAndBestComment(
+                report.convertToVo(),
+                PostType.REPORT,
+                reportLikeRepository.findByReportAndUserId(report, userId) != null,
+                reportCommentRepository.findByReportOrderByLikes(report)?.convertToVo()
             )
         }
     }

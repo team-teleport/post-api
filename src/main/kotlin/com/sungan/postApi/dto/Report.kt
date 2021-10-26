@@ -33,7 +33,7 @@ data class ReportCommentVo(
     val content: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
-)
+): CommentBaseVo
 
 data class ReportNestedCommentVo(
     val commentId: Long,
