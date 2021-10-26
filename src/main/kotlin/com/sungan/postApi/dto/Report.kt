@@ -13,8 +13,10 @@ data class ReportVo(
     var detail: String?,
     var line2Station: Line2StationVo,
     var readCnt: Long,
-    var likeCnt: Long
-)
+    var likeCnt: Long,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime
+): PostBaseVo()
 
 data class PostReportReqDto(
     val reportType: ReportType,
@@ -64,4 +66,5 @@ data class ReportCommentWithLike(
     val likeCnt: Long,
     @ApiModelProperty(value = "유저가 좋아요를 눌렀는지 안눌렀는지")
     val didLike: Boolean,
+    val nestedComments: List<ReportNestedCommentVo>
 )

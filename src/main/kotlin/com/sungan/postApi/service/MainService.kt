@@ -1,6 +1,6 @@
 package com.sungan.postApi.service
 
-import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.dto.PostBaseVo
 import com.sungan.postApi.repository.HotplaceRepository
 import com.sungan.postApi.repository.ReportRepository
 import com.sungan.postApi.repository.SunganRepository
@@ -12,12 +12,12 @@ class MainService(
     val reportRepository: ReportRepository,
     val hotplaceRepository: HotplaceRepository,
 ) {
-    fun getMySunganList(userId: Long): MutableList<PostBaseEntity> {
-        val list: MutableList<PostBaseEntity> = ArrayList()
-        list.addAll(sunganRepository.findByUserId(userId))
-        list.addAll(reportRepository.findByUserId(userId))
-        list.addAll(hotplaceRepository.findByUserId(userId))
-        list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) -1 else 1 }
+    fun getMySunganList(userId: Long): MutableList<PostBaseVo> {
+        val list: MutableList<PostBaseVo> = ArrayList()
+        list.addAll(sunganRepository.findByUserId(userId).asSequence().map { user -> user.convertToVo() })
+        list.addAll(reportRepository.findByUserId(userId).asSequence().map { report -> report.convertToVo() })
+        list.addAll(hotplaceRepository.findByUserId(userId).asSequence().map { hotplace -> hotplace.convertToVo() })
+        list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
         return list
     }
 }

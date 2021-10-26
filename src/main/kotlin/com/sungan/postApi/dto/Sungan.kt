@@ -5,6 +5,7 @@ import com.sungan.postApi.domain.ReportType
 import com.sungan.postApi.domain.SunganChannel
 import com.sungan.postApi.domain.SunganContent
 import io.swagger.annotations.ApiModelProperty
+import java.time.LocalDateTime
 
 class Sungan
 
@@ -25,7 +26,9 @@ data class SunganVo(
     val comments: List<CommentVo>,
     val readCnt: Long,
     val likeCnt: Long,
-)
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime
+): PostBaseVo()
 
 
 data class VehicleVo(
