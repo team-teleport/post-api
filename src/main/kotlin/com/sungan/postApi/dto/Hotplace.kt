@@ -37,7 +37,7 @@ data class HotplaceCommentVo(
     val nestedComments: List<HotplaceNestedCommentVo>,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
-)
+): CommentBaseVo
 
 data class PostHotplaceCommentReqDto(
     val hotplaceId: Long,

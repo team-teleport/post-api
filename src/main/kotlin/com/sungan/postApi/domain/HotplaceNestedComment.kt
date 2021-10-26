@@ -20,10 +20,10 @@ class HotplaceNestedComment(
     val id: Long? = null
 
     @CreatedDate
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    lateinit var  updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = HotplaceNestedCommentVo(id!!, hotplaceComment.id!!, content, userId, createdAt, updatedAt)
 }

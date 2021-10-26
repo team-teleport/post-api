@@ -26,3 +26,16 @@ data class SunganWithLikeByUser(
     val sungan: SunganVo,
     val isLiked: Boolean
 )
+
+data class PostBaseWithLikeByUserAndBestComment(
+    val post: PostBaseVo,
+    val type: PostType,
+    val didLike: Boolean,
+    val bestComment: CommentBaseVo?
+)
+
+enum class PostType {
+    SUNGAN,
+    REPORT,
+    PLACE
+}

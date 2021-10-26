@@ -56,3 +56,19 @@ class MainService(
             )
         }
     }
+
+    fun getHotplaceWithLikeByUserAndBestComment(
+        userId: Long,
+        now: LocalDateTime
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val hotplaces = hotplaceRepository.findByCreatedAtBetween(now.minusDays(1), now)
+        return hotplaces.map { hotplace ->
+            PostBaseWithLikeByUserAndBestComment(
+                hotplace.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+            )
+        }
+    }
+}
