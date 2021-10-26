@@ -23,7 +23,7 @@ class Sungan(
     @ManyToOne
     @JoinColumn(name = "sungan_channel_id")
     var sunganChannel: SunganChannel
-) {
+): PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
@@ -44,14 +44,6 @@ class Sungan(
 
     @OneToMany(mappedBy = "sungan")
     val viewedUsers: MutableList<UserViewedSungan> = ArrayList()
-
-    @Column(name = "created_at")
-    @CreatedDate
-    val createdAt: LocalDateTime = LocalDateTime.now()
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo(): SunganVo =
         SunganVo(

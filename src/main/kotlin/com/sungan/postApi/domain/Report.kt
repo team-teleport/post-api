@@ -20,7 +20,7 @@ class Report(
     var shouldBeUploaded: Boolean,
     @Column(nullable = true)
     var detail: String? = null,
-) {
+): PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
