@@ -13,7 +13,9 @@ data class CommentVo(
     val updatedAt: LocalDateTime,
     val likeCnt: Long, // like 한 사람은 따로 보여줘야함 TODO: 다른 페이지 있냐고 물어보기
     val nestedComments: List<NestedCommentVo>
-)
+): CommentBaseVo
+
+interface CommentBaseVo
 
 data class PostCommentRequestDto(
     @ApiModelProperty(required = true, example = "댓글 내용입니다.")

@@ -27,6 +27,17 @@ class MainService(
         list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
         return list
     }
+
+    fun getMainList(userId: Long): MutableList<PostBaseWithLikeByUserAndBestComment> {
+        val list: MutableList<PostBaseWithLikeByUserAndBestComment> = ArrayList()
+        val now = LocalDateTime.now()
+        list.addAll(getSunganWithLikeByUserAndBestComment(userId, now))
+        list.addAll(getReportWithLikeByUserAndBestComment(userId, now))
+        list.addAll(getHotplaceWithLikeByUserAndBestComment(userId, now))
+        list.sortWith { a, b -> if (a.post.createdAt.isBefore(b.post.createdAt)) 1 else -1 }
+        return list
+    }
+
     fun getSunganWithLikeByUserAndBestComment(
         userId: Long,
         now: LocalDateTime

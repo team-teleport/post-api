@@ -2,22 +2,24 @@ package com.sungan.postApi.controller
 
 import com.sungan.postApi.application.support.SunganResponse
 import com.sungan.postApi.dto.GetMainRequestDto
+import com.sungan.postApi.dto.PostBaseWithLikeByUserAndBestComment
 import com.sungan.postApi.dto.SunganWithLikeByUser
+import com.sungan.postApi.service.MainService
 import com.sungan.postApi.service.SunganService
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 
 @RestController
 @Api(tags = ["메인 피드 관련 API"])
-@RequestMapping("main")
+@RequestMapping("/main")
 class MainController(
-    val sunganService: SunganService
+    val sunganService: SunganService,
+    val mainService: MainService
 ) {
 
-    @ApiOperation(value = "이전에 봤던 순간들을 다시 받아요")
+    @ApiIgnore
     @PostMapping("/before")
     fun getSungansBefore(
         @ApiIgnore userId: Long,
@@ -28,7 +30,7 @@ class MainController(
     ): SunganResponse<List<SunganWithLikeByUser>> =
         SunganResponse(sunganService.readMainSungansBeforeId(firstSunganId = id, userId, getMainRequestDto))
 
-    @ApiOperation(value = "새로운 순간들을 받아요")
+    @ApiIgnore
     @PostMapping("/after")
     fun getSungansAfter(
         @ApiIgnore userId: Long,
@@ -39,4 +41,11 @@ class MainController(
         @RequestBody getMainRequestDto: GetMainRequestDto
     ): SunganResponse<List<SunganWithLikeByUser>> =
         SunganResponse(sunganService.readMainSungansAfterId(lastSunganId = id, userId, getMainRequestDto))
+
+    @GetMapping("")
+    fun getSunganMain(
+        @ApiIgnore userId: Long
+    ): SunganResponse<List<PostBaseWithLikeByUserAndBestComment>> {
+        return SunganResponse(mainService.getMainList(userId))
+    }
 }
