@@ -62,4 +62,24 @@ class ReportController(
         reportService.createNestedComment(userId, postReportNestedCommentReqDto)
         return SunganResponse(HttpStatus.OK, "신고글 대댓글 달기 성공")
     }
+
+    @PostMapping("/comment/{id}/like")
+    @ApiOperation(value = "댓글에 좋아요 누르기")
+    fun postReportCommentLike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") commentId: Long
+    ): SunganResponse<Any> {
+        reportService.createReportCommentLike(userId, commentId)
+        return SunganResponse(HttpStatus.OK, "댓글 좋아요 성공")
+    }
+
+    @DeleteMapping("/comment/like/{id}")
+    @ApiOperation(value = "댓글 좋아요 취소하기")
+    fun deleteReportCommentLike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") likeId: Long
+    ): SunganResponse<Any> {
+        reportService.destroyReportCommentLike(userId, likeId)
+        return SunganResponse(HttpStatus.OK, "좋아요 취소 성공")
+    }
 }

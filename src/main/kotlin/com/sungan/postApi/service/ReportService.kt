@@ -4,6 +4,7 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.Report
 import com.sungan.postApi.domain.ReportComment
+import com.sungan.postApi.domain.ReportCommentLike
 import com.sungan.postApi.domain.ReportNestedComment
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
@@ -86,6 +87,19 @@ class ReportService(
                 postReportNestedCommentReqDto.content,
                 userId
             )
+        )
+    }
+
+    fun createReportCommentLike(userId: Long, commentId: Long) {
+        reportCommentLikeRepository.save(ReportCommentLike(
+            reportCommentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) },
+            userId
+        ))
+    }
+
+    fun destroyReportCommentLike(userId: Long, likeId: Long) {
+        reportCommentLikeRepository.delete(
+            reportCommentLikeRepository.findById(likeId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         )
     }
 }
