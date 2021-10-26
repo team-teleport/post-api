@@ -2,10 +2,8 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
+import com.sungan.postApi.domain.*
 import com.sungan.postApi.domain.Report
-import com.sungan.postApi.domain.ReportComment
-import com.sungan.postApi.domain.ReportCommentLike
-import com.sungan.postApi.domain.ReportNestedComment
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
@@ -16,7 +14,8 @@ class ReportService(
     val stationRepository: Line2StationRepository,
     val reportCommentRepository: ReportCommentRepository,
     val reportCommentLikeRepository: ReportCommentLikeRepository,
-    val reportNestedCommentRepository: ReportNestedCommentRepository
+    val reportNestedCommentRepository: ReportNestedCommentRepository,
+    val reportLikeRepository: ReportLikeRepository
 ) {
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {
         val station =
@@ -91,15 +90,40 @@ class ReportService(
     }
 
     fun createReportCommentLike(userId: Long, commentId: Long) {
-        reportCommentLikeRepository.save(ReportCommentLike(
-            reportCommentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) },
-            userId
-        ))
+        val reportComment =
+            reportCommentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        reportCommentLikeRepository.findByReportCommentAndUserId(reportComment, userId)?.let {
+            throw SunganException(SunganError.DUPLICATE, "이미 좋아요한 댓글입니다.")
+        }
+        reportCommentLikeRepository.save(
+            ReportCommentLike(
+                reportComment,
+                userId
+            )
+        )
     }
 
     fun destroyReportCommentLike(userId: Long, likeId: Long) {
         reportCommentLikeRepository.delete(
             reportCommentLikeRepository.findById(likeId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         )
+    }
+
+    fun createReportLike(userId: Long, reportId: Long) {
+        val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        reportLikeRepository.findByReportAndUserId(report, userId)
+            ?.let { throw SunganException(SunganError.DUPLICATE, "이미 좋아요한 게시물입니다.") }
+        reportLikeRepository.save(
+            ReportLike(
+                report, userId
+            )
+        )
+    }
+
+    fun destroyReportLike(userId: Long, reportId: Long) {
+        val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        val reportLike =
+            reportLikeRepository.findByReportAndUserId(report, userId) ?: throw SunganException(SunganError.BAD_REQUEST)
+        reportLikeRepository.delete(reportLike)
     }
 }

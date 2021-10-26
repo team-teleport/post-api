@@ -53,6 +53,26 @@ class ReportController(
         return SunganResponse(res)
     }
 
+    @PostMapping("/{id}/like")
+    @ApiOperation(value = "민원 좋아요하기")
+    fun postReportLike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") reportId: Long
+    ): SunganResponse<Any> {
+        reportService.createReportLike(userId, reportId)
+        return SunganResponse(HttpStatus.OK, "민원 좋아요 성공")
+    }
+
+    @DeleteMapping("/{id}/like")
+    @ApiOperation(value = "민원 좋아요 취소하기")
+    fun deleteReportLike(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") reportId: Long
+    ): SunganResponse<Any> {
+        reportService.destroyReportLike(userId, reportId)
+        return SunganResponse(HttpStatus.OK, "민원 좋아요 취소 성공")
+    }
+
     @PostMapping("/comment/reply")
     @ApiOperation(value = "신고글 댓글에 대댓글 달기")
     fun postReportNestedComment(
