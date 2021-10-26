@@ -1,15 +1,12 @@
 package com.sungan.postApi.domain
 
 import au.com.console.kassava.kotlinToString
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 class SunganChannel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 
     @Column(nullable = false)
