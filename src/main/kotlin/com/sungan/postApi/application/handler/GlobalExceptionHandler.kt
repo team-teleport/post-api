@@ -34,6 +34,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException::class)
     fun unknownException(e: Exception): ResponseEntity<SunganResponse<Unit>> {
         logger.error { "UnknownException: ${e.stackTrace[0]}" }
+        e.printStackTrace()
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(SunganResponse(HttpStatus.INTERNAL_SERVER_ERROR, SunganError.UNKNOWN_ERROR.desc))
