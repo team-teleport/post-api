@@ -1,7 +1,9 @@
 package com.sungan.postApi.controller
 
 import com.sungan.postApi.application.support.SunganResponse
+import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.dto.*
+import com.sungan.postApi.service.MainService
 import com.sungan.postApi.service.SunganService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -14,8 +16,8 @@ import springfox.documentation.annotations.ApiIgnore
 @Api(tags = ["순간(일반 글) 관련 API"])
 @RequestMapping("sungan")
 class SunganController(
-    @Autowired
-    val sunganService: SunganService
+    val sunganService: SunganService,
+    val mainService: MainService
 ) {
     @GetMapping("/{id}")
     @ApiOperation(value = "순간 읽기 API")
@@ -41,5 +43,13 @@ class SunganController(
     @ApiOperation(value = "순간 삭제하기 API")
     fun deleteSungan(@ApiIgnore userId: Long, @PathVariable(value = "id") sunganId: Long): SunganResponse<SunganVo> {
         return SunganResponse(sunganService.destroySungan(userId, sunganId))
+    }
+
+    @GetMapping("/my")
+    @ApiOperation(value = "내가 쓴 글 가져오기 API")
+    fun getMySungans(
+        @ApiIgnore userId: Long
+    ): SunganResponse<List<PostBaseEntity>> {
+        return SunganResponse(mainService.getMySunganList(userId))
     }
 }

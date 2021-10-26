@@ -4,4 +4,5 @@ import com.sungan.postApi.domain.Report
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface ReportRepository: JpaRepository<Report, Long> {
+    fun findByUserId(userId: Long): MutableList<Report>
 }
