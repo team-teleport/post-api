@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.sungan.postApi.domain.ReportType
 import com.sungan.postApi.domain.SunganChannel
 import com.sungan.postApi.domain.SunganContent
+import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -22,7 +23,7 @@ data class SunganVo(
     val text: String,
     val contents: List<SunganContentVo>,
     val emoji: String?,
-    val userId: Long,
+    val userInfo: UserInfo,
     val comments: List<CommentVo>,
     val readCnt: Long,
     val likeCnt: Long,
@@ -52,8 +53,10 @@ data class CreateSunganRequestDto(
     @ApiModelProperty(required = true, example = "성수")
     val stationName: String,
     @ApiModelProperty(example = "😃")
-    val emoji: String?
-)
+    val emoji: String?,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class ReadSunganDto(
     val userId: Long?,

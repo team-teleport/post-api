@@ -1,6 +1,7 @@
 package com.sungan.postApi.dto
 
 import com.sungan.postApi.domain.ReportType
+import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -9,9 +10,10 @@ class Report
 data class ReportVo(
     var id: Long?,
     var reportType: ReportType,
-    var userId: Long,
+    var userInfo: UserInfo,
+    var vehicleIdNum: String,
+    var carNum: String,
     var detail: String?,
-    var line2Station: Line2StationVo,
     var readCnt: Long,
     var likeCnt: Long,
     override val createdAt: LocalDateTime,
@@ -20,15 +22,17 @@ data class ReportVo(
 
 data class PostReportReqDto(
     val reportType: ReportType,
-    val stationName: String,
     val vehicleIdNum: String,
     val shouldBeUploaded: Boolean,
-    val detail: String?
-)
+    val carNum: String,
+    val detail: String?,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class ReportCommentVo(
     val id: Long,
-    val userId: Long,
+    val userInfo: UserInfo,
     val reportId: Long,
     val content: String,
     val createdAt: LocalDateTime,
@@ -37,7 +41,7 @@ data class ReportCommentVo(
 
 data class ReportNestedCommentVo(
     val commentId: Long,
-    val userId: Long,
+    val userInfo: UserInfo,
     val content: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
@@ -46,13 +50,17 @@ data class ReportNestedCommentVo(
 data class PostReportCommentReqDto(
     val reportId: Long,
     val content: String,
-)
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class PostReportNestedCommentReqDto(
     val commentId: Long,
     val userId: Long,
-    val content: String
-)
+    val content: String,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class ReportCommentWithLikeList(
     val comments: List<ReportCommentWithLike>
