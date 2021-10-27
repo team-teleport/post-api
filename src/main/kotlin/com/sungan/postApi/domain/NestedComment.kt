@@ -11,8 +11,8 @@ class NestedComment(
     @ManyToOne
     @JoinColumn(name = "comment_id")
     var comment: Comment,
-    @Column(nullable = false)
-    var userId: Long,
+    @Embedded
+    var userInfo: UserInfo,
     @Column(nullable = false)
     var content: String
 ) {
@@ -28,7 +28,7 @@ class NestedComment(
 
     fun convertToVo() = NestedCommentVo(
         id,
-        userId,
+        userInfo,
         content,
         comment.id!!,
         createdAt,

@@ -1,13 +1,15 @@
 package com.sungan.postApi.dto
 
+import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
+import javax.persistence.Embedded
 
 class Comment
 
 data class CommentVo(
     val commentId: Long,
-    val userId: Long,
+    val userInfo: UserInfo,
     val content: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
@@ -21,8 +23,10 @@ data class PostCommentRequestDto(
     @ApiModelProperty(required = true, example = "댓글 내용입니다.")
     val content: String,
     @ApiModelProperty(required = true, example = "1")
-    val sunganId: Long
-)
+    val sunganId: Long,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class PatchCommentRequestDto(
     @ApiModelProperty(required = true, example = "1")
@@ -33,7 +37,7 @@ data class PatchCommentRequestDto(
 
 data class NestedCommentVo(
     val id: Long,
-    val userId: Long,
+    val userInfo: UserInfo,
     val content: String,
     val commentId: Long,
     val createdAt: LocalDateTime,
@@ -41,6 +45,8 @@ data class NestedCommentVo(
 )
 
 data class PostNestedCommentReqDto(
-    val content: String
-)
+    val content: String,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 

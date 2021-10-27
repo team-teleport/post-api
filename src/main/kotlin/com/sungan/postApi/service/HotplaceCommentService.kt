@@ -36,7 +36,7 @@ class HotplaceCommentService(
         hotplaceCommentRepository.save(
             HotplaceComment(
                 postHotplaceCommentReqDto.content,
-                userId,
+                postHotplaceCommentReqDto.makeUserInfo(userId),
                 hotplace
             )
         )
@@ -49,7 +49,7 @@ class HotplaceCommentService(
             HotplaceNestedComment(
                 comment,
                 postHotplaceNestedCommentReqDto.content,
-                userId
+                postHotplaceNestedCommentReqDto.makeUserInfo(userId)
             )
         )
     }

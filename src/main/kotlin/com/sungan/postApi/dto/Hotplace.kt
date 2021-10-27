@@ -1,5 +1,6 @@
 package com.sungan.postApi.dto
 
+import com.sungan.postApi.domain.UserInfo
 import java.time.LocalDateTime
 
 class Hotplace
@@ -8,7 +9,7 @@ data class HotplaceVo(
     val id: Long,
     val title: String,
     val text: String,
-    val userId: Long,
+    val userInfo: UserInfo,
     val station: Line2StationVo,
     val place: String,
     override val createdAt: LocalDateTime,
@@ -19,8 +20,10 @@ data class PostHotplaceReqDto(
     val title: String,
     val text: String,
     val stationName: String,
-    val place: String
-)
+    val place: String,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class HotplaceWithLikeCommendCntVo(
     val hotplace: HotplaceVo,
@@ -32,7 +35,7 @@ data class HotplaceWithLikeCommendCntVo(
 data class HotplaceCommentVo(
     val id: Long,
     val content: String,
-    val userId: Long,
+    val userInfo: UserInfo,
     val hotplaceId: Long,
     val nestedComments: List<HotplaceNestedCommentVo>,
     val createdAt: LocalDateTime,
@@ -41,13 +44,17 @@ data class HotplaceCommentVo(
 
 data class PostHotplaceCommentReqDto(
     val hotplaceId: Long,
-    val content: String
-)
+    val content: String,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class PostHotplaceNestedCommentReqDto(
     val commentId: Long,
-    val content: String
-)
+    val content: String,
+    override var userName: String,
+    override var userProfileImgUrl: String?
+): ReqIncludeUserInfo
 
 data class HotplaceCommentVoWithLike(
     val comment: HotplaceCommentVo,
@@ -58,7 +65,7 @@ data class HotplaceNestedCommentVo(
     val id: Long,
     val hotplaceCommentId: Long,
     val content: String,
-    val userId: Long,
+    val userInfo: UserInfo,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

@@ -22,9 +22,6 @@ class Line2Station(name: String) {
     var sungans: MutableList<Sungan> = ArrayList()
 
     @OneToMany(mappedBy = "station")
-    var reports: MutableList<Report> = ArrayList()
-
-    @OneToMany(mappedBy = "station")
     var hotplaces: MutableList<Hotplace> = ArrayList()
 
     fun convertToVo() = Line2StationVo(

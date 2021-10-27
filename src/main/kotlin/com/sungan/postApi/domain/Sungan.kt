@@ -14,8 +14,8 @@ import javax.persistence.*
 class Sungan(
     @Column(nullable = false)
     var text: String,
-    @Column(nullable = false)
-    var userId: Long,
+    @Embedded
+    var userInfo: UserInfo,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id", nullable = false)
     var station: Line2Station,
     @Column
@@ -53,7 +53,7 @@ class Sungan(
             text,
             contents.asSequence().map { content -> content.convertToVo() }.toList(),
             emoji,
-            userId,
+            userInfo,
             comments.asSequence().map { comment -> comment.convertToVo() }.toList(),
             readCnt,
             likeCnt,
@@ -72,7 +72,7 @@ class Sungan(
         private val toStringProperties = arrayOf(
             Sungan::id,
             Sungan::station,
-            Sungan::userId,
+            Sungan::userInfo,
             Sungan::createdAt,
             Sungan::updatedAt
         )

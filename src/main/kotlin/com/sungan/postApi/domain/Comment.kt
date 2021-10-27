@@ -16,7 +16,8 @@ class Comment(
     @Column(nullable = false)
     var content: String,
 
-    val userId: Long,
+    @Embedded
+    var userInfo: UserInfo,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sungan_id")
@@ -52,7 +53,7 @@ class Comment(
         private val toStringProperties = arrayOf(
             Comment::id,
             Comment::content,
-            Comment::userId,
+            Comment::userInfo,
             Comment::createdAt,
             Comment::updatedAt
         )
@@ -60,7 +61,7 @@ class Comment(
 
     fun convertToVo(): CommentVo = CommentVo(
         this.id!!,
-        this.userId,
+        this.userInfo,
         this.content,
         this.createdAt,
         this.updatedAt,

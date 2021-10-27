@@ -10,8 +10,8 @@ import javax.persistence.*
 class ReportComment(
     content: String,
     report: Report,
-    @Column(nullable = false)
-    val userId: Long
+    @Embedded
+    var userInfo: UserInfo,
 ){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +39,7 @@ class ReportComment(
 
     fun convertToVo() = ReportCommentVo(
         id!!,
-        userId,
+        userInfo,
         reportId = report.id!!,
         content,
         createdAt,

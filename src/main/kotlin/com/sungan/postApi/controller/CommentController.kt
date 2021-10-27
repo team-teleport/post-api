@@ -43,7 +43,7 @@ class CommentController(
         @PathVariable(value = "id") commentId: Long,
         @RequestBody postNestedCommentReqDto: PostNestedCommentReqDto
     ): SunganResponse<Any> {
-        commentService.createNestedComment(userId, commentId, postNestedCommentReqDto.content)
+        commentService.createNestedComment(userId, commentId, postNestedCommentReqDto)
         return SunganResponse(HttpStatus.OK, "대댓글 생성 완료")
     }
 }

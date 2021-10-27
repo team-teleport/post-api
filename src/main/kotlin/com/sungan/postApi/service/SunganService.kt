@@ -25,7 +25,7 @@ class SunganService(
         sungan.readCnt += 1
 
         return SunganDto(
-            userId == sungan.userId,
+            userId == sungan.userInfo.userId,
             sunganRepository.save(sungan).convertToVo()
         )
     }
@@ -39,7 +39,7 @@ class SunganService(
         val sungan = sunganRepository.save(
             Sungan(
                 createSunganRequestDto.text,
-                userId,
+                createSunganRequestDto.makeUserInfo(userId),
                 station,
                 createSunganRequestDto.emoji,
                 sunganChannel
@@ -54,7 +54,7 @@ class SunganService(
     fun updateSungan(userId: Long, patchSunganRequestDto: PatchSunganRequestDto): SunganDto {
         val sungan = sunganRepository.findById(patchSunganRequestDto.sunganId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        if (userId != sungan.userId) throw SunganException(SunganError.FORBIDDEN)
+        if (userId != sungan.userInfo.userId) throw SunganException(SunganError.FORBIDDEN)
 
         sungan.text = patchSunganRequestDto.text ?: sungan.text
         sungan.emoji = patchSunganRequestDto.emoji ?: sungan.emoji
@@ -67,7 +67,7 @@ class SunganService(
     fun destroySungan(userId: Long, id: Long): SunganVo {
         val sungan =
             sunganRepository.findById(id).orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        if (userId != sungan.userId) throw SunganException(SunganError.FORBIDDEN)
+        if (userId != sungan.userInfo.userId) throw SunganException(SunganError.FORBIDDEN)
         val vo = sungan.convertToVo() // sungan을 리포지토리로 delete하면 여기서도 사용 불가, vo에 저장해놓기
         sunganRepository.delete(sungan)
         return vo
