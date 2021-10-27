@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 @Service
 class ReportService(
     val reportRepository: ReportRepository,
-    val stationRepository: Line2StationRepository,
     val reportCommentRepository: ReportCommentRepository,
     val reportCommentLikeRepository: ReportCommentLikeRepository,
     val reportNestedCommentRepository: ReportNestedCommentRepository,
