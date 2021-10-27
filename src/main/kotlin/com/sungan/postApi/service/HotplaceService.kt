@@ -25,7 +25,7 @@ class HotplaceService(
             Hotplace(
                 postHotplaceReqDto.title,
                 postHotplaceReqDto.text,
-                userId,
+                postHotplaceReqDto.makeUserInfo(userId),
                 line2StationRepository.findByName(postHotplaceReqDto.stationName)
                     ?: throw SunganException(SunganError.BAD_REQUEST),
                 postHotplaceReqDto.place

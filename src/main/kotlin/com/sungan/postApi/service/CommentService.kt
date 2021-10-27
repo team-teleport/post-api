@@ -7,6 +7,7 @@ import com.sungan.postApi.domain.NestedComment
 import com.sungan.postApi.dto.CommentVo
 import com.sungan.postApi.dto.PatchCommentRequestDto
 import com.sungan.postApi.dto.PostCommentRequestDto
+import com.sungan.postApi.dto.PostNestedCommentReqDto
 import com.sungan.postApi.repository.CommentRepository
 import com.sungan.postApi.repository.NestedCommentRepository
 import com.sungan.postApi.repository.SunganRepository
@@ -27,7 +28,7 @@ class CommentService(
         val comment = commentRepository.save(
             Comment(
                 postCommentRequestDto.content,
-                userId,
+                postCommentRequestDto.makeUserInfo(userId),
                 sungan
             )
         )
@@ -36,7 +37,7 @@ class CommentService(
 
     fun destroyComment(userId: Long, id: Long): CommentVo {
         val comment = commentRepository.findById(id).orElseThrow { SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        if (userId != comment.userId) throw SunganException(SunganError.FORBIDDEN)
+        if (userId != comment.userInfo.userId) throw SunganException(SunganError.FORBIDDEN)
         val vo = comment.convertToVo()
         commentRepository.delete(comment)
         return vo
@@ -45,20 +46,20 @@ class CommentService(
     fun updateComment(userId: Long, patchCommentRequestDto: PatchCommentRequestDto): CommentVo {
         val comment = commentRepository.findById(patchCommentRequestDto.commentId)
             .orElseThrow { SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        if (userId != comment.userId) throw SunganException(SunganError.FORBIDDEN)
+        if (userId != comment.userInfo.userId) throw SunganException(SunganError.FORBIDDEN)
         comment.content = patchCommentRequestDto.content
         commentRepository.save(comment)
         return comment.convertToVo()
     }
 
-    fun createNestedComment(userId: Long, commentId: Long, content: String) {
+    fun createNestedComment(userId: Long, commentId: Long, postNestedCommentReqDto: PostNestedCommentReqDto) {
         val comment =
             commentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         nestedCommentRepository.save(
             NestedComment(
                 comment,
-                userId,
-                content
+                postNestedCommentReqDto.makeUserInfo(userId),
+                postNestedCommentReqDto.content
             )
         )
     }

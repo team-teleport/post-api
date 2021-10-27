@@ -21,9 +21,9 @@ class MainService(
 ) {
     fun getMySunganList(userId: Long): MutableList<PostBaseVo> {
         val list: MutableList<PostBaseVo> = ArrayList()
-        list.addAll(sunganRepository.findByUserId(userId).asSequence().map { user -> user.convertToVo() })
-        list.addAll(reportRepository.findByUserId(userId).asSequence().map { report -> report.convertToVo() })
-        list.addAll(hotplaceRepository.findByUserId(userId).asSequence().map { hotplace -> hotplace.convertToVo() })
+        list.addAll(sunganRepository.findByUserInfoUserId(userId).asSequence().map { user -> user.convertToVo() })
+        list.addAll(reportRepository.findByUserInfoUserId(userId).asSequence().map { report -> report.convertToVo() })
+        list.addAll(hotplaceRepository.findByUserInfoUserId(userId).asSequence().map { hotplace -> hotplace.convertToVo() })
         list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
         return list
     }

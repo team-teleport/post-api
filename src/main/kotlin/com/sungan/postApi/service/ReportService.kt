@@ -18,14 +18,13 @@ class ReportService(
     val reportLikeRepository: ReportLikeRepository
 ) {
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {
-        val station =
-            stationRepository.findByName(postReportReqDto.stationName) ?: throw SunganException(SunganError.BAD_REQUEST)
         val report = reportRepository.save(
             Report(
                 postReportReqDto.reportType,
-                station,
-                userId,
+                postReportReqDto.makeUserInfo(userId),
                 postReportReqDto.shouldBeUploaded,
+                postReportReqDto.vehicleIdNum,
+                postReportReqDto.carNum,
                 postReportReqDto.detail
             )
         )
@@ -45,7 +44,7 @@ class ReportService(
             ReportComment(
                 postReportCommentReqDto.content,
                 report,
-                userId
+                postReportCommentReqDto.makeUserInfo(userId)
             )
         )
     }
@@ -58,7 +57,7 @@ class ReportService(
             val likeCnt = reportCommentLikeRepository.countByReportComment(comment)
             ReportCommentWithLike(
                 comment.content,
-                comment.userId,
+                comment.userInfo.userId,
                 comment.createdAt,
                 comment.updatedAt,
                 likeCnt,
@@ -66,7 +65,7 @@ class ReportService(
                 comment.nestedComments.map { nestedComment ->
                     ReportNestedCommentVo(
                         nestedComment.id,
-                        nestedComment.userId,
+                        nestedComment.userInfo,
                         nestedComment.content,
                         nestedComment.createdAt,
                         nestedComment.updatedAt
@@ -84,7 +83,7 @@ class ReportService(
             ReportNestedComment(
                 comment,
                 postReportNestedCommentReqDto.content,
-                userId
+                postReportNestedCommentReqDto.makeUserInfo(userId)
             )
         )
     }
