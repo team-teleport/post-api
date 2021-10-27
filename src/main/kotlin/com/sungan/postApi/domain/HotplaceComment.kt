@@ -9,7 +9,8 @@ import javax.persistence.*
 @Entity
 class HotplaceComment(
     content: String,
-    userId: Long,
+    @Embedded
+    var userInfo: UserInfo,
     @ManyToOne
     @JoinColumn(name = "hotplace_id")
     val hotplace: Hotplace
@@ -20,9 +21,6 @@ class HotplaceComment(
 
     @Column(nullable = false)
     var content: String = content
-
-    @Column(nullable = false)
-    val userId: Long = userId
 
     @OneToMany(mappedBy = "hotplaceComment")
     var likes: MutableList<HotplaceCommentLike> = ArrayList()
@@ -40,7 +38,7 @@ class HotplaceComment(
     fun convertToVo() = HotplaceCommentVo(
         id!!,
         content,
-        userId,
+        userInfo,
         hotplace.id!!,
         nestedComments.map { nestedComment -> nestedComment.convertToVo() },
         createdAt,

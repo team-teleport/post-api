@@ -13,7 +13,8 @@ class HotplaceNestedComment(
     var hotplaceComment: HotplaceComment,
     @Column(nullable = false)
     var content: String,
-    val userId: Long
+    @Embedded
+    var userInfo: UserInfo,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,5 +26,5 @@ class HotplaceNestedComment(
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
-    fun convertToVo() = HotplaceNestedCommentVo(id!!, hotplaceComment.id!!, content, userId, createdAt, updatedAt)
+    fun convertToVo() = HotplaceNestedCommentVo(id!!, hotplaceComment.id!!, content, userInfo, createdAt, updatedAt)
 }

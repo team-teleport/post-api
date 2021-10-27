@@ -13,7 +13,8 @@ import javax.persistence.*
 class Hotplace(
     @Column var title: String,
     @Column var text: String,
-    @Column var userId: Long,
+    @Embedded
+    var userInfo: UserInfo,
     @ManyToOne @JoinColumn(name = "line2_station_id") var station: Line2Station,
     @Column var place: String
 ): PostBaseEntity() {
@@ -27,7 +28,7 @@ class Hotplace(
 
     override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 
-    fun convertToVo() = HotplaceVo(id!!, title, text, userId, station.convertToVo(), place, createdAt, updatedAt)
+    fun convertToVo() = HotplaceVo(id!!, title, text, userInfo, station.convertToVo(), place, createdAt, updatedAt)
 
     companion object {
         private val equalsAndHashCodeProperties = arrayOf(Hotplace::id)
@@ -35,7 +36,7 @@ class Hotplace(
             Hotplace::id,
             Hotplace::station,
             Hotplace::title,
-            Hotplace::userId,
+            Hotplace::userInfo,
             Hotplace::createdAt,
             Hotplace::updatedAt
         )

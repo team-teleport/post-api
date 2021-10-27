@@ -13,8 +13,8 @@ class ReportNestedComment(
     var reportComment: ReportComment,
     @Column(nullable = false)
     var content: String,
-    @Column(nullable = false)
-    var userId: Long
+    @Embedded
+    var userInfo: UserInfo,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ class ReportNestedComment(
 
     fun convertToVo() = ReportNestedCommentVo(
         reportComment.id!!,
-        userId,
+        userInfo,
         content,
         createdAt,
         updatedAt
