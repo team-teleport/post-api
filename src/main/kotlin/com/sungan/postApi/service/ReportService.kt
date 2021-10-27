@@ -25,6 +25,8 @@ class ReportService(
                 postReportReqDto.reportType,
                 station,
                 userId,
+                postReportReqDto.username,
+                postReportReqDto.profileImage,
                 postReportReqDto.shouldBeUploaded,
                 postReportReqDto.detail
             )

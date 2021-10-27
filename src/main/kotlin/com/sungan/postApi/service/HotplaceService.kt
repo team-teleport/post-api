@@ -26,6 +26,8 @@ class HotplaceService(
                 postHotplaceReqDto.title,
                 postHotplaceReqDto.text,
                 userId,
+                postHotplaceReqDto.username,
+                postHotplaceReqDto.profileImage,
                 line2StationRepository.findByName(postHotplaceReqDto.stationName)
                     ?: throw SunganException(SunganError.BAD_REQUEST),
                 postHotplaceReqDto.place

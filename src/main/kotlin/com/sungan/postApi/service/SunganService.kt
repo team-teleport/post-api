@@ -2,6 +2,7 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
+import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.Sungan
 import com.sungan.postApi.domain.UserViewedSungan
 import com.sungan.postApi.dto.*
@@ -31,15 +32,16 @@ class SunganService(
     }
 
     fun createSungan(userId: Long, createSunganRequestDto: CreateSunganRequestDto): SunganDto {
-        val station = line2StationRepository.findByName(createSunganRequestDto.stationName) ?: throw SunganException(
-            SunganError.BAD_REQUEST
-        )
+        val station = line2StationRepository.findByName(createSunganRequestDto.stationName) ?:
+            line2StationRepository.save(Line2Station(name= createSunganRequestDto.stationName))
         val sunganChannel = sunganChannelRepository.findById(createSunganRequestDto.channelId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         val sungan = sunganRepository.save(
             Sungan(
                 createSunganRequestDto.text,
                 userId,
+                createSunganRequestDto.username,
+                createSunganRequestDto.profileImage,
                 station,
                 createSunganRequestDto.emoji,
                 sunganChannel

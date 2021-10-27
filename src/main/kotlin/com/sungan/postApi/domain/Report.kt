@@ -17,6 +17,10 @@ class Report(
     @Column(nullable = false)
     var userId: Long,
     @Column(nullable = false)
+    var username: String,
+    @Column(nullable = true)
+    var profileImage: String?,
+    @Column(nullable = false)
     var shouldBeUploaded: Boolean,
     @Column(nullable = true)
     var detail: String? = null,
@@ -48,12 +52,15 @@ class Report(
             Report::id,
             Report::reportType,
             Report::station,
+            Report::userId,
+            Report::username,
+            Report::profileImage,
             Report::likeCnt,
             Report::readCnt,
             Report::shouldBeUploaded
         )
     }
-    fun convertToVo() = ReportVo(id, reportType, userId, detail, station.convertToVo(), readCnt, likeCnt, createdAt, updatedAt)
+    fun convertToVo() = ReportVo(id, reportType, userId, username, profileImage, detail, station.convertToVo(), readCnt, likeCnt, createdAt, updatedAt)
 }
 
 enum class ReportType {

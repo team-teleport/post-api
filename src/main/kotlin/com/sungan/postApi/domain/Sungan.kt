@@ -5,9 +5,6 @@ import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sungan.postApi.dto.SunganVo
 import org.hibernate.annotations.ColumnDefault
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -16,6 +13,10 @@ class Sungan(
     var text: String,
     @Column(nullable = false)
     var userId: Long,
+    @Column(nullable = false)
+    var username: String,
+    @Column(nullable = true)
+    var profileImage: String?,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id", nullable = false)
     var station: Line2Station,
     @Column
@@ -54,6 +55,8 @@ class Sungan(
             contents.asSequence().map { content -> content.convertToVo() }.toList(),
             emoji,
             userId,
+            username,
+            profileImage,
             comments.asSequence().map { comment -> comment.convertToVo() }.toList(),
             readCnt,
             likeCnt,
@@ -73,6 +76,8 @@ class Sungan(
             Sungan::id,
             Sungan::station,
             Sungan::userId,
+            Sungan::username,
+            Sungan::profileImage,
             Sungan::createdAt,
             Sungan::updatedAt
         )

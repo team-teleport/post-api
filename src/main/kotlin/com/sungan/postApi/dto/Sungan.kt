@@ -23,6 +23,8 @@ data class SunganVo(
     val contents: List<SunganContentVo>,
     val emoji: String?,
     val userId: Long,
+    val username: String,
+    val profileImage: String?,
     val comments: List<CommentVo>,
     val readCnt: Long,
     val likeCnt: Long,
@@ -47,6 +49,10 @@ data class CreateSunganRequestDto(
     val text: String,
     @ApiModelProperty(required = true, example = "1")
     val channelId: Long,
+    @ApiModelProperty(required = true, example = "irlyglo")
+    val username: String,
+    @ApiModelProperty(required = false, example = "https://aws...")
+    val profileImage: String?,
 //    @ApiModelProperty(required = true, example = "9호선")
 //    val vehicleName: String,
     @ApiModelProperty(required = true, example = "성수")

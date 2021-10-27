@@ -10,6 +10,8 @@ data class ReportVo(
     var id: Long?,
     var reportType: ReportType,
     var userId: Long,
+    var username: String,
+    var profileImage: String?,
     var detail: String?,
     var line2Station: Line2StationVo,
     var readCnt: Long,
@@ -21,6 +23,8 @@ data class ReportVo(
 data class PostReportReqDto(
     val reportType: ReportType,
     val stationName: String,
+    val username: String,
+    val profileImage: String,
     val vehicleIdNum: String,
     val shouldBeUploaded: Boolean,
     val detail: String?

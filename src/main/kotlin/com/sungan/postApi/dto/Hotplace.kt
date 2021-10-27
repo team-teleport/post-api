@@ -9,6 +9,8 @@ data class HotplaceVo(
     val title: String,
     val text: String,
     val userId: Long,
+    val username: String,
+    val profileImage: String?,
     val station: Line2StationVo,
     val place: String,
     override val createdAt: LocalDateTime,
@@ -18,6 +20,8 @@ data class HotplaceVo(
 data class PostHotplaceReqDto(
     val title: String,
     val text: String,
+    val username: String,
+    val profileImage: String,
     val stationName: String,
     val place: String
 )

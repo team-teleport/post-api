@@ -14,6 +14,10 @@ class Hotplace(
     @Column var title: String,
     @Column var text: String,
     @Column var userId: Long,
+    @Column(nullable = false)
+    var username: String,
+    @Column(nullable = true)
+    var profileImage: String?,
     @ManyToOne @JoinColumn(name = "line2_station_id") var station: Line2Station,
     @Column var place: String
 ): PostBaseEntity() {
@@ -27,7 +31,7 @@ class Hotplace(
 
     override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 
-    fun convertToVo() = HotplaceVo(id!!, title, text, userId, station.convertToVo(), place, createdAt, updatedAt)
+    fun convertToVo() = HotplaceVo(id!!, title, text, userId, username, profileImage, station.convertToVo(), place, createdAt, updatedAt)
 
     companion object {
         private val equalsAndHashCodeProperties = arrayOf(Hotplace::id)
@@ -36,6 +40,8 @@ class Hotplace(
             Hotplace::station,
             Hotplace::title,
             Hotplace::userId,
+            Hotplace::username,
+            Hotplace::profileImage,
             Hotplace::createdAt,
             Hotplace::updatedAt
         )
