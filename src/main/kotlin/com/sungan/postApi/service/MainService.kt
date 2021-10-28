@@ -1,5 +1,7 @@
 package com.sungan.postApi.service
 
+import com.sungan.postApi.application.support.SunganError
+import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.dto.PostBaseVo
 import com.sungan.postApi.dto.PostBaseWithLikeByUserAndBestComment
 import com.sungan.postApi.dto.PostType
@@ -17,23 +19,31 @@ class MainService(
     val hotplaceLikeRepository: HotplaceLikeRepository,
     val commentRepository: CommentRepository,
     val reportCommentRepository: ReportCommentRepository,
-    val hotplaceCommentRepository: HotplaceCommentRepository
+    val hotplaceCommentRepository: HotplaceCommentRepository,
+    val line2StationRepository: Line2StationRepository
 ) {
     fun getMySunganList(userId: Long): MutableList<PostBaseVo> {
         val list: MutableList<PostBaseVo> = ArrayList()
         list.addAll(sunganRepository.findByUserInfoUserId(userId).asSequence().map { user -> user.convertToVo() })
         list.addAll(reportRepository.findByUserInfoUserId(userId).asSequence().map { report -> report.convertToVo() })
-        list.addAll(hotplaceRepository.findByUserInfoUserId(userId).asSequence().map { hotplace -> hotplace.convertToVo() })
+        list.addAll(
+            hotplaceRepository.findByUserInfoUserId(userId).asSequence().map { hotplace -> hotplace.convertToVo() })
         list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
         return list
     }
 
-    fun getMainList(userId: Long): MutableList<PostBaseWithLikeByUserAndBestComment> {
+    fun getMainList(userId: Long, station: String?): MutableList<PostBaseWithLikeByUserAndBestComment> {
         val list: MutableList<PostBaseWithLikeByUserAndBestComment> = ArrayList()
         val now = LocalDateTime.now()
-        list.addAll(getSunganWithLikeByUserAndBestComment(userId, now))
+
+        if (station.isNullOrBlank()) {
+            list.addAll(getSunganWithLikeByUserAndBestComment(userId, now))
+            list.addAll(getHotplaceWithLikeByUserAndBestComment(userId, now))
+        } else {
+            list.addAll(getSunganSpecificStationWithLikeByUserAndBestComment(userId, now, station))
+            list.addAll(getHotplaceSpecificStationWithLikeByUserAndBestComment(userId, now, station))
+        }
         list.addAll(getReportWithLikeByUserAndBestComment(userId, now))
-        list.addAll(getHotplaceWithLikeByUserAndBestComment(userId, now))
         list.sortWith { a, b -> if (a.post.createdAt.isBefore(b.post.createdAt)) 1 else -1 }
         return list
     }
@@ -68,6 +78,23 @@ class MainService(
         }
     }
 
+    fun getSunganSpecificStationWithLikeByUserAndBestComment(
+        userId: Long,
+        now: LocalDateTime,
+        stationName: String
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val station = line2StationRepository.findByName(stationName) ?: throw SunganException(SunganError.BAD_REQUEST)
+        val sungans = sunganRepository.findByStationAndCreatedAtBetween(station, now.minusDays(1), now)
+        return sungans.map { sungan ->
+            PostBaseWithLikeByUserAndBestComment(
+                sungan.convertToVo(),
+                PostType.SUNGAN,
+                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+            )
+        }
+    }
+
     fun getHotplaceWithLikeByUserAndBestComment(
         userId: Long,
         now: LocalDateTime
@@ -79,6 +106,23 @@ class MainService(
                 PostType.PLACE,
                 hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
                 hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+            )
+        }
+    }
+
+    fun getHotplaceSpecificStationWithLikeByUserAndBestComment(
+        userId: Long,
+        now: LocalDateTime,
+        stationName: String
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val station = line2StationRepository.findByName(stationName) ?: throw SunganException(SunganError.BAD_REQUEST)
+        val places = hotplaceRepository.findByStationAndCreatedAtBetween(station, now.minusDays(1), now)
+        return places.map { place ->
+            PostBaseWithLikeByUserAndBestComment(
+                place.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.findByHotplaceAndUserId(place, userId) != null,
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(place)?.convertToVo()
             )
         }
     }
