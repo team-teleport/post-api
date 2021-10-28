@@ -4,23 +4,23 @@ import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sungan.postApi.dto.HotplaceVo
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 class Hotplace(
-    @Column var title: String,
     @Column var text: String,
     @Embedded
     var userInfo: UserInfo,
-    @ManyToOne @JoinColumn(name = "line2_station_id") var station: Line2Station,
-    @Column var place: String
-): PostBaseEntity() {
+    @ManyToOne @JoinColumn(name = "line2_station_id") var station: Line2Station?,
+    @Column var place: String,
+    @Column var emoji: String?,
+) : PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    @OneToMany(mappedBy = "hotplace")
+    var hotplaceLikes: MutableList<HotplaceLike> = ArrayList()
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 
@@ -28,14 +28,25 @@ class Hotplace(
 
     override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 
-    fun convertToVo() = HotplaceVo(id!!, title, text, userInfo, station.convertToVo(), place, createdAt, updatedAt)
+    fun convertToVo() =
+        HotplaceVo(
+            id!!,
+            text,
+            emoji,
+            userInfo,
+            station?.convertToVo(),
+            place,
+            hotplaceLikes.size.toLong(),
+            createdAt,
+            updatedAt
+        )
 
     companion object {
         private val equalsAndHashCodeProperties = arrayOf(Hotplace::id)
         private val toStringProperties = arrayOf(
             Hotplace::id,
             Hotplace::station,
-            Hotplace::title,
+            Hotplace::emoji,
             Hotplace::userInfo,
             Hotplace::createdAt,
             Hotplace::updatedAt

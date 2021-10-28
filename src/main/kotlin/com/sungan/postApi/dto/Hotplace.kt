@@ -7,19 +7,20 @@ class Hotplace
 
 data class HotplaceVo(
     val id: Long,
-    val title: String,
     val text: String,
+    val emoji: String?,
     val userInfo: UserInfo,
-    val station: Line2StationVo,
+    val station: Line2StationVo?,
     val place: String,
+    var likeCnt: Long,
     override val createdAt: LocalDateTime,
     override val updatedAt: LocalDateTime
 ): PostBaseVo()
 
 data class PostHotplaceReqDto(
-    val title: String,
     val text: String,
-    val stationName: String,
+    val emoji: String?,
+    val stationName: String?,
     val place: String,
     override var userName: String,
     override var userProfileImgUrl: String?

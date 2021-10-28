@@ -18,7 +18,7 @@ data class SunganDto(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SunganVo(
     val id: Long,
-    val station: Line2StationVo,
+    val station: Line2StationVo?,
     val channel: SunganChannel,
     val text: String,
     val contents: List<SunganContentVo>,
@@ -51,7 +51,7 @@ data class CreateSunganRequestDto(
 //    @ApiModelProperty(required = true, example = "9호선")
 //    val vehicleName: String,
     @ApiModelProperty(required = true, example = "성수")
-    val stationName: String,
+    val stationName: String?,
     @ApiModelProperty(example = "😃")
     val emoji: String?,
     override var userName: String,

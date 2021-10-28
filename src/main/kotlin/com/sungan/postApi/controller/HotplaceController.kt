@@ -23,9 +23,8 @@ class HotplaceController(
     fun postPlace(
         @ApiIgnore userId: Long,
         @RequestBody postHotplaceReqDto: PostHotplaceReqDto
-    ): SunganResponse<Any> {
-        hotplaceService.createHotplace(userId, postHotplaceReqDto)
-        return SunganResponse(HttpStatus.OK, "핫플레이스 게시물 생성 성공")
+    ): SunganResponse<HotplaceVo> {
+        return SunganResponse(hotplaceService.createHotplace(userId, postHotplaceReqDto))
     }
 
     @GetMapping("/{id}")

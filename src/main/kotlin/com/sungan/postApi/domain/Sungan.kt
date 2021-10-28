@@ -16,8 +16,8 @@ class Sungan(
     var text: String,
     @Embedded
     var userInfo: UserInfo,
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id", nullable = false)
-    var station: Line2Station,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "line2_station_id")
+    var station: Line2Station?,
     @Column
     var emoji: String?,
     @ManyToOne
@@ -48,7 +48,7 @@ class Sungan(
     fun convertToVo(): SunganVo =
         SunganVo(
             id!!,
-            station.convertToVo(),
+            station?.convertToVo(),
             sunganChannel,
             text,
             contents.asSequence().map { content -> content.convertToVo() }.toList(),

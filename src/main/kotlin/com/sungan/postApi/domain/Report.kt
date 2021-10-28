@@ -9,7 +9,8 @@ import javax.persistence.*
 
 @Entity
 class Report(
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "report_type_id")
     var reportType: ReportType,
     @Embedded
     var userInfo: UserInfo,
@@ -30,10 +31,6 @@ class Report(
     @ColumnDefault("0")
     var readCnt: Long = 0
 
-    @Column
-    @ColumnDefault("0")
-    var likeCnt: Long = 0
-
     @OneToMany(mappedBy = "report")
     var likes: MutableList<ReportLike> = ArrayList()
 
@@ -50,18 +47,22 @@ class Report(
             Report::reportType,
             Report::vehicleNum,
             Report::carNum,
-            Report::likeCnt,
             Report::readCnt,
             Report::shouldBeUploaded
         )
     }
 
     fun convertToVo() =
-        ReportVo(id, reportType, userInfo, vehicleNum, carNum, detail, readCnt, likeCnt, createdAt, updatedAt)
-}
-
-enum class ReportType {
-    REQUEST,
-    REPORT,
-    ETC
+        ReportVo(
+            id,
+            reportType.convertToVo(),
+            userInfo,
+            vehicleNum,
+            carNum,
+            detail,
+            readCnt,
+            likes.size.toLong(),
+            createdAt,
+            updatedAt
+        )
 }

@@ -21,14 +21,15 @@ class HotplaceService(
     val hotplaceLikeRepository: HotplaceLikeRepository
 ) {
     fun createHotplace(userId: Long, postHotplaceReqDto: PostHotplaceReqDto): HotplaceVo {
+        val stationName = postHotplaceReqDto.stationName
         val hotplace = hotplaceRepository.save(
             Hotplace(
-                postHotplaceReqDto.title,
                 postHotplaceReqDto.text,
                 postHotplaceReqDto.makeUserInfo(userId),
-                line2StationRepository.findByName(postHotplaceReqDto.stationName)
+                if (stationName != null) line2StationRepository.findByName(stationName) else null
                     ?: throw SunganException(SunganError.BAD_REQUEST),
-                postHotplaceReqDto.place
+                postHotplaceReqDto.place,
+                postHotplaceReqDto.emoji
             )
         )
         return hotplace.convertToVo()
@@ -40,8 +41,9 @@ class HotplaceService(
         return HotplaceWithLikeCommendCntVo(
             hotplace.convertToVo(),
             hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
-            hotplaceCommentRepository.countByHotplace(hotplace),
-            hotplaceLikeRepository.countByHotplace(hotplace)
+            hotplace.hotplaceLikes.size.toLong(),
+            hotplaceCommentRepository.countByHotplace(hotplace)
+
         )
     }
 

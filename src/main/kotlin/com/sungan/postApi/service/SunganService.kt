@@ -31,9 +31,13 @@ class SunganService(
     }
 
     fun createSungan(userId: Long, createSunganRequestDto: CreateSunganRequestDto): SunganDto {
-        val station = line2StationRepository.findByName(createSunganRequestDto.stationName) ?: throw SunganException(
-            SunganError.BAD_REQUEST
-        )
+        val station = if (createSunganRequestDto.stationName != null) {
+            line2StationRepository.findByName(createSunganRequestDto.stationName) ?: throw SunganException(
+                SunganError.BAD_REQUEST
+            )
+        } else {
+            null
+        }
         val sunganChannel = sunganChannelRepository.findById(createSunganRequestDto.channelId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         val sungan = sunganRepository.save(

@@ -9,7 +9,7 @@ class Report
 
 data class ReportVo(
     var id: Long?,
-    var reportType: ReportType,
+    var reportType: ReportTypeVo,
     var userInfo: UserInfo,
     var vehicleIdNum: String,
     var carNum: String,
@@ -21,7 +21,7 @@ data class ReportVo(
 ): PostBaseVo()
 
 data class PostReportReqDto(
-    val reportType: ReportType,
+    val label: String,
     val vehicleIdNum: String,
     val shouldBeUploaded: Boolean,
     val carNum: String,
@@ -75,4 +75,10 @@ data class ReportCommentWithLike(
     @ApiModelProperty(value = "유저가 좋아요를 눌렀는지 안눌렀는지")
     val didLike: Boolean,
     val nestedComments: List<ReportNestedCommentVo>
+)
+
+data class ReportTypeVo(
+    val id: Long,
+    val category: String,
+    val label: String
 )

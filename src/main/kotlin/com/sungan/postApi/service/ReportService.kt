@@ -7,19 +7,23 @@ import com.sungan.postApi.domain.Report
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class ReportService(
     val reportRepository: ReportRepository,
     val reportCommentRepository: ReportCommentRepository,
     val reportCommentLikeRepository: ReportCommentLikeRepository,
     val reportNestedCommentRepository: ReportNestedCommentRepository,
-    val reportLikeRepository: ReportLikeRepository
+    val reportLikeRepository: ReportLikeRepository,
+    val reportTypeRepository: ReportTypeRepository
 ) {
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {
+        val type = reportTypeRepository.findByLabel(postReportReqDto.label)
         val report = reportRepository.save(
             Report(
-                postReportReqDto.reportType,
+                type ?: throw SunganException(SunganError.BAD_REQUEST, "해당 label이 없습니다"),
                 postReportReqDto.makeUserInfo(userId),
                 postReportReqDto.shouldBeUploaded,
                 postReportReqDto.vehicleIdNum,
@@ -33,6 +37,7 @@ class ReportService(
     fun readReport(userId: Long, reportId: Long): ReportVo {
         val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         if (!report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST) // 업로드 되지 않는 신고글일 경우
+        report.readCnt += 1
         return report.convertToVo()
     }
 
@@ -61,15 +66,7 @@ class ReportService(
                 comment.updatedAt,
                 likeCnt,
                 reportCommentLikeRepository.findByReportCommentAndUserId(comment, userId) != null,
-                comment.nestedComments.map { nestedComment ->
-                    ReportNestedCommentVo(
-                        nestedComment.id,
-                        nestedComment.userInfo,
-                        nestedComment.content,
-                        nestedComment.createdAt,
-                        nestedComment.updatedAt
-                    )
-                }
+                comment.nestedComments.map { nestedComment -> nestedComment.convertToVo() }
             )
         }.toList()
     }
