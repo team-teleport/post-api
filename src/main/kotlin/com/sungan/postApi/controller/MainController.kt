@@ -44,8 +44,9 @@ class MainController(
 
     @GetMapping("")
     fun getSunganMain(
-        @ApiIgnore userId: Long
+        @ApiIgnore userId: Long,
+        @ApiParam(required = false) @RequestParam(required = false) station: String?
     ): SunganResponse<List<PostBaseWithLikeByUserAndBestComment>> {
-        return SunganResponse(mainService.getMainList(userId))
+        return SunganResponse(mainService.getMainList(userId, station))
     }
 }
