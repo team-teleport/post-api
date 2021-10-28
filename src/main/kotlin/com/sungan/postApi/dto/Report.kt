@@ -24,7 +24,7 @@ data class PostReportReqDto(
     val reportType: ReportType,
     val stationName: String,
     val username: String,
-    val profileImage: String,
+    val profileImage: String?,
     val vehicleIdNum: String,
     val shouldBeUploaded: Boolean,
     val detail: String?

@@ -21,7 +21,7 @@ data class PostHotplaceReqDto(
     val title: String,
     val text: String,
     val username: String,
-    val profileImage: String,
+    val profileImage: String?,
     val stationName: String,
     val place: String
 )
