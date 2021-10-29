@@ -51,7 +51,7 @@ class SunganController(
     @ApiOperation(value = "내가 쓴 글 가져오기 API")
     fun getMySungans(
         @ApiIgnore userId: Long
-    ): SunganResponse<List<PostBaseVo>> {
+    ): SunganResponse<List<PostBaseWithLikeByUserAndBestComment>> {
         return SunganResponse(mainService.getMySunganList(userId))
     }
 

@@ -22,13 +22,12 @@ class MainService(
     val hotplaceCommentRepository: HotplaceCommentRepository,
     val line2StationRepository: Line2StationRepository
 ) {
-    fun getMySunganList(userId: Long): MutableList<PostBaseVo> {
-        val list: MutableList<PostBaseVo> = ArrayList()
-        list.addAll(sunganRepository.findByUserInfoUserId(userId).asSequence().map { user -> user.convertToVo() })
-        list.addAll(reportRepository.findByUserInfoUserId(userId).asSequence().map { report -> report.convertToVo() })
-        list.addAll(
-            hotplaceRepository.findByUserInfoUserId(userId).asSequence().map { hotplace -> hotplace.convertToVo() })
-        list.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
+    fun getMySunganList(userId: Long): MutableList<PostBaseWithLikeByUserAndBestComment> {
+        val list: MutableList<PostBaseWithLikeByUserAndBestComment> = ArrayList()
+        list.addAll(getMySunganWithLikeByUserAndBestComment(userId))
+        list.addAll(getMyReportWithLikeByUserAndBestComment(userId))
+        list.addAll(getMyHotplaceWithLikeByUserAndBestComment(userId))
+        list.sortWith { a, b -> if (a.post.createdAt.isBefore(b.post.createdAt)) 1 else -1 }
         return list
     }
 
@@ -94,6 +93,19 @@ class MainService(
             )
         }
     }
+    fun getMySunganWithLikeByUserAndBestComment(
+        userId: Long
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val sungans = sunganRepository.findByUserInfoUserId(userId)
+        return sungans.map { sungan ->
+            PostBaseWithLikeByUserAndBestComment(
+                sungan.convertToVo(),
+                PostType.SUNGAN,
+                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+            )
+        }
+    }
 
     fun getHotplaceWithLikeByUserAndBestComment(
         userId: Long,
@@ -101,6 +113,19 @@ class MainService(
     ): List<PostBaseWithLikeByUserAndBestComment> {
         val hotplaces = hotplaceRepository.findByCreatedAtBetween(now.minusDays(1), now)
         return hotplaces.map { hotplace ->
+            PostBaseWithLikeByUserAndBestComment(
+                hotplace.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+            )
+        }
+    }
+
+    fun getMyHotplaceWithLikeByUserAndBestComment(
+        userId: Long
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        return hotplaceRepository.findByUserInfoUserId(userId).map { hotplace ->
             PostBaseWithLikeByUserAndBestComment(
                 hotplace.convertToVo(),
                 PostType.PLACE,
@@ -126,4 +151,18 @@ class MainService(
             )
         }
     }
+
+    fun getMyReportWithLikeByUserAndBestComment(
+        userId: Long
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        return reportRepository.findByUserInfoUserId(userId).map { report ->
+            PostBaseWithLikeByUserAndBestComment(
+                report.convertToVo(),
+                PostType.REPORT,
+                reportLikeRepository.findByReportAndUserId(report, userId) != null,
+                reportCommentRepository.findByReportOrderByLikes(report)?.convertToVo()
+            )
+        }
+    }
+
 }
