@@ -67,7 +67,7 @@ class CommentService(
         return comments.asSequence().map { comment ->
             CommentWithLikeCntAndIsLiked(
                 comment.content,
-                comment.userInfo.userId,
+                comment.userInfo,
                 comment.createdAt,
                 comment.updatedAt,
                 comment.likes.size.toLong(),
