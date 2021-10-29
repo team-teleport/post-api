@@ -43,6 +43,7 @@ data class HotplaceCommentVo(
     val updatedAt: LocalDateTime
 ): CommentBaseVo
 
+
 data class PostHotplaceCommentReqDto(
     val hotplaceId: Long,
     val content: String,
@@ -56,11 +57,6 @@ data class PostHotplaceNestedCommentReqDto(
     override var userName: String,
     override var userProfileImgUrl: String?
 ): ReqIncludeUserInfo
-
-data class HotplaceCommentVoWithLike(
-    val comment: HotplaceCommentVo,
-    val didLike: Boolean
-)
 
 data class HotplaceNestedCommentVo(
     val id: Long,

@@ -19,6 +19,12 @@ data class CommentVo(
 
 interface CommentBaseVo
 
+data class CommentWithLikeCntAndIsLiked<T>(
+    val comment: T,
+    val likeCnt: Long,
+    val isLiked: Boolean
+)
+
 data class PostCommentRequestDto(
     @ApiModelProperty(required = true, example = "댓글 내용입니다.")
     val content: String,
