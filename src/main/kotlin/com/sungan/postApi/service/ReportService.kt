@@ -53,13 +53,13 @@ class ReportService(
         )
     }
 
-    fun readReportCommentsWithLikes(userId: Long, reportId: Long): List<ReportCommentWithLike> {
+    fun readReportCommentsWithLikes(userId: Long, reportId: Long): List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>> {
         val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         if (!report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST)
         val comments = reportCommentRepository.findByReport(report)
         return comments.asSequence().map { comment ->
             val likeCnt = reportCommentLikeRepository.countByReportComment(comment)
-            ReportCommentWithLike(
+            CommentWithLikeCntAndIsLiked(
                 comment.content,
                 comment.userInfo.userId,
                 comment.createdAt,

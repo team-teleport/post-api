@@ -48,9 +48,8 @@ class ReportController(
     fun getAllComments(
         @ApiIgnore userId: Long,
         @PathVariable(value = "id") id: Long
-    ): SunganResponse<ReportCommentWithLikeList> {
-        val res = ReportCommentWithLikeList(reportService.readReportCommentsWithLikes(userId, id))
-        return SunganResponse(res)
+    ): SunganResponse<List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>>> {
+        return SunganResponse(reportService.readReportCommentsWithLikes(userId, id))
     }
 
     @PostMapping("/{id}/like")

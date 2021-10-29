@@ -42,7 +42,7 @@ class HotplaceController(
     fun getPlaceComments(
         @ApiIgnore userId: Long,
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
-    ): SunganResponse<List<HotplaceCommentVo>> =
+    ): SunganResponse<List<CommentWithLikeCntAndIsLiked<HotplaceNestedCommentVo>>> =
         SunganResponse(hotplaceCommentService.readHotplaceCommentList(userId, id)) // 대댓글까지 전부 보여줌
 
     @PostMapping("/comment")
