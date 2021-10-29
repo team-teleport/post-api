@@ -4,20 +4,17 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.Comment
 import com.sungan.postApi.domain.NestedComment
-import com.sungan.postApi.dto.CommentVo
-import com.sungan.postApi.dto.PatchCommentRequestDto
-import com.sungan.postApi.dto.PostCommentRequestDto
-import com.sungan.postApi.dto.PostNestedCommentReqDto
-import com.sungan.postApi.repository.CommentRepository
-import com.sungan.postApi.repository.NestedCommentRepository
-import com.sungan.postApi.repository.SunganRepository
+import com.sungan.postApi.dto.*
+import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 
 @Service
 class CommentService(
     val sunganRepository: SunganRepository,
     val commentRepository: CommentRepository,
-    val nestedCommentRepository: NestedCommentRepository
+    val nestedCommentRepository: NestedCommentRepository,
+    val sunganLikeRepository: SunganLikeRepository,
+    val commentLikeRepository: CommentLikeRepository
 ) {
     fun createComment(userId: Long, postCommentRequestDto: PostCommentRequestDto): CommentVo {
         val sungan = sunganRepository.findById(postCommentRequestDto.sunganId).orElseThrow {
@@ -62,5 +59,21 @@ class CommentService(
                 postNestedCommentReqDto.content
             )
         )
+    }
+
+    fun readCommentsWithLikes(userId: Long, sunganId: Long): List<CommentWithLikeCntAndIsLiked<NestedCommentVo>> {
+        val sungan = sunganRepository.findById(sunganId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        val comments = commentRepository.findBySungan(sungan)
+        return comments.asSequence().map { comment ->
+            CommentWithLikeCntAndIsLiked(
+                comment.content,
+                comment.userInfo.userId,
+                comment.createdAt,
+                comment.updatedAt,
+                comment.likes.size.toLong(),
+                commentLikeRepository.findByUserIdAndComment(userId, comment) != null,
+                comment.nestedComments.map { nestedComment -> nestedComment.convertToVo() }
+            )
+        }.toList()
     }
 }
