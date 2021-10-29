@@ -3,6 +3,7 @@ package com.sungan.postApi.controller
 import com.sungan.postApi.application.support.SunganResponse
 import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.dto.*
+import com.sungan.postApi.service.CommentService
 import com.sungan.postApi.service.MainService
 import com.sungan.postApi.service.SunganService
 import io.swagger.annotations.Api
@@ -17,7 +18,8 @@ import springfox.documentation.annotations.ApiIgnore
 @RequestMapping("sungan")
 class SunganController(
     val sunganService: SunganService,
-    val mainService: MainService
+    val mainService: MainService,
+    val commentService: CommentService
 ) {
     @GetMapping("/{id}")
     @ApiOperation(value = "순간 읽기 API")
@@ -51,5 +53,14 @@ class SunganController(
         @ApiIgnore userId: Long
     ): SunganResponse<List<PostBaseVo>> {
         return SunganResponse(mainService.getMySunganList(userId))
+    }
+
+    @GetMapping("/{id}/comments")
+    @ApiOperation(value = "댓글 전체 보기 API")
+    fun getSunganComments(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") sunganId: Long
+    ): SunganResponse<List<CommentWithLikeCntAndIsLiked<NestedCommentVo>>> {
+        return SunganResponse(commentService.readCommentsWithLikes(userId, sunganId))
     }
 }

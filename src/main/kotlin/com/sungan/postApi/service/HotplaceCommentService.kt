@@ -5,10 +5,7 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.HotplaceComment
 import com.sungan.postApi.domain.HotplaceCommentLike
 import com.sungan.postApi.domain.HotplaceNestedComment
-import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
-import com.sungan.postApi.dto.HotplaceCommentVo
-import com.sungan.postApi.dto.PostHotplaceCommentReqDto
-import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
+import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 
@@ -20,15 +17,19 @@ class HotplaceCommentService(
     val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
     val hotplaceLikeRepository: HotplaceLikeRepository
 ) {
-    fun readHotplaceCommentList(userId: Long, hotPlaceId: Long): List<CommentWithLikeCntAndIsLiked<HotplaceCommentVo>> {
+    fun readHotplaceCommentList(userId: Long, hotPlaceId: Long): List<CommentWithLikeCntAndIsLiked<HotplaceNestedCommentVo>> {
         val hotplace =
             hotplaceRepository.findById(hotPlaceId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         val comments = hotplaceCommentRepository.findByHotplaceOrderByCreatedAtDesc(hotplace)
         return comments.asSequence().map { comment ->
             CommentWithLikeCntAndIsLiked(
-                comment.convertToVo(),
-                hotplaceCommentRepository.countByHotplace(hotplace),
-                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null
+                comment.content,
+                comment.userInfo.userId,
+                comment.createdAt,
+                comment.updatedAt,
+                comment.likes.size.toLong(),
+                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
+                comment.nestedComments.asSequence().map { nestedComment -> nestedComment.convertToVo() }.toList()
             )
         }.toList()
     }

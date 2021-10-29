@@ -20,9 +20,13 @@ data class CommentVo(
 interface CommentBaseVo
 
 data class CommentWithLikeCntAndIsLiked<T>(
-    val comment: T,
+    val content: String,
+    val userId: Long,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
     val likeCnt: Long,
-    val isLiked: Boolean
+    val isLiked: Boolean,
+    val nestedComments: List<T>,
 )
 
 data class PostCommentRequestDto(
