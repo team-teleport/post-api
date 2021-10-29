@@ -5,13 +5,11 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.HotplaceComment
 import com.sungan.postApi.domain.HotplaceCommentLike
 import com.sungan.postApi.domain.HotplaceNestedComment
+import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
 import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
-import com.sungan.postApi.repository.HotplaceCommentLikeRepository
-import com.sungan.postApi.repository.HotplaceCommentRepository
-import com.sungan.postApi.repository.HotplaceNestedCommentRepository
-import com.sungan.postApi.repository.HotplaceRepository
+import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,14 +17,19 @@ class HotplaceCommentService(
     val hotplaceRepository: HotplaceRepository,
     val hotplaceCommentRepository: HotplaceCommentRepository,
     val hotplaceNestedCommentRepository: HotplaceNestedCommentRepository,
-    val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository
+    val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
+    val hotplaceLikeRepository: HotplaceLikeRepository
 ) {
-    fun readHotplaceCommentList(userId: Long, hotPlaceId: Long): List<HotplaceCommentVo> {
+    fun readHotplaceCommentList(userId: Long, hotPlaceId: Long): List<CommentWithLikeCntAndIsLiked<HotplaceCommentVo>> {
         val hotplace =
             hotplaceRepository.findById(hotPlaceId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         val comments = hotplaceCommentRepository.findByHotplaceOrderByCreatedAtDesc(hotplace)
         return comments.asSequence().map { comment ->
-            comment.convertToVo()
+            CommentWithLikeCntAndIsLiked(
+                comment.convertToVo(),
+                hotplaceCommentRepository.countByHotplace(hotplace),
+                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null
+            )
         }.toList()
     }
 
