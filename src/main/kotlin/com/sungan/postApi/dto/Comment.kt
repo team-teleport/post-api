@@ -3,7 +3,6 @@ package com.sungan.postApi.dto
 import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
-import javax.persistence.Embedded
 
 class Comment
 
@@ -21,7 +20,7 @@ interface CommentBaseVo
 
 data class CommentWithLikeCntAndIsLiked<T>(
     val content: String,
-    val userId: Long,
+    val userInfo: UserInfo,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val likeCnt: Long,
