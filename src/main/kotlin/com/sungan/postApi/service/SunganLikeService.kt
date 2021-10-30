@@ -30,9 +30,10 @@ class SunganLikeService(
     }
 
     @Transactional
-    fun destroySunganLike(userId: Long, sunganLikeId: Long) {
-        val sunganLike = sunganLikeRepository.findById(sunganLikeId)
-            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
+    fun destroySunganLike(userId: Long, sunganId: Long) {
+        val sungan = sunganRepository.findById(sunganId).orElseThrow {SunganException(SunganError.BAD_REQUEST)}
+        val sunganLike = sunganLikeRepository.findByUserIdAndSungan(userId, sungan)
+            ?: throw SunganException(SunganError.BAD_REQUEST_INVALID_ID)
         if (sunganLike.userId != userId) throw SunganException(SunganError.FORBIDDEN)
         sunganLike.sungan.likeCnt -= 1
         sunganRepository.save(sunganLike.sungan)
