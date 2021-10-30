@@ -12,6 +12,7 @@ class CommentQueryRepositoryImpl(
         return query.selectFrom(comment)
             .where(comment.sungan.eq(sungan))
             .orderBy(comment.likes.size().desc())
+            .limit(1)
             .fetchOne()
     }
 }
