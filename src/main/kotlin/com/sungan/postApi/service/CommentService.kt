@@ -66,6 +66,7 @@ class CommentService(
         val comments = commentRepository.findBySungan(sungan)
         return comments.asSequence().map { comment ->
             CommentWithLikeCntAndIsLiked(
+                comment.id!!,
                 comment.content,
                 comment.userInfo,
                 comment.createdAt,

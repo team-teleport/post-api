@@ -23,6 +23,7 @@ class HotplaceCommentService(
         val comments = hotplaceCommentRepository.findByHotplaceOrderByCreatedAtDesc(hotplace)
         return comments.asSequence().map { comment ->
             CommentWithLikeCntAndIsLiked(
+                comment.id!!,
                 comment.content,
                 comment.userInfo,
                 comment.createdAt,

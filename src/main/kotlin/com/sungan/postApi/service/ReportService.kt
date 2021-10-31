@@ -60,6 +60,7 @@ class ReportService(
         return comments.asSequence().map { comment ->
             val likeCnt = reportCommentLikeRepository.countByReportComment(comment)
             CommentWithLikeCntAndIsLiked(
+                comment.id!!,
                 comment.content,
                 comment.userInfo,
                 comment.createdAt,

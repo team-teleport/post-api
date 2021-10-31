@@ -19,6 +19,7 @@ data class CommentVo(
 interface CommentBaseVo
 
 data class CommentWithLikeCntAndIsLiked<T>(
+    val id: Long,
     val content: String,
     val userInfo: UserInfo,
     val createdAt: LocalDateTime,
