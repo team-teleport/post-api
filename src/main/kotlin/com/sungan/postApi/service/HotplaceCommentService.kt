@@ -29,7 +29,7 @@ class HotplaceCommentService(
                 comment.createdAt,
                 comment.updatedAt,
                 comment.likes.size.toLong(),
-                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
+                hotplaceCommentLikeRepository.findByHotplaceCommentAndUserId(comment, userId) != null,
                 comment.nestedComments.asSequence().map { nestedComment -> nestedComment.convertToVo() }.toList()
             )
         }.toList()
