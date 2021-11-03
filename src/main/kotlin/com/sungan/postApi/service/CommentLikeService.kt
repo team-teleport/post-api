@@ -24,9 +24,11 @@ class CommentLikeService(
         )).convertToVo()
     }
 
-    fun destroyCommentLike(userId: Long, commentLikeId: Long) {
+    fun destroyCommentLike(userId: Long, commentId: Long) {
+        val comment = commentRepository.findById(commentId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
         val commentLike =
-            commentLikeRepository.findById(commentLikeId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+            commentLikeRepository.findByUserIdAndComment(userId, comment)
+                ?: throw SunganException(SunganError.DUPLICATE, "좋아요 취소 요청 중복")
         if (commentLike.userId != userId) throw SunganException(SunganError.FORBIDDEN)
         commentLikeRepository.delete(commentLike)
     }

@@ -29,9 +29,9 @@ class CommentLikeController(
     @ApiOperation("댓글 좋아요를 취소하는 API")
     fun deleteCommentLike(
         @ApiIgnore userId: Long,
-        @PathVariable(value = "id") commentLikeId: Long
+        @PathVariable(value = "id") commentId: Long
     ): SunganResponse<Unit> {
-        commentLikeService.destroyCommentLike(userId, commentLikeId)
+        commentLikeService.destroyCommentLike(userId, commentId)
         return SunganResponse(HttpStatus.OK, "댓글 좋아요 취소 성공")
     }
 }
