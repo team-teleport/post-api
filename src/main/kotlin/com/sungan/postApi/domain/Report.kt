@@ -18,8 +18,6 @@ class Report(
     var shouldBeUploaded: Boolean,
     @Column(nullable = false)
     var vehicleNum: String,
-    @Column(nullable = false)
-    var carNum: String,
     @Column(nullable = true)
     var detail: String? = null
 ) : PostBaseEntity() {
@@ -46,7 +44,6 @@ class Report(
             Report::id,
             Report::reportType,
             Report::vehicleNum,
-            Report::carNum,
             Report::readCnt,
             Report::shouldBeUploaded
         )
@@ -58,7 +55,6 @@ class Report(
             reportType.convertToVo(),
             userInfo,
             vehicleNum,
-            carNum,
             detail,
             readCnt,
             likes.size.toLong(),

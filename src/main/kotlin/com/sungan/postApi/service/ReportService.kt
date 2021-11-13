@@ -27,7 +27,6 @@ class ReportService(
                 postReportReqDto.makeUserInfo(userId),
                 postReportReqDto.shouldBeUploaded,
                 postReportReqDto.vehicleIdNum,
-                postReportReqDto.carNum,
                 postReportReqDto.detail
             )
         )
