@@ -11,7 +11,7 @@ data class ReportVo(
     var id: Long?,
     var reportType: ReportTypeVo,
     var userInfo: UserInfo,
-    var vehicleIdNum: String,
+    var vehicleIdNum: String?,
     var detail: String?,
     var readCnt: Long,
     var likeCnt: Long,
@@ -21,7 +21,7 @@ data class ReportVo(
 
 data class PostReportReqDto(
     val label: String,
-    val vehicleIdNum: String,
+    val vehicleIdNum: String? = null,
     val shouldBeUploaded: Boolean,
     val detail: String?,
     override var userName: String,

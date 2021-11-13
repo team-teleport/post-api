@@ -16,8 +16,8 @@ class Report(
     var userInfo: UserInfo,
     @Column(nullable = false)
     var shouldBeUploaded: Boolean,
-    @Column(nullable = false)
-    var vehicleNum: String,
+    @Column
+    var vehicleNum: String? = null,
     @Column(nullable = true)
     var detail: String? = null
 ) : PostBaseEntity() {
