@@ -26,7 +26,7 @@ class ReportComment(
     @Column(nullable = false)
     var content: String = content
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "report_id")
     val report: Report = report
 

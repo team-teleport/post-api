@@ -6,7 +6,7 @@ import javax.persistence.*
 class HotplaceCommentLike(
     @Column(nullable = false)
     var userId: Long,
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "hotplace_comment_id")
     var hotplaceComment: HotplaceComment
 ) {

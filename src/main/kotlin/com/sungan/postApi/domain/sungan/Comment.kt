@@ -23,7 +23,7 @@ class Comment(
     @Embedded
     var userInfo: UserInfo,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
 ): PostBaseEntity() {

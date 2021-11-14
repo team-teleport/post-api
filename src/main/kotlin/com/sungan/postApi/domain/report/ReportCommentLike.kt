@@ -17,7 +17,7 @@ class ReportCommentLike(
     @Column(nullable = false)
     val userId: Long = userId
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "report_comment_id")
     val reportComment: ReportComment = reportComment
 

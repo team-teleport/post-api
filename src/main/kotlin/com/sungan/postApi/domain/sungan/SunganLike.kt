@@ -12,7 +12,7 @@ import javax.persistence.*
 class SunganLike(
     val userId: Long,
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
 ) {

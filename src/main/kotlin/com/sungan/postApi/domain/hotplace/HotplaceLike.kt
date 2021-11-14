@@ -14,7 +14,7 @@ class HotplaceLike(
     @Column(nullable = false)
     val userId: Long = userId
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "hotplace_id")
     var hotplace: Hotplace = hotplace
 }

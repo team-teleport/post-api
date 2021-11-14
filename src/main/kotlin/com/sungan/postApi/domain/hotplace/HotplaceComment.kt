@@ -17,7 +17,7 @@ class HotplaceComment(
     content: String,
     @Embedded
     var userInfo: UserInfo,
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "hotplace_id")
     val hotplace: Hotplace
 ): PostBaseEntity() {

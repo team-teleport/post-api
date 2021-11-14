@@ -14,7 +14,7 @@ import javax.persistence.*
 @SQLDelete(sql = "UPDATE nested_comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 class NestedComment(
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "comment_id")
     var comment: Comment,
     @Embedded

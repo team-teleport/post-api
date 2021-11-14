@@ -11,7 +11,7 @@ import javax.persistence.*
 @SQLDelete(sql = "UPDATE table_product SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 class HotplaceNestedComment(
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "hotplace_comment_id")
     var hotplaceComment: HotplaceComment,
     @Column(nullable = false)

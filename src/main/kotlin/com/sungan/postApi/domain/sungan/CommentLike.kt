@@ -12,7 +12,7 @@ import javax.persistence.*
 class CommentLike(
     val userId: Long,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [javax.persistence.CascadeType.REMOVE])
     @JoinColumn(name = "comment_id", nullable = false)
     val comment: Comment
 ) {
