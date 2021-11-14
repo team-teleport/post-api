@@ -8,10 +8,7 @@ import com.sungan.postApi.dto.HotplaceVo
 import com.sungan.postApi.dto.HotplaceWithLikeCommendCntVo
 import com.sungan.postApi.dto.PostHotplaceReqDto
 import com.sungan.postApi.dto.UpdateHotplaceReqDto
-import com.sungan.postApi.repository.HotplaceCommentRepository
-import com.sungan.postApi.repository.HotplaceLikeRepository
-import com.sungan.postApi.repository.HotplaceRepository
-import com.sungan.postApi.repository.Line2StationRepository
+import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,7 +17,8 @@ class HotplaceService(
     val hotplaceRepository: HotplaceRepository,
     val line2StationRepository: Line2StationRepository,
     val hotplaceCommentRepository: HotplaceCommentRepository,
-    val hotplaceLikeRepository: HotplaceLikeRepository
+    val hotplaceLikeRepository: HotplaceLikeRepository,
+    val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
 ) {
     fun createHotplace(userId: Long, postHotplaceReqDto: PostHotplaceReqDto): HotplaceVo {
         val stationName = postHotplaceReqDto.stationName
@@ -43,6 +41,7 @@ class HotplaceService(
             hotplaceRepository.findById(hotplaceId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (hotplace.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
         hotplaceLikeRepository.deleteAllByHotplace(hotplace)
+        hotplaceCommentLikeRepository.deleteAllByHotplace(hotplace)
         hotplaceCommentRepository.deleteAllByHotplace(hotplace)
         hotplaceRepository.delete(hotplace)
     }
