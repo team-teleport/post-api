@@ -1,6 +1,5 @@
 package com.sungan.postApi.dto
 
-import com.sungan.postApi.domain.ReportType
 import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
@@ -38,6 +37,7 @@ data class ReportCommentVo(
 ): CommentBaseVo
 
 data class ReportNestedCommentVo(
+    val id: Long,
     val commentId: Long,
     val userInfo: UserInfo,
     val content: String,

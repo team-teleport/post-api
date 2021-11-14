@@ -34,8 +34,15 @@ class HotplaceController(
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
     ): SunganResponse<HotplaceWithLikeCommendCntVo> = SunganResponse(hotplaceService.readHotplace(userId, id))
 
-
-    // TODO: 수정, 삭제
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "핫플 삭제하기")
+    fun deletePlace(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
+    ): SunganResponse<Any> {
+        hotplaceService.destroyHotplace(userId, hotplaceId = id)
+        return SunganResponse(HttpStatus.OK, "핫플레이스 삭제 성공")
+    }
 
     @GetMapping("/{id}/comments")
     @ApiOperation(value = "핫플 댓글 전체 보기")
@@ -53,6 +60,16 @@ class HotplaceController(
     ): SunganResponse<Any> {
         hotplaceCommentService.createHotplaceComment(userId, postHotplaceCommentReqDto)
         return SunganResponse(HttpStatus.OK, "핫플 댓글 달기 성공")
+    }
+
+    @DeleteMapping("/comment/{id}")
+    @ApiOperation(value = "핫플 댓글 삭제하기")
+    fun deletePlaceComment(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "댓글 id") @PathVariable(value = "id") hotplaceCommentId: Long
+    ): SunganResponse<Any> {
+        hotplaceCommentService.destroyHotplaceComment(userId, hotplaceCommentId)
+        return SunganResponse(HttpStatus.OK, "핫플 댓글 삭제 성공")
     }
 
     @PostMapping("/{id}/like")
@@ -83,6 +100,16 @@ class HotplaceController(
     ): SunganResponse<Any> {
         hotplaceCommentService.createHotplaceNestedComment(userId, postHotplaceNestedCommentReqDto)
         return SunganResponse(HttpStatus.OK, "핫플 대댓글 달기 성공")
+    }
+
+    @DeleteMapping("/comment/reply/{id}")
+    @ApiOperation(value = "핫플 대댓글 삭제하기")
+    fun deleteNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long
+    ): SunganResponse<Any> {
+        hotplaceCommentService.destroyHotplaceNestedComment(userId, nestedCommentId)
+        return SunganResponse(HttpStatus.OK, "핫플 대댓글 삭제 성공")
     }
 
     @PostMapping("/comment/{id}/like")

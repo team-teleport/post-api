@@ -2,8 +2,8 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.Comment
-import com.sungan.postApi.domain.NestedComment
+import com.sungan.postApi.domain.sungan.Comment
+import com.sungan.postApi.domain.sungan.NestedComment
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service

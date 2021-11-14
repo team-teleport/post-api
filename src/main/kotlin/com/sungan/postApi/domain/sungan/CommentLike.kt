@@ -1,4 +1,4 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.sungan
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
@@ -31,7 +31,7 @@ class CommentLike(
         createdAt
     )
 
-    override fun toString() = kotlinToString(properties = CommentLike.toStringProperties)
+    override fun toString() = kotlinToString(properties = toStringProperties)
 
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
 

@@ -1,4 +1,4 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.report
 
 import javax.persistence.*
 

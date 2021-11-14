@@ -1,7 +1,7 @@
 package com.sungan.postApi.repository
 
-import com.sungan.postApi.domain.Sungan
-import com.sungan.postApi.domain.SunganLike
+import com.sungan.postApi.domain.sungan.Sungan
+import com.sungan.postApi.domain.sungan.SunganLike
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface SunganLikeRepository : JpaRepository<SunganLike, Long> {

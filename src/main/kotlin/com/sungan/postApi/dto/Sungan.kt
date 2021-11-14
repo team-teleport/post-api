@@ -1,9 +1,8 @@
 package com.sungan.postApi.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.sungan.postApi.domain.ReportType
-import com.sungan.postApi.domain.SunganChannel
-import com.sungan.postApi.domain.SunganContent
+import com.sungan.postApi.domain.sungan.SunganChannel
+import com.sungan.postApi.domain.sungan.SunganContent
 import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime

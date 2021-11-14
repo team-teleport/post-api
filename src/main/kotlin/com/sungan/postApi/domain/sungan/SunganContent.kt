@@ -1,4 +1,4 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.sungan
 
 import com.sungan.postApi.dto.SunganContentVo
 import javax.persistence.*
@@ -8,7 +8,7 @@ class SunganContent (
     var url: String,
     var type: ContentType,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     @JoinColumn(name="sungan_id", nullable = true)
     var sungan: Sungan
 ) {

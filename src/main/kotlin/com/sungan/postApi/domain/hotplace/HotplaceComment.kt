@@ -1,12 +1,18 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.hotplace
 
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.HotplaceCommentVo
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE hotplace_comment SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class HotplaceComment(
     content: String,
     @Embedded
@@ -14,7 +20,7 @@ class HotplaceComment(
     @ManyToOne
     @JoinColumn(name = "hotplace_id")
     val hotplace: Hotplace
-) {
+): PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
@@ -22,18 +28,12 @@ class HotplaceComment(
     @Column(nullable = false)
     var content: String = content
 
-    @OneToMany(mappedBy = "hotplaceComment")
+    @OneToMany(mappedBy = "hotplaceComment", cascade = [CascadeType.REMOVE])
     var likes: MutableList<HotplaceCommentLike> = ArrayList()
 
-    @OneToMany(mappedBy = "hotplaceComment")
+    @OneToMany(mappedBy = "hotplaceComment", cascade = [CascadeType.REMOVE])
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<HotplaceNestedComment> = ArrayList()
-
-    @CreatedDate
-    var createdAt: LocalDateTime = LocalDateTime.now()
-
-    @LastModifiedDate
-    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = HotplaceCommentVo(
         id!!,

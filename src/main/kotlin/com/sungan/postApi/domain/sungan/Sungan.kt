@@ -1,16 +1,18 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.sungan
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.domain.*
 import com.sungan.postApi.dto.SunganVo
 import org.hibernate.annotations.ColumnDefault
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import java.time.LocalDateTime
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE sungan SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class Sungan(
     @Column(nullable = false)
     var text: String,
@@ -23,12 +25,12 @@ class Sungan(
     @ManyToOne
     @JoinColumn(name = "sungan_channel_id")
     var sunganChannel: SunganChannel
-): PostBaseEntity() {
+): PostBaseEntity(){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    @OneToMany(mappedBy = "sungan")
+    @OneToMany(mappedBy = "sungan", cascade = [CascadeType.REMOVE])
     var contents: MutableList<SunganContent> = ArrayList()
 
     @Column
@@ -39,7 +41,10 @@ class Sungan(
     @ColumnDefault("0")
     var likeCnt: Long = 0
 
-    @OneToMany(mappedBy = "sungan")
+    @OneToMany(mappedBy = "sungan", cascade = [CascadeType.REMOVE])
+    val likes: MutableList<SunganLike> = ArrayList()
+
+    @OneToMany(mappedBy = "sungan", cascade = [CascadeType.REMOVE])
     val comments: MutableList<Comment> = ArrayList()
 
     @OneToMany(mappedBy = "sungan")

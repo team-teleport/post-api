@@ -32,7 +32,6 @@ class StationHasTypes(
         private val equalsAndHashCodeProperties = arrayOf(StationHasTypes::id)
         private val toStringProperties = arrayOf(
             StationHasTypes::id,
-            StationHasTypes::station,
             StationHasTypes::type
         )
     }

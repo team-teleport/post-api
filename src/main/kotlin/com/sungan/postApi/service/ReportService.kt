@@ -2,8 +2,8 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.*
-import com.sungan.postApi.domain.Report
+import com.sungan.postApi.domain.report.*
+import com.sungan.postApi.domain.report.Report
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
@@ -40,6 +40,13 @@ class ReportService(
         return report.convertToVo()
     }
 
+    fun destroyReport(userId: Long, reportId: Long) {
+        val report = reportRepository.findById(reportId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (report.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        reportRepository.delete(report)
+    }
+
+    // TODO: Comment 관련 메서드 전부 reportCommentService 만들어서 분리
     fun createReportComment(userId: Long, postReportCommentReqDto: PostReportCommentReqDto) {
         val report = reportRepository.findById(postReportCommentReqDto.reportId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
@@ -52,8 +59,19 @@ class ReportService(
         )
     }
 
-    fun readReportCommentsWithLikes(userId: Long, reportId: Long): List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>> {
-        val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+    fun destroyReportComment(userId: Long, reportCommentId: Long) {
+        val reportComment = reportCommentRepository.findById(reportCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (reportComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        reportCommentRepository.delete(reportComment)
+    }
+
+    fun readReportCommentsWithLikes(
+        userId: Long,
+        reportId: Long
+    ): List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>> {
+        val report =
+            reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (!report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST)
         val comments = reportCommentRepository.findByReport(report)
         return comments.asSequence().map { comment ->
@@ -82,6 +100,13 @@ class ReportService(
                 postReportNestedCommentReqDto.makeUserInfo(userId)
             )
         )
+    }
+
+    fun destroyNestedComment(userId: Long, nestedCommentId: Long) {
+        val nestedComment = reportNestedCommentRepository.findById(nestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        reportNestedCommentRepository.delete(nestedComment)
     }
 
     fun createReportCommentLike(userId: Long, commentId: Long) {

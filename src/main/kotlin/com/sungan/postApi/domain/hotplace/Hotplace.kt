@@ -1,12 +1,19 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.hotplace
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.domain.Line2Station
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.HotplaceVo
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE hotplace SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class Hotplace(
     @Column var text: String,
     @Embedded
@@ -19,7 +26,10 @@ class Hotplace(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    @OneToMany(mappedBy = "hotplace")
+    @OneToMany(mappedBy = "hotplace", cascade = [CascadeType.REMOVE])
+    var hotplaceComment: MutableList<HotplaceComment> = ArrayList()
+
+    @OneToMany(mappedBy = "hotplace", cascade = [CascadeType.REMOVE])
     var hotplaceLikes: MutableList<HotplaceLike> = ArrayList()
 
     override fun toString() = kotlinToString(properties = toStringProperties)

@@ -1,4 +1,4 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.report
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
@@ -10,7 +10,7 @@ import javax.persistence.*
 class ReportType(
     reportCategory: ReportCategory,
     label: String
-){
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0

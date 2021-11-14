@@ -2,23 +2,22 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.Hotplace
-import com.sungan.postApi.domain.HotplaceLike
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.hotplace.HotplaceLike
 import com.sungan.postApi.dto.HotplaceVo
 import com.sungan.postApi.dto.HotplaceWithLikeCommendCntVo
 import com.sungan.postApi.dto.PostHotplaceReqDto
-import com.sungan.postApi.repository.HotplaceCommentRepository
-import com.sungan.postApi.repository.HotplaceLikeRepository
-import com.sungan.postApi.repository.HotplaceRepository
-import com.sungan.postApi.repository.Line2StationRepository
+import com.sungan.postApi.dto.UpdateHotplaceReqDto
+import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class HotplaceService(
-    val hotplaceRepository: HotplaceRepository,
-    val line2StationRepository: Line2StationRepository,
-    val hotplaceCommentRepository: HotplaceCommentRepository,
-    val hotplaceLikeRepository: HotplaceLikeRepository
+    private val hotplaceRepository: HotplaceRepository,
+    private val line2StationRepository: Line2StationRepository,
+    private val hotplaceCommentRepository: HotplaceCommentRepository,
+    private val hotplaceLikeRepository: HotplaceLikeRepository,
 ) {
     fun createHotplace(userId: Long, postHotplaceReqDto: PostHotplaceReqDto): HotplaceVo {
         val stationName = postHotplaceReqDto.stationName
@@ -33,6 +32,18 @@ class HotplaceService(
             )
         )
         return hotplace.convertToVo()
+    }
+
+    @Transactional
+    fun destroyHotplace(userId: Long, hotplaceId: Long) {
+        val hotplace =
+            hotplaceRepository.findById(hotplaceId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (hotplace.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        hotplaceRepository.delete(hotplace)
+    }
+
+    fun updateHotplace(userId: Long, updateHotplaceReqDto: UpdateHotplaceReqDto) {
+        TODO("핫플레이스 업데이트 서비스")
     }
 
     fun readHotplace(userId: Long, hotplaceId: Long): HotplaceWithLikeCommendCntVo {

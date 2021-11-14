@@ -1,5 +1,6 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.sungan
 
+import com.sungan.postApi.domain.sungan.Sungan
 import javax.persistence.*
 
 @Entity

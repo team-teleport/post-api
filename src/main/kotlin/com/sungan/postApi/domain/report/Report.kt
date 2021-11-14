@@ -1,13 +1,19 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.report
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.ReportVo
 import org.hibernate.annotations.ColumnDefault
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE report SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class Report(
     @ManyToOne
     @JoinColumn(name = "report_type_id")
@@ -29,8 +35,11 @@ class Report(
     @ColumnDefault("0")
     var readCnt: Long = 0
 
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "report", cascade = [CascadeType.REMOVE])
     var likes: MutableList<ReportLike> = ArrayList()
+
+    @OneToMany(mappedBy = "report", cascade = [CascadeType.REMOVE])
+    var comments: MutableList<ReportComment> = ArrayList()
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 
