@@ -14,4 +14,11 @@ class HotplaceCommentQueryRepositoryImpl(
             .orderBy(hotplaceComment.likes.size().desc())
             .fetchFirst()
     }
+
+    override fun deleteAllByHotplace(hotplace: Hotplace) {
+        query.update(hotplaceComment)
+            .set(hotplaceComment.deleted, true)
+            .where(hotplaceComment.hotplace.eq(hotplace))
+            .execute()
+    }
 }

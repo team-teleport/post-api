@@ -5,4 +5,5 @@ import com.sungan.postApi.domain.hotplace.HotplaceComment
 
 interface HotplaceCommentQueryRepository {
     fun findByHotplaceOrderByLikes(hotplace: Hotplace): HotplaceComment?
+    fun deleteAllByHotplace(hotplace: Hotplace)
 }

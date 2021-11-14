@@ -45,10 +45,8 @@ class HotplaceService(
 
     private fun deleteHotplaceCascade(hotplace: Hotplace) {
         hotplaceLikeRepository.deleteAllByHotplace(hotplace)
-
         hotplaceCommentLikeRepository.deleteAllByHotplace(hotplace)
-        hotplaceCommentRepository.deleteAllByHotplace(hotplace) // TODO: 이거 query repository에서 다시 구현. 지금 이 메서드 실행 마지막에 hotplace도 지우고 있음.
-
+        hotplaceCommentRepository.deleteAllByHotplace(hotplace)
         hotplaceRepository.delete(hotplace)
     }
 

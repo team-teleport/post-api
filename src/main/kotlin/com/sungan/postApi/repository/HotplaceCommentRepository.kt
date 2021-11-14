@@ -8,5 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface HotplaceCommentRepository: JpaRepository<HotplaceComment, Long>, HotplaceCommentQueryRepository {
     fun findByHotplaceOrderByCreatedAtDesc(hotplace: Hotplace): MutableList<HotplaceComment>
     fun countByHotplace(hotplace: Hotplace): Long
-    fun deleteAllByHotplace(hotplace: Hotplace)
 }
