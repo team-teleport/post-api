@@ -14,11 +14,12 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class HotplaceService(
-    val hotplaceRepository: HotplaceRepository,
-    val line2StationRepository: Line2StationRepository,
-    val hotplaceCommentRepository: HotplaceCommentRepository,
-    val hotplaceLikeRepository: HotplaceLikeRepository,
-    val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
+    private val hotplaceRepository: HotplaceRepository,
+    private val line2StationRepository: Line2StationRepository,
+    private val hotplaceCommentRepository: HotplaceCommentRepository,
+    private val hotplaceLikeRepository: HotplaceLikeRepository,
+    private val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
+    private val hotplaceNestedCommentRepository: HotplaceNestedCommentRepository,
 ) {
     fun createHotplace(userId: Long, postHotplaceReqDto: PostHotplaceReqDto): HotplaceVo {
         val stationName = postHotplaceReqDto.stationName
@@ -46,6 +47,7 @@ class HotplaceService(
     private fun deleteHotplaceCascade(hotplace: Hotplace) {
         hotplaceLikeRepository.deleteAllByHotplace(hotplace)
         hotplaceCommentLikeRepository.deleteAllByHotplace(hotplace)
+        hotplaceNestedCommentRepository.deleteAllByHotplace(hotplace)
         hotplaceCommentRepository.deleteAllByHotplace(hotplace)
         hotplaceRepository.delete(hotplace)
     }
