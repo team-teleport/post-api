@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
+@ActiveProfiles("test")
 internal class HotplaceServiceTest @Autowired constructor(
     private val hotplaceService: HotplaceService,
     private val hotplaceRepository: HotplaceRepository,
