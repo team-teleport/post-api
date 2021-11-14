@@ -7,9 +7,13 @@ import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.HotplaceVo
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE hotplace SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class Hotplace(
     @Column var text: String,
     @Embedded

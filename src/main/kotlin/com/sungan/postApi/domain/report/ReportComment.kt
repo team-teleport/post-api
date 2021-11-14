@@ -1,19 +1,24 @@
 package com.sungan.postApi.domain.report
 
+import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.ReportCommentVo
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE table_product SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class ReportComment(
     content: String,
     report: Report,
     @Embedded
     var userInfo: UserInfo,
-){
+): PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
@@ -31,12 +36,6 @@ class ReportComment(
     @OneToMany(mappedBy = "reportComment")
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<ReportNestedComment> = ArrayList()
-
-    @CreatedDate
-    var createdAt: LocalDateTime = LocalDateTime.now()
-
-    @LastModifiedDate
-    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = ReportCommentVo(
         id!!,

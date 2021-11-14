@@ -1,13 +1,15 @@
 package com.sungan.postApi.domain.hotplace
 
+import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import java.time.LocalDateTime
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE table_product SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class HotplaceNestedComment(
     @ManyToOne
     @JoinColumn(name = "hotplace_comment_id")
@@ -16,16 +18,10 @@ class HotplaceNestedComment(
     var content: String,
     @Embedded
     var userInfo: UserInfo,
-) {
+) : PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-
-    @CreatedDate
-    var createdAt: LocalDateTime = LocalDateTime.now()
-
-    @LastModifiedDate
-    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun convertToVo() = HotplaceNestedCommentVo(id!!, hotplaceComment.id!!, content, userInfo, createdAt, updatedAt)
 }

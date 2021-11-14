@@ -11,7 +11,7 @@ import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
-@SQLDelete(sql = "UPDATE table_product SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE sungan SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 class Sungan(
     @Column(nullable = false)

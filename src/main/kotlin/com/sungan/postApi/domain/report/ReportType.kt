@@ -3,7 +3,6 @@ package com.sungan.postApi.domain.report
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
-import com.sungan.postApi.domain.SoftDeletedBaseEntity
 import com.sungan.postApi.dto.ReportTypeVo
 import javax.persistence.*
 
@@ -11,7 +10,7 @@ import javax.persistence.*
 class ReportType(
     reportCategory: ReportCategory,
     label: String
-): SoftDeletedBaseEntity() {
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
