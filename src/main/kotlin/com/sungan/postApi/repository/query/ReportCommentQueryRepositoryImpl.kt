@@ -14,12 +14,4 @@ class ReportCommentQueryRepositoryImpl(
             .orderBy(reportComment.likes.size().desc())
             .fetchFirst()
     }
-
-    override fun deleteAllByReport(report: Report) {
-        query
-            .update(reportComment)
-            .set(reportComment.deleted, true)
-            .where(reportComment.report.eq(report))
-            .execute()
-    }
 }

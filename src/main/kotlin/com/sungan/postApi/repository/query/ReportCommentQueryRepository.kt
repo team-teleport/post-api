@@ -5,5 +5,4 @@ import com.sungan.postApi.domain.report.ReportComment
 
 interface ReportCommentQueryRepository {
     fun findByReportOrderByLikes(report: Report): ReportComment?
-    fun deleteAllByReport(report: Report)
 }

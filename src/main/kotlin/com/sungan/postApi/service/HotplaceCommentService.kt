@@ -59,13 +59,6 @@ class HotplaceCommentService(
         val comment =
             hotplaceCommentRepository.findById(commentId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
         if (comment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
-
-        deleteCommentCascade(comment)
-    }
-
-    private fun deleteCommentCascade(comment: HotplaceComment) {
-        hotplaceCommentLikeRepository.deleteAllByHotplaceComment(comment)
-        hotplaceNestedCommentRepository.deleteAllByHotplaceComment(comment)
         hotplaceCommentRepository.delete(comment)
     }
 
