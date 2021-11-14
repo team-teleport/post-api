@@ -30,7 +30,7 @@ class ReportController(
         @ApiIgnore userId: Long,
         @PathVariable(value = "id") reportId: Long
     ): SunganResponse<Any> {
-        TODO("민원 삭제 서비스")
+        reportService.destroyReport(userId, reportId)
         return SunganResponse(HttpStatus.OK, "민원 삭제 성공")
     }
 

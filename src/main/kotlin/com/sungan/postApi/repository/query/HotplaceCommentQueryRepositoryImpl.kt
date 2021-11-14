@@ -1,4 +1,4 @@
-package com.sungan.postApi.repository
+package com.sungan.postApi.repository.query
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.sungan.postApi.domain.hotplace.Hotplace

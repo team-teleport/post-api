@@ -40,6 +40,19 @@ class ReportService(
         return report.convertToVo()
     }
 
+    fun destroyReport(userId: Long, reportId: Long) {
+        val report = reportRepository.findById(reportId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (report.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        deleteReportCascade(report)
+    }
+
+    private fun deleteReportCascade(report: Report) {
+        reportCommentLikeRepository.deleteAllByReport(report)
+        reportCommentRepository.deleteAllByReport(report)
+        reportLikeRepository.deleteAllByReport(report)
+        reportRepository.delete(report)
+    }
+
     fun createReportComment(userId: Long, postReportCommentReqDto: PostReportCommentReqDto) {
         val report = reportRepository.findById(postReportCommentReqDto.reportId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }

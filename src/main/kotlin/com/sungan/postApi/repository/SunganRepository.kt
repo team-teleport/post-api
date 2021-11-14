@@ -2,6 +2,7 @@ package com.sungan.postApi.repository
 
 import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.sungan.Sungan
+import com.sungan.postApi.repository.query.SunganQueryRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 

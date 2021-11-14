@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@SQLDelete(sql = "UPDATE table_product SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE report_comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 class ReportComment(
     content: String,

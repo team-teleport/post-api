@@ -34,7 +34,7 @@ internal class HotplaceServiceTest @Autowired constructor(
                 userInfo = UserInfo(userId = 1, userName = "가용", userProfileImgUrl = null),
                 station,
                 place = "질서정연",
-                emoji = "🍝"
+                emoji = null
             )
         )
 

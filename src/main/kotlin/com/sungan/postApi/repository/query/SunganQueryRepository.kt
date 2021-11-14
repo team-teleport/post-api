@@ -1,4 +1,4 @@
-package com.sungan.postApi.repository
+package com.sungan.postApi.repository.query
 
 import com.sungan.postApi.domain.sungan.Sungan
 import com.sungan.postApi.dto.GetMainRequestDto

@@ -7,9 +7,13 @@ import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.ReportVo
 import org.hibernate.annotations.ColumnDefault
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE report SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class Report(
     @ManyToOne
     @JoinColumn(name = "report_type_id")
