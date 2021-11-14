@@ -48,6 +48,7 @@ class ReportService(
 
     private fun deleteReportCascade(report: Report) {
         reportCommentLikeRepository.deleteAllByReport(report)
+        reportNestedCommentRepository.deleteAllByReport(report)
         reportCommentRepository.deleteAllByReport(report)
         reportLikeRepository.deleteAllByReport(report)
         reportRepository.delete(report)
