@@ -1,4 +1,4 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.sungan
 
 import au.com.console.kassava.kotlinToString
 import javax.persistence.*

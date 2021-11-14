@@ -1,8 +1,10 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.report
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.ReportVo
 import org.hibernate.annotations.ColumnDefault
 import javax.persistence.*

@@ -1,6 +1,6 @@
 package com.sungan.postApi.repository
 
-import com.sungan.postApi.domain.Hotplace
+import com.sungan.postApi.domain.hotplace.Hotplace
 import com.sungan.postApi.domain.Line2Station
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime

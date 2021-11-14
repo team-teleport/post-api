@@ -1,7 +1,7 @@
 package com.sungan.postApi.repository
 
-import com.sungan.postApi.domain.Hotplace
-import com.sungan.postApi.domain.HotplaceComment
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.hotplace.HotplaceComment
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface HotplaceCommentRepository: JpaRepository<HotplaceComment, Long>, HotplaceCommentQueryRepository {

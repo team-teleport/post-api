@@ -1,6 +1,6 @@
 package com.sungan.postApi.repository
 
-import com.sungan.postApi.domain.Report
+import com.sungan.postApi.domain.report.Report
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 

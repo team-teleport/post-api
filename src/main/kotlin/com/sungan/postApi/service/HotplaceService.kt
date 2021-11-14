@@ -2,8 +2,8 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.Hotplace
-import com.sungan.postApi.domain.HotplaceLike
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.hotplace.HotplaceLike
 import com.sungan.postApi.dto.HotplaceVo
 import com.sungan.postApi.dto.HotplaceWithLikeCommendCntVo
 import com.sungan.postApi.dto.PostHotplaceReqDto

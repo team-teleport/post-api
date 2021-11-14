@@ -2,7 +2,7 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.SunganLike
+import com.sungan.postApi.domain.sungan.SunganLike
 import com.sungan.postApi.dto.SunganLikeVo
 import com.sungan.postApi.repository.SunganLikeRepository
 import com.sungan.postApi.repository.SunganRepository

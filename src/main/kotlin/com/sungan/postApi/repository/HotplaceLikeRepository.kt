@@ -1,7 +1,7 @@
 package com.sungan.postApi.repository
 
-import com.sungan.postApi.domain.Hotplace
-import com.sungan.postApi.domain.HotplaceLike
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.hotplace.HotplaceLike
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface HotplaceLikeRepository: JpaRepository<HotplaceLike, Long> {

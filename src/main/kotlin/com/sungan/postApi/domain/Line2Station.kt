@@ -3,6 +3,8 @@ package com.sungan.postApi.domain
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.sungan.Sungan
 import com.sungan.postApi.dto.Line2StationVo
 import javax.persistence.*
 

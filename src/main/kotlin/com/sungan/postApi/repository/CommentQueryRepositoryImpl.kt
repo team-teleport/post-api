@@ -1,9 +1,9 @@
 package com.sungan.postApi.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.sungan.postApi.domain.Comment
+import com.sungan.postApi.domain.sungan.Comment
 import com.sungan.postApi.domain.QComment.comment
-import com.sungan.postApi.domain.Sungan
+import com.sungan.postApi.domain.sungan.Sungan
 
 class CommentQueryRepositoryImpl(
     val query: JPAQueryFactory

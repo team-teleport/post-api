@@ -1,7 +1,7 @@
 package com.sungan.postApi.repository
 
-import com.sungan.postApi.domain.Comment
-import com.sungan.postApi.domain.CommentLike
+import com.sungan.postApi.domain.sungan.Comment
+import com.sungan.postApi.domain.sungan.CommentLike
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentLikeRepository: JpaRepository<CommentLike, Long> {

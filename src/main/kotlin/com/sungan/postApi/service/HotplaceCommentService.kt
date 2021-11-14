@@ -2,9 +2,9 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.HotplaceComment
-import com.sungan.postApi.domain.HotplaceCommentLike
-import com.sungan.postApi.domain.HotplaceNestedComment
+import com.sungan.postApi.domain.hotplace.HotplaceComment
+import com.sungan.postApi.domain.hotplace.HotplaceCommentLike
+import com.sungan.postApi.domain.hotplace.HotplaceNestedComment
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service

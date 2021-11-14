@@ -1,8 +1,8 @@
 package com.sungan.postApi.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.sungan.postApi.domain.Hotplace
-import com.sungan.postApi.domain.HotplaceComment
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.hotplace.HotplaceComment
 import com.sungan.postApi.domain.QHotplaceComment.hotplaceComment
 
 class HotplaceCommentQueryRepositoryImpl(

@@ -2,8 +2,8 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.domain.Sungan
-import com.sungan.postApi.domain.UserViewedSungan
+import com.sungan.postApi.domain.sungan.Sungan
+import com.sungan.postApi.domain.sungan.UserViewedSungan
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service

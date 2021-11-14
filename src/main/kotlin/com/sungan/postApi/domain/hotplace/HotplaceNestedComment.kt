@@ -1,5 +1,6 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.hotplace
 
+import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

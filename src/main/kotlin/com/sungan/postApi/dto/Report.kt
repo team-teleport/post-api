@@ -1,6 +1,5 @@
 package com.sungan.postApi.dto
 
-import com.sungan.postApi.domain.ReportType
 import com.sungan.postApi.domain.UserInfo
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime

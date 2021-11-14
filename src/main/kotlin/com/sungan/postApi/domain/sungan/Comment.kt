@@ -1,17 +1,21 @@
-package com.sungan.postApi.domain
+package com.sungan.postApi.domain.sungan
 
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
-import com.sungan.postApi.dto.CommentLikeVo
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.UserInfo
 import com.sungan.postApi.dto.CommentVo
-import com.sungan.postApi.dto.NestedCommentVo
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
+@SQLDelete(sql = "UPDATE comment SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 class Comment(
     @Column(nullable = false)
     var content: String,
@@ -22,7 +26,7 @@ class Comment(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
-) {
+): PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
@@ -33,14 +37,6 @@ class Comment(
     @OneToMany(mappedBy = "comment")
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<NestedComment> = ArrayList()
-
-    @Column(name = "created_at")
-    @CreatedDate
-    val createdAt: LocalDateTime = LocalDateTime.now()
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 
