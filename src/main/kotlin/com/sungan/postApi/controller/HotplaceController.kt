@@ -62,6 +62,16 @@ class HotplaceController(
         return SunganResponse(HttpStatus.OK, "핫플 댓글 달기 성공")
     }
 
+    @DeleteMapping("/commnet/{id}")
+    @ApiOperation(value = "핫플 댓글 삭제하기")
+    fun deletePlaceComment(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "핫플 id") @PathVariable(value = "id") hotplaceId: Long
+    ): SunganResponse<Any> {
+        hotplaceCommentService.destroyHotplaceComment(userId, hotplaceId)
+        return SunganResponse(HttpStatus.OK, "핫플 댓글 삭제 성공")
+    }
+
     @PostMapping("/{id}/like")
     @ApiOperation(value = "핫플 좋아요 누르기")
     fun postPlaceLike(

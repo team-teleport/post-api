@@ -5,7 +5,10 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.hotplace.HotplaceComment
 import com.sungan.postApi.domain.hotplace.HotplaceCommentLike
 import com.sungan.postApi.domain.hotplace.HotplaceNestedComment
-import com.sungan.postApi.dto.*
+import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
+import com.sungan.postApi.dto.HotplaceNestedCommentVo
+import com.sungan.postApi.dto.PostHotplaceCommentReqDto
+import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 
@@ -17,7 +20,10 @@ class HotplaceCommentService(
     val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
     val hotplaceLikeRepository: HotplaceLikeRepository
 ) {
-    fun readHotplaceCommentList(userId: Long, hotPlaceId: Long): List<CommentWithLikeCntAndIsLiked<HotplaceNestedCommentVo>> {
+    fun readHotplaceCommentList(
+        userId: Long,
+        hotPlaceId: Long
+    ): List<CommentWithLikeCntAndIsLiked<HotplaceNestedCommentVo>> {
         val hotplace =
             hotplaceRepository.findById(hotPlaceId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         val comments = hotplaceCommentRepository.findByHotplaceOrderByCreatedAtDesc(hotplace)
@@ -45,6 +51,15 @@ class HotplaceCommentService(
                 hotplace
             )
         )
+    }
+
+    fun destroyHotplaceComment(userId: Long, commentId: Long) {
+        val comment =
+            hotplaceCommentRepository.findById(commentId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
+        if (comment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+
+        hotplaceCommentLikeRepository.deleteAllBy(comment)
+        hotplaceCommentRepository.delete(comment)
     }
 
     fun createHotplaceNestedComment(userId: Long, postHotplaceNestedCommentReqDto: PostHotplaceNestedCommentReqDto) {
