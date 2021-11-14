@@ -54,6 +54,7 @@ class ReportService(
         reportRepository.delete(report)
     }
 
+    // TODO: Comment 관련 메서드 전부 reportCommentService 만들어서 분리
     fun createReportComment(userId: Long, postReportCommentReqDto: PostReportCommentReqDto) {
         val report = reportRepository.findById(postReportCommentReqDto.reportId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
@@ -66,7 +67,23 @@ class ReportService(
         )
     }
 
-    fun readReportCommentsWithLikes(userId: Long, reportId: Long): List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>> {
+    fun destroyReportComment(userId: Long, reportCommentId: Long) {
+        val reportComment = reportCommentRepository.findById(reportCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (reportComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        deleteReportCommentCascade(reportComment)
+    }
+
+    private fun deleteReportCommentCascade(reportComment: ReportComment) {
+        reportNestedCommentRepository.deleteAllByReportComment(reportComment)
+        reportCommentLikeRepository.deleteAllByReportComment(reportComment)
+        reportCommentRepository.delete(reportComment)
+    }
+
+    fun readReportCommentsWithLikes(
+        userId: Long,
+        reportId: Long
+    ): List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>> {
         val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         if (!report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST)
         val comments = reportCommentRepository.findByReport(report)

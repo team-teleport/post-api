@@ -66,9 +66,9 @@ class HotplaceController(
     @ApiOperation(value = "핫플 댓글 삭제하기")
     fun deletePlaceComment(
         @ApiIgnore userId: Long,
-        @ApiParam(value = "핫플 id") @PathVariable(value = "id") hotplaceId: Long
+        @ApiParam(value = "댓글 id") @PathVariable(value = "id") hotplaceCommentId: Long
     ): SunganResponse<Any> {
-        hotplaceCommentService.destroyHotplaceComment(userId, hotplaceId)
+        hotplaceCommentService.destroyHotplaceComment(userId, hotplaceCommentId)
         return SunganResponse(HttpStatus.OK, "핫플 댓글 삭제 성공")
     }
 

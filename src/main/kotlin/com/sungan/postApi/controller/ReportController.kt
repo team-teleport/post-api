@@ -5,6 +5,7 @@ import com.sungan.postApi.dto.*
 import com.sungan.postApi.service.ReportService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiParam
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
@@ -53,6 +54,15 @@ class ReportController(
         return SunganResponse(HttpStatus.OK, "댓글 달기 성공")
     }
 
+    @DeleteMapping("/comment/{id}")
+    @ApiOperation(value = "민원 댓글 삭제하기")
+    fun deletePlaceComment(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "민원 id") @PathVariable(value = "id") reportId: Long
+    ): SunganResponse<Any> {
+        reportService.destroyReportComment(userId, reportId)
+        return SunganResponse(HttpStatus.OK, "민원 댓글 삭제 성공")
+    }
     @GetMapping("/{id}/comments")
     @ApiOperation(value = "신고글의 모든 댓글 보기")
     fun getAllComments(
