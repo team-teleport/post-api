@@ -24,6 +24,16 @@ class ReportController(
         return SunganResponse(reportService.createReport(userId, postReportReqDto))
     }
 
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "민원 삭제하기")
+    fun deleteReport(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") reportId: Long
+    ): SunganResponse<Any> {
+        TODO("민원 삭제 서비스")
+        return SunganResponse(HttpStatus.OK, "민원 삭제 성공")
+    }
+
     @GetMapping("/{id}")
     @ApiOperation(value = "신고 자세히 보기")
     fun getReport(

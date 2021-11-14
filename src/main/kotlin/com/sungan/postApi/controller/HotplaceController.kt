@@ -34,8 +34,15 @@ class HotplaceController(
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
     ): SunganResponse<HotplaceWithLikeCommendCntVo> = SunganResponse(hotplaceService.readHotplace(userId, id))
 
-
-    // TODO: 수정, 삭제
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "핫플 삭제하기")
+    fun deletePlace(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
+    ): SunganResponse<Any> {
+        TODO("삭제 서비스")
+        return SunganResponse(HttpStatus.OK, "핫플레이스 삭제 성공")
+    }
 
     @GetMapping("/{id}/comments")
     @ApiOperation(value = "핫플 댓글 전체 보기")
