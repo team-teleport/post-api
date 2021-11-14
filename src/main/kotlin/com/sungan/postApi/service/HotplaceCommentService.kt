@@ -5,6 +5,7 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.hotplace.HotplaceComment
 import com.sungan.postApi.domain.hotplace.HotplaceCommentLike
 import com.sungan.postApi.domain.hotplace.HotplaceNestedComment
+import com.sungan.postApi.domain.sungan.Comment
 import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
@@ -58,7 +59,12 @@ class HotplaceCommentService(
             hotplaceCommentRepository.findById(commentId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
         if (comment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
 
+        deleteCommentCascade(comment)
+    }
+
+    private fun deleteCommentCascade(comment: HotplaceComment) {
         hotplaceCommentLikeRepository.deleteAllByHotplaceComment(comment)
+        hotplaceNestedCommentRepository.deleteAllByHotplaceComment(comment)
         hotplaceCommentRepository.delete(comment)
     }
 

@@ -2,6 +2,7 @@ package com.sungan.postApi.repository.query
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.hotplace.HotplaceComment
 import com.sungan.postApi.domain.hotplace.QHotplaceComment.hotplaceComment
 import com.sungan.postApi.domain.hotplace.QHotplaceNestedComment.hotplaceNestedComment
 
@@ -13,6 +14,13 @@ class HotplaceNestedCommentQueryRepositoryImpl(
         queryFactory.update(hotplaceNestedComment)
             .set(hotplaceNestedComment.deleted, true)
             .where(hotplaceNestedComment.hotplaceComment.`in`(comments))
+            .execute()
+    }
+
+    override fun deleteAllByHotplaceComment(hotplaceComment: HotplaceComment) {
+        queryFactory.update(hotplaceNestedComment)
+            .set(hotplaceNestedComment.deleted, true)
+            .where(hotplaceNestedComment.hotplaceComment.eq(hotplaceComment))
             .execute()
     }
 }
