@@ -102,6 +102,16 @@ class ReportController(
         return SunganResponse(HttpStatus.OK, "신고글 대댓글 달기 성공")
     }
 
+    @DeleteMapping("/comment/reply/{id}")
+    @ApiOperation(value = "민원글 대댓글 삭제하기")
+    fun deleteReportNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long
+    ): SunganResponse<Any> {
+        reportService.destroyNestedComment(userId, nestedCommentId)
+        return SunganResponse(HttpStatus.OK, "민원 대댓글 삭제 성공")
+    }
+
     @PostMapping("/comment/{id}/like")
     @ApiOperation(value = "댓글에 좋아요 누르기")
     fun postReportCommentLike(
