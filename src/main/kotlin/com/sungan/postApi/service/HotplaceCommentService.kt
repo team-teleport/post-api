@@ -58,7 +58,7 @@ class HotplaceCommentService(
             hotplaceCommentRepository.findById(commentId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
         if (comment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
 
-        hotplaceCommentLikeRepository.deleteAllBy(comment)
+        hotplaceCommentLikeRepository.deleteAllByHotplaceComment(comment)
         hotplaceCommentRepository.delete(comment)
     }
 

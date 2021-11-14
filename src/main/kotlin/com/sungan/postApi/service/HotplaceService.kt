@@ -40,9 +40,15 @@ class HotplaceService(
         val hotplace =
             hotplaceRepository.findById(hotplaceId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (hotplace.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        deleteHotplaceCascade(hotplace)
+    }
+
+    private fun deleteHotplaceCascade(hotplace: Hotplace) {
         hotplaceLikeRepository.deleteAllByHotplace(hotplace)
+
         hotplaceCommentLikeRepository.deleteAllByHotplace(hotplace)
         hotplaceCommentRepository.deleteAllByHotplace(hotplace)
+
         hotplaceRepository.delete(hotplace)
     }
 

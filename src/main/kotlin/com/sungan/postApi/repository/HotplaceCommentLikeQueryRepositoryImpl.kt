@@ -10,9 +10,12 @@ class HotplaceCommentLikeQueryRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : HotplaceCommentLikeQueryRepository {
     override fun deleteAllByHotplace(hot: Hotplace) {
-        val hotplaceCommentIds = queryFactory.select(hotplaceComment.id)
-            .from(hotplaceComment).join(hotplace).on(hotplace.eq(hotplaceComment.hotplace))
-            .where(hotplaceComment.hotplace.eq(hot))
-        queryFactory.delete(hotplaceCommentLike).where(hotplaceCommentLike.hotplaceComment.id.`in`(hotplaceCommentIds))
+        val hotplaceComments = queryFactory
+            .selectFrom(hotplaceComment).join(hotplace)
+            .on(hotplace.eq(hotplaceComment.hotplace).and(hotplace.eq(hot)))
+            .fetch()
+
+        queryFactory.delete(hotplaceCommentLike).where(hotplaceCommentLike.hotplaceComment.`in`(hotplaceComments))
+            .execute()
     }
 }
