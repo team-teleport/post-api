@@ -23,7 +23,7 @@ class Comment(
     @Embedded
     var userInfo: UserInfo,
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sungan_id")
     val sungan: Sungan
 ): PostBaseEntity() {
@@ -31,10 +31,10 @@ class Comment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE])
     var likes: MutableList<CommentLike> = ArrayList()
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE])
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<NestedComment> = ArrayList()
 

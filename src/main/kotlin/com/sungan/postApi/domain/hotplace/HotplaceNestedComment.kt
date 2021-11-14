@@ -8,10 +8,10 @@ import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
-@SQLDelete(sql = "UPDATE table_product SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE hotplace_nested_comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 class HotplaceNestedComment(
-    @ManyToOne(cascade = [CascadeType.REMOVE])
+    @ManyToOne
     @JoinColumn(name = "hotplace_comment_id")
     var hotplaceComment: HotplaceComment,
     @Column(nullable = false)

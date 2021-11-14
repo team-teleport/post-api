@@ -26,14 +26,14 @@ class ReportComment(
     @Column(nullable = false)
     var content: String = content
 
-    @ManyToOne(cascade = [CascadeType.REMOVE])
+    @ManyToOne
     @JoinColumn(name = "report_id")
     val report: Report = report
 
-    @OneToMany(mappedBy = "reportComment")
+    @OneToMany(mappedBy = "reportComment", cascade = [CascadeType.REMOVE])
     var likes: MutableList<ReportCommentLike> = ArrayList()
 
-    @OneToMany(mappedBy = "reportComment")
+    @OneToMany(mappedBy = "reportComment", cascade = [CascadeType.REMOVE])
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<ReportNestedComment> = ArrayList()
 

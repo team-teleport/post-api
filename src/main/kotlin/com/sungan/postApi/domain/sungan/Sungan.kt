@@ -30,7 +30,7 @@ class Sungan(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    @OneToMany(mappedBy = "sungan")
+    @OneToMany(mappedBy = "sungan", cascade = [CascadeType.REMOVE])
     var contents: MutableList<SunganContent> = ArrayList()
 
     @Column
@@ -41,7 +41,10 @@ class Sungan(
     @ColumnDefault("0")
     var likeCnt: Long = 0
 
-    @OneToMany(mappedBy = "sungan")
+    @OneToMany(mappedBy = "sungan", cascade = [CascadeType.REMOVE])
+    val likes: MutableList<SunganLike> = ArrayList()
+
+    @OneToMany(mappedBy = "sungan", cascade = [CascadeType.REMOVE])
     val comments: MutableList<Comment> = ArrayList()
 
     @OneToMany(mappedBy = "sungan")

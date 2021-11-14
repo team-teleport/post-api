@@ -27,6 +27,7 @@ class ReportNestedComment(
     val id: Long = 0
 
     fun convertToVo() = ReportNestedCommentVo(
+        id,
         reportComment.id!!,
         userInfo,
         content,

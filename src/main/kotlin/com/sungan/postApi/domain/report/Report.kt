@@ -35,8 +35,11 @@ class Report(
     @ColumnDefault("0")
     var readCnt: Long = 0
 
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "report", cascade = [CascadeType.REMOVE])
     var likes: MutableList<ReportLike> = ArrayList()
+
+    @OneToMany(mappedBy = "report", cascade = [CascadeType.REMOVE])
+    var comments: MutableList<ReportComment> = ArrayList()
 
     override fun toString() = kotlinToString(properties = toStringProperties)
 

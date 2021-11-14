@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 class ReportLike(
-    @ManyToOne(cascade = [CascadeType.REMOVE])
+    @ManyToOne
     @JoinColumn(name = "report_id")
     var report: Report,
     @Column

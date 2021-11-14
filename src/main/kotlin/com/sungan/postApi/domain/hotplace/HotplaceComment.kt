@@ -17,7 +17,7 @@ class HotplaceComment(
     content: String,
     @Embedded
     var userInfo: UserInfo,
-    @ManyToOne(cascade = [CascadeType.REMOVE])
+    @ManyToOne
     @JoinColumn(name = "hotplace_id")
     val hotplace: Hotplace
 ): PostBaseEntity() {
@@ -28,10 +28,10 @@ class HotplaceComment(
     @Column(nullable = false)
     var content: String = content
 
-    @OneToMany(mappedBy = "hotplaceComment")
+    @OneToMany(mappedBy = "hotplaceComment", cascade = [CascadeType.REMOVE])
     var likes: MutableList<HotplaceCommentLike> = ArrayList()
 
-    @OneToMany(mappedBy = "hotplaceComment")
+    @OneToMany(mappedBy = "hotplaceComment", cascade = [CascadeType.REMOVE])
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<HotplaceNestedComment> = ArrayList()
 

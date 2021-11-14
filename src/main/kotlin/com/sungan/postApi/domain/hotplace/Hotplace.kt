@@ -26,7 +26,10 @@ class Hotplace(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    @OneToMany(mappedBy = "hotplace")
+    @OneToMany(mappedBy = "hotplace", cascade = [CascadeType.REMOVE])
+    var hotplaceComment: MutableList<HotplaceComment> = ArrayList()
+
+    @OneToMany(mappedBy = "hotplace", cascade = [CascadeType.REMOVE])
     var hotplaceLikes: MutableList<HotplaceLike> = ArrayList()
 
     override fun toString() = kotlinToString(properties = toStringProperties)
