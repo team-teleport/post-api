@@ -40,7 +40,7 @@ class HotplaceController(
         @ApiIgnore userId: Long,
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
     ): SunganResponse<Any> {
-        TODO("삭제 서비스")
+        hotplaceService.destroyHotplace(userId, hotplaceId = id)
         return SunganResponse(HttpStatus.OK, "핫플레이스 삭제 성공")
     }
 
