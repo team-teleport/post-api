@@ -37,6 +37,7 @@ data class ReportCommentVo(
 ): CommentBaseVo
 
 data class ReportNestedCommentVo(
+    val id: Long,
     val commentId: Long,
     val userInfo: UserInfo,
     val content: String,

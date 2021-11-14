@@ -67,9 +67,9 @@ class ReportController(
     @ApiOperation(value = "신고글의 모든 댓글 보기")
     fun getAllComments(
         @ApiIgnore userId: Long,
-        @PathVariable(value = "id") id: Long
+        @PathVariable(value = "id") reportId: Long
     ): SunganResponse<List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>>> {
-        return SunganResponse(reportService.readReportCommentsWithLikes(userId, id))
+        return SunganResponse(reportService.readReportCommentsWithLikes(userId, reportId))
     }
 
     @PostMapping("/{id}/like")

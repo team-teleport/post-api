@@ -43,14 +43,6 @@ class ReportService(
     fun destroyReport(userId: Long, reportId: Long) {
         val report = reportRepository.findById(reportId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (report.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
-        deleteReportCascade(report)
-    }
-
-    private fun deleteReportCascade(report: Report) {
-        reportCommentLikeRepository.deleteAllByReport(report)
-        reportNestedCommentRepository.deleteAllByReport(report)
-        reportCommentRepository.deleteAllByReport(report)
-        reportLikeRepository.deleteAllByReport(report)
         reportRepository.delete(report)
     }
 
@@ -71,12 +63,6 @@ class ReportService(
         val reportComment = reportCommentRepository.findById(reportCommentId)
             .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (reportComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
-        deleteReportCommentCascade(reportComment)
-    }
-
-    private fun deleteReportCommentCascade(reportComment: ReportComment) {
-        reportNestedCommentRepository.deleteAllByReportComment(reportComment)
-        reportCommentLikeRepository.deleteAllByReportComment(reportComment)
         reportCommentRepository.delete(reportComment)
     }
 
@@ -84,7 +70,8 @@ class ReportService(
         userId: Long,
         reportId: Long
     ): List<CommentWithLikeCntAndIsLiked<ReportNestedCommentVo>> {
-        val report = reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
+        val report =
+            reportRepository.findById(reportId).orElseThrow { throw SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (!report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST)
         val comments = reportCommentRepository.findByReport(report)
         return comments.asSequence().map { comment ->
