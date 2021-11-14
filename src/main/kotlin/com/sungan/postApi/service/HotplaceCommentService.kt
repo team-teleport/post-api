@@ -5,21 +5,22 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.hotplace.HotplaceComment
 import com.sungan.postApi.domain.hotplace.HotplaceCommentLike
 import com.sungan.postApi.domain.hotplace.HotplaceNestedComment
-import com.sungan.postApi.domain.sungan.Comment
 import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
 import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
-import com.sungan.postApi.repository.*
+import com.sungan.postApi.repository.HotplaceCommentLikeRepository
+import com.sungan.postApi.repository.HotplaceCommentRepository
+import com.sungan.postApi.repository.HotplaceNestedCommentRepository
+import com.sungan.postApi.repository.HotplaceRepository
 import org.springframework.stereotype.Service
 
 @Service
 class HotplaceCommentService(
-    val hotplaceRepository: HotplaceRepository,
-    val hotplaceCommentRepository: HotplaceCommentRepository,
-    val hotplaceNestedCommentRepository: HotplaceNestedCommentRepository,
-    val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
-    val hotplaceLikeRepository: HotplaceLikeRepository
+    private val hotplaceRepository: HotplaceRepository,
+    private val hotplaceCommentRepository: HotplaceCommentRepository,
+    private val hotplaceNestedCommentRepository: HotplaceNestedCommentRepository,
+    private val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
 ) {
     fun readHotplaceCommentList(
         userId: Long,
@@ -78,6 +79,13 @@ class HotplaceCommentService(
                 postHotplaceNestedCommentReqDto.makeUserInfo(userId)
             )
         )
+    }
+
+    fun destroyHotplaceNestedComment(userId: Long, hotplaceNestedCommentId: Long) {
+        val hotplaceNestedComment = hotplaceNestedCommentRepository.findById(hotplaceNestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (hotplaceNestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        hotplaceNestedCommentRepository.delete(hotplaceNestedComment)
     }
 
     fun createHotplaceCommentLike(userId: Long, commentId: Long) {
