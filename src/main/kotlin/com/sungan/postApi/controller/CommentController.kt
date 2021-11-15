@@ -46,4 +46,14 @@ class CommentController(
         commentService.createNestedComment(userId, commentId, postNestedCommentReqDto)
         return SunganResponse(HttpStatus.OK, "대댓글 생성 완료")
     }
+
+    @DeleteMapping("/reply/{id}")
+    @ApiModelProperty(value = "대댓글 삭제하기 API")
+    fun deleteNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long,
+    ): SunganResponse<Any> {
+        commentService.destroyNestedComment(userId, nestedCommentId)
+        return SunganResponse(HttpStatus.OK, "순간 대댓글 삭제 성공")
+    }
 }

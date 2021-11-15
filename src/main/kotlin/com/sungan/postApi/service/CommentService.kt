@@ -13,7 +13,6 @@ class CommentService(
     val sunganRepository: SunganRepository,
     val commentRepository: CommentRepository,
     val nestedCommentRepository: NestedCommentRepository,
-    val sunganLikeRepository: SunganLikeRepository,
     val commentLikeRepository: CommentLikeRepository
 ) {
     fun createComment(userId: Long, postCommentRequestDto: PostCommentRequestDto): CommentVo {
@@ -76,5 +75,12 @@ class CommentService(
                 comment.nestedComments.map { nestedComment -> nestedComment.convertToVo() }
             )
         }.toList()
+    }
+
+    fun destroyNestedComment(userId: Long, nestedCommentId: Long) {
+        val nestedComment = nestedCommentRepository.findById(nestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        nestedCommentRepository.delete(nestedComment)
     }
 }
