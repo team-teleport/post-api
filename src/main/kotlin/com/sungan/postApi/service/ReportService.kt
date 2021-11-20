@@ -66,6 +66,17 @@ class ReportService(
         reportCommentRepository.delete(reportComment)
     }
 
+    fun updateReportComment(
+        userId: Long,
+        reportCommentId: Long,
+        content: String
+    ) {
+        val reportComment = reportCommentRepository.findById(reportCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (reportComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        reportComment.content = content
+    }
+
     fun readReportCommentsWithLikes(
         userId: Long,
         reportId: Long

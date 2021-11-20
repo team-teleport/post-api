@@ -52,6 +52,10 @@ data class PostReportCommentReqDto(
     override var userProfileImgUrl: String?
 ): ReqIncludeUserInfo
 
+data class PatchReportCommentReqDto(
+    val content: String
+)
+
 data class PostReportNestedCommentReqDto(
     val commentId: Long,
     val userId: Long,
