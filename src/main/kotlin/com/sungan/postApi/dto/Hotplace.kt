@@ -75,3 +75,7 @@ data class HotplaceNestedCommentVo(
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )
+
+data class PatchHotplaceCommentReqDto(
+    val content: String,
+)

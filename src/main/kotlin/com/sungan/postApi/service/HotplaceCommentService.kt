@@ -14,8 +14,10 @@ import com.sungan.postApi.repository.HotplaceCommentRepository
 import com.sungan.postApi.repository.HotplaceNestedCommentRepository
 import com.sungan.postApi.repository.HotplaceRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class HotplaceCommentService(
     private val hotplaceRepository: HotplaceRepository,
     private val hotplaceCommentRepository: HotplaceCommentRepository,
@@ -60,6 +62,13 @@ class HotplaceCommentService(
             hotplaceCommentRepository.findById(commentId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
         if (comment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
         hotplaceCommentRepository.delete(comment)
+    }
+
+    fun updateHotplaceComment(userId: Long, commentId: Long, content: String) {
+        val comment =
+            hotplaceCommentRepository.findById(commentId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (comment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        comment.content = content
     }
 
     fun createHotplaceNestedComment(userId: Long, postHotplaceNestedCommentReqDto: PostHotplaceNestedCommentReqDto) {
