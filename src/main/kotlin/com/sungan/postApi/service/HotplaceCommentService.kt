@@ -90,6 +90,13 @@ class HotplaceCommentService(
         hotplaceNestedCommentRepository.delete(hotplaceNestedComment)
     }
 
+    fun updateHotplaceNestedComment(userId: Long, hotplaceNestedCommentId: Long, content: String) {
+        val hotplaceNestedComment = hotplaceNestedCommentRepository.findById(hotplaceNestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (hotplaceNestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        hotplaceNestedComment.content = content
+    }
+
     fun createHotplaceCommentLike(userId: Long, commentId: Long) {
         val comment =
             hotplaceCommentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
