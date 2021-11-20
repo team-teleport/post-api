@@ -124,6 +124,16 @@ class ReportController(
         return SunganResponse(HttpStatus.OK, "민원 대댓글 삭제 성공")
     }
 
+    @PatchMapping("/comment/reply/{id}")
+    fun updateReportNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long,
+        @RequestBody patchReportNestedCommentReqDto: PatchReportNestedCommentReqDto
+    ): SunganResponse<Any> {
+        reportService.updateNestedComment(userId, nestedCommentId, patchReportNestedCommentReqDto.content)
+        return SunganResponse(HttpStatus.OK, "민원 대댓글 수정 성공")
+    }
+
     @PostMapping("/comment/{id}/like")
     @ApiOperation(value = "댓글에 좋아요 누르기")
     fun postReportCommentLike(

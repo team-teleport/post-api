@@ -57,12 +57,16 @@ data class PatchReportCommentReqDto(
 )
 
 data class PostReportNestedCommentReqDto(
-    val commentId: Long,
+    val commentId: Long, // 부모 댓글의 id
     val userId: Long,
     val content: String,
     override var userName: String,
     override var userProfileImgUrl: String?
 ): ReqIncludeUserInfo
+
+data class PatchReportNestedCommentReqDto(
+    val content: String,
+)
 
 data class ReportCommentWithLikeList(
     val comments: List<ReportCommentWithLike>

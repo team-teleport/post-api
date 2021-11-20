@@ -120,6 +120,13 @@ class ReportService(
         reportNestedCommentRepository.delete(nestedComment)
     }
 
+    fun updateNestedComment(userId: Long, nestedCommentId: Long, content: String) {
+        val nestedComment = reportNestedCommentRepository.findById(nestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        nestedComment.content = content
+    }
+
     fun createReportCommentLike(userId: Long, commentId: Long) {
         val reportComment =
             reportCommentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
