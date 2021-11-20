@@ -8,6 +8,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+cloud.aws:
+  region:
+    static: ap-northeast-2
+  s3:
+    bucket: sungan-app
+  credentials:
+    access-key: AKIAZ23FDEPWRSUYI26K
+    secret-key: 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
 
 ---
 

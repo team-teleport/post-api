@@ -9,7 +9,6 @@ spring:
     password: rkdudmysql4_
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-
   jpa:
     generate-ddl: true
     hibernate:
@@ -19,3 +18,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+cloud.aws:
+  region:
+    static: ap-northeast-2
+  s3:
+    bucket: sungan-app
+  credentials:
+    access-key: AKIAZ23FDEPWRSUYI26K
+    secret-key: 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
