@@ -5,6 +5,7 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.report.*
 import com.sungan.postApi.domain.report.Report
 import com.sungan.postApi.dto.*
+import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
@@ -59,7 +60,9 @@ class ReportService(
                 postReportCommentReqDto.makeUserInfo(userId)
             )
         )
-        notiEventPublisher.publishCommentRegisteredEvent(report.userInfo.userId, newComment.userInfo.userName)
+        if (userId != report.userInfo.userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(report.userInfo.userId, newComment.userInfo.userName)
+        }
     }
 
     fun destroyReportComment(userId: Long, reportCommentId: Long) {
@@ -120,7 +123,7 @@ class ReportService(
                 newNestedComment.userInfo.userName
             )
         }
-        if(comment.userInfo.userId != userId) {
+        if (comment.userInfo.userId != userId) {
             notiEventPublisher.publishNestedCommentRegisteredEvent(
                 comment.userInfo.userId,
                 newNestedComment.userInfo.userName
@@ -154,6 +157,9 @@ class ReportService(
                 userId
             )
         )
+        if (userId != reportComment.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(reportComment.userInfo.userId, userId, LikeType.Comment)
+        }
     }
 
     fun destroyReportCommentLike(userId: Long, likeId: Long) {
@@ -171,6 +177,9 @@ class ReportService(
                 report, userId
             )
         )
+        if (userId != report.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(report.userInfo.userId, userId, LikeType.Post)
+        }
     }
 
     fun destroyReportLike(userId: Long, reportId: Long) {

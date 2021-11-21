@@ -25,7 +25,9 @@ class CommentLikeService(
             userId,
             commentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         ))
-        notiEventPublisher.publishLikeRegisteredEvent(comment.userInfo.userId, newLike.userId, LikeType.Comment)
+        if (userId != comment.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(comment.userInfo.userId, newLike.userId, LikeType.Comment)
+        }
         return newLike.convertToVo()
     }
 

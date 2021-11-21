@@ -9,6 +9,7 @@ import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
 import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
+import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.HotplaceCommentLikeRepository
 import com.sungan.postApi.repository.HotplaceCommentRepository
@@ -57,7 +58,9 @@ class HotplaceCommentService(
                 hotplace
             )
         )
-        notiEventPublisher.publishCommentRegisteredEvent(hotplace.userInfo.userId, newComment.userInfo.userName)
+        if(userId != hotplace.userInfo.userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(hotplace.userInfo.userId, newComment.userInfo.userName)
+        }
     }
 
     fun destroyHotplaceComment(userId: Long, commentId: Long) {
@@ -124,6 +127,9 @@ class HotplaceCommentService(
                 userId, comment
             )
         )
+        if (userId != comment.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(comment.userInfo.userId, userId, LikeType.Comment)
+        }
     }
 
     fun destroyHotplaceCommentLike(userId: Long, commentId: Long) {

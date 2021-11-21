@@ -4,6 +4,8 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.sungan.SunganLike
 import com.sungan.postApi.dto.SunganLikeVo
+import com.sungan.postApi.event.publisher.LikeType
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.SunganLikeRepository
 import com.sungan.postApi.repository.SunganRepository
 import org.springframework.stereotype.Service
@@ -12,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class SunganLikeService(
     val sunganLikeRepository: SunganLikeRepository,
-    val sunganRepository: SunganRepository
+    val sunganRepository: SunganRepository,
+    val notiEventPublisher: NotiEventPublisher,
 ) {
     @Transactional
     fun createSunganLike(userId: Long, sunganId: Long): SunganLikeVo {
@@ -26,6 +29,9 @@ class SunganLikeService(
         )
         sungan.likeCnt += 1
         sunganRepository.save(sungan)
+        if (userId != sungan.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(sungan.userInfo.userId, userId, LikeType.Post)
+        }
         return newLike.convertToVo()
     }
 

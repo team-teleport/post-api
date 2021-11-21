@@ -8,6 +8,8 @@ import com.sungan.postApi.dto.HotplaceVo
 import com.sungan.postApi.dto.HotplaceWithLikeCommendCntVo
 import com.sungan.postApi.dto.PostHotplaceReqDto
 import com.sungan.postApi.dto.UpdateHotplaceReqDto
+import com.sungan.postApi.event.publisher.LikeType
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,6 +20,7 @@ class HotplaceService(
     private val line2StationRepository: Line2StationRepository,
     private val hotplaceCommentRepository: HotplaceCommentRepository,
     private val hotplaceLikeRepository: HotplaceLikeRepository,
+    private val notiEventPublisher: NotiEventPublisher,
 ) {
     fun createHotplace(userId: Long, postHotplaceReqDto: PostHotplaceReqDto): HotplaceVo {
         val stationName = postHotplaceReqDto.stationName
@@ -68,6 +71,9 @@ class HotplaceService(
                 userId, hotplace
             )
         )
+        if (hotplace.userInfo.userId != userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(hotplace.userInfo.userId, userId, LikeType.Post)
+        }
     }
 
     fun destroyHotplaceLike(userId: Long, hotplaceId: Long) {
