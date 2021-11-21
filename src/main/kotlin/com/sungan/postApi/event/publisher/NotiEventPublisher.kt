@@ -36,4 +36,25 @@ class NotiEventPublisher(
         eventPublisher.publishEvent(NotiRegisteredEvent(notiReq))
         logger.info("published comment registered event to user ${authorId}.")
     }
+
+    @Async
+    fun publishLikeRegisteredEvent(authorId: Long, LikedUserNickname: String, likeType: LikeType) {
+        val likedThing = when (likeType) {
+            LikeType.Post -> "게시글"
+            LikeType.Comment -> "댓글"
+        }
+        val notiReq = NotificationReqDto(
+            mutableListOf(authorId),
+            "순간이동",
+            "${LikedUserNickname}이 회원님의 ${likedThing}을 좋아합니다.",
+            Goto("Home")
+        )
+        eventPublisher.publishEvent(NotiRegisteredEvent(notiReq))
+        logger.info("published comment registered event to user ${authorId}.")
+    }
+}
+
+enum class LikeType {
+    Post,
+    Comment
 }
