@@ -64,6 +64,12 @@ dependencies {
     implementation("software.amazon.awssdk:regions:2.17.81")
     implementation("software.amazon.awssdk:core:2.17.81")
     implementation("software.amazon.awssdk:s3:2.17.81")
+
+    // gson
+    implementation("com.google.code.gson:gson:2.8.8")
+
+    // okhttp
+    implementation ("com.squareup.okhttp3:okhttp:3.8.1")
 }
 
 sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {

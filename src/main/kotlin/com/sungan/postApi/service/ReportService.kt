@@ -5,6 +5,8 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.report.*
 import com.sungan.postApi.domain.report.Report
 import com.sungan.postApi.dto.*
+import com.sungan.postApi.event.publisher.LikeType
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +19,8 @@ class ReportService(
     val reportCommentLikeRepository: ReportCommentLikeRepository,
     val reportNestedCommentRepository: ReportNestedCommentRepository,
     val reportLikeRepository: ReportLikeRepository,
-    val reportTypeRepository: ReportTypeRepository
+    val reportTypeRepository: ReportTypeRepository,
+    val notiEventPublisher: NotiEventPublisher,
 ) {
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {
         val type = reportTypeRepository.findByLabel(postReportReqDto.label)
@@ -50,13 +53,16 @@ class ReportService(
     fun createReportComment(userId: Long, postReportCommentReqDto: PostReportCommentReqDto) {
         val report = reportRepository.findById(postReportCommentReqDto.reportId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        reportCommentRepository.save(
+        val newComment = reportCommentRepository.save(
             ReportComment(
                 postReportCommentReqDto.content,
                 report,
                 postReportCommentReqDto.makeUserInfo(userId)
             )
         )
+        if (userId != report.userInfo.userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(report.userInfo.userId, newComment.userInfo.userName)
+        }
     }
 
     fun destroyReportComment(userId: Long, reportCommentId: Long) {
@@ -104,13 +110,25 @@ class ReportService(
         val comment = reportCommentRepository.findById(postReportNestedCommentReqDto.commentId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         if (!comment.report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST) // 업로드 되지 않은 신고글일경우
-        reportNestedCommentRepository.save(
+        val newNestedComment = reportNestedCommentRepository.save(
             ReportNestedComment(
                 comment,
                 postReportNestedCommentReqDto.content,
                 postReportNestedCommentReqDto.makeUserInfo(userId)
             )
         )
+        if (comment.report.userInfo.userId != userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(
+                comment.report.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
+        if (comment.userInfo.userId != userId) {
+            notiEventPublisher.publishNestedCommentRegisteredEvent(
+                comment.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
     }
 
     fun destroyNestedComment(userId: Long, nestedCommentId: Long) {
@@ -139,6 +157,9 @@ class ReportService(
                 userId
             )
         )
+        if (userId != reportComment.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(reportComment.userInfo.userId, userId, LikeType.Comment)
+        }
     }
 
     fun destroyReportCommentLike(userId: Long, likeId: Long) {
@@ -156,6 +177,9 @@ class ReportService(
                 report, userId
             )
         )
+        if (userId != report.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(report.userInfo.userId, userId, LikeType.Post)
+        }
     }
 
     fun destroyReportLike(userId: Long, reportId: Long) {

@@ -9,6 +9,8 @@ import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
 import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
+import com.sungan.postApi.event.publisher.LikeType
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.HotplaceCommentLikeRepository
 import com.sungan.postApi.repository.HotplaceCommentRepository
 import com.sungan.postApi.repository.HotplaceNestedCommentRepository
@@ -23,6 +25,7 @@ class HotplaceCommentService(
     private val hotplaceCommentRepository: HotplaceCommentRepository,
     private val hotplaceNestedCommentRepository: HotplaceNestedCommentRepository,
     private val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
+    private val notiEventPublisher: NotiEventPublisher,
 ) {
     fun readHotplaceCommentList(
         userId: Long,
@@ -48,13 +51,16 @@ class HotplaceCommentService(
     fun createHotplaceComment(userId: Long, postHotplaceCommentReqDto: PostHotplaceCommentReqDto) {
         val hotplace = hotplaceRepository.findById(postHotplaceCommentReqDto.hotplaceId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        hotplaceCommentRepository.save(
+        val newComment = hotplaceCommentRepository.save(
             HotplaceComment(
                 postHotplaceCommentReqDto.content,
                 postHotplaceCommentReqDto.makeUserInfo(userId),
                 hotplace
             )
         )
+        if(userId != hotplace.userInfo.userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(hotplace.userInfo.userId, newComment.userInfo.userName)
+        }
     }
 
     fun destroyHotplaceComment(userId: Long, commentId: Long) {
@@ -74,13 +80,26 @@ class HotplaceCommentService(
     fun createHotplaceNestedComment(userId: Long, postHotplaceNestedCommentReqDto: PostHotplaceNestedCommentReqDto) {
         val comment = hotplaceCommentRepository.findById(postHotplaceNestedCommentReqDto.commentId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        hotplaceNestedCommentRepository.save(
+        val newNestedComment = hotplaceNestedCommentRepository.save(
             HotplaceNestedComment(
                 comment,
                 postHotplaceNestedCommentReqDto.content,
                 postHotplaceNestedCommentReqDto.makeUserInfo(userId)
             )
         )
+        if (comment.hotplace.userInfo.userId != userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(
+                comment.hotplace.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
+
+        if(comment.userInfo.userId != userId) {
+            notiEventPublisher.publishNestedCommentRegisteredEvent(
+                comment.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
     }
 
     fun destroyHotplaceNestedComment(userId: Long, hotplaceNestedCommentId: Long) {
@@ -108,6 +127,9 @@ class HotplaceCommentService(
                 userId, comment
             )
         )
+        if (userId != comment.userInfo.userId) {
+            notiEventPublisher.publishLikeRegisteredEvent(comment.userInfo.userId, userId, LikeType.Comment)
+        }
     }
 
     fun destroyHotplaceCommentLike(userId: Long, commentId: Long) {
