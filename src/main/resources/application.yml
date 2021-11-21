@@ -20,6 +20,7 @@ cloud.aws:
   credentials:
     access-key: AKIAZ23FDEPWRSUYI26K
     secret-key: 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
+push-api.key: eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2NDUyNjM0ODQsInVzZXJJZCI6IiJ9.Y1GeLQa0iZvuLpThjN_SAWDKUEzqO5X_LGPfHRqbUijZul7x0QzLm6tswO2b7eP_3Uvw0I8VS3XOAoWxnu3I3qC0FTXD7OPrLTIXjLwOKwwFGDSJZ1lEdCue7re4bYTlqstAx6ArAc1zAVrrR40tbZMAtInV5i5kpXbQUqClfvuRoCetmka-AbJVzdCecseCCHzZr9Y2_LI4gcUinWc4PRCaYPfsPlK2DMbwjJXOLj1GFJC5odsHt8uSQ2PdFVxT71NAGCbnMJISozfkbR3vbZ_QqwJcIyVq68QI8Nt0pYOZOKiCYIIwrwh_ZMyo9Ge8pVydyf3rhvgvOrmtm_gGMA
 
 ---
 
