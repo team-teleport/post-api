@@ -4,8 +4,9 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.sungan.CommentLike
 import com.sungan.postApi.dto.CommentLikeVo
-import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
+import com.sungan.postApi.event.publisher.NotiType
+import com.sungan.postApi.event.publisher.PostType
 import com.sungan.postApi.repository.CommentLikeRepository
 import com.sungan.postApi.repository.CommentRepository
 import org.springframework.stereotype.Service
@@ -26,7 +27,14 @@ class CommentLikeService(
             commentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         ))
         if (userId != comment.userInfo.userId) {
-            notiEventPublisher.publishLikeRegisteredEvent(comment.userInfo.userId, newLike.userId, LikeType.Comment)
+            notiEventPublisher.publishLikeRegisteredEvent(
+                comment.userInfo.userId,
+                newLike.userId,
+                NotiType.Comment,
+                PostType.Sungan,
+                comment.sungan.id!!,
+                commentId
+            )
         }
         return newLike.convertToVo()
     }
