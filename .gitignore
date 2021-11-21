@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 public_key.*
 application-local-ky.yml
+image-for-s3-test.jpg
 
 ### STS ###
 .apt_generated

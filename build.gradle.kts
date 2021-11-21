@@ -59,6 +59,11 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    // Amaozn S3
+    implementation("software.amazon.awssdk:regions:2.17.81")
+    implementation("software.amazon.awssdk:core:2.17.81")
+    implementation("software.amazon.awssdk:s3:2.17.81")
 }
 
 sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {

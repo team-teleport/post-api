@@ -5,15 +5,19 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.sungan.Comment
 import com.sungan.postApi.domain.sungan.NestedComment
 import com.sungan.postApi.dto.*
-import com.sungan.postApi.repository.*
+import com.sungan.postApi.repository.CommentLikeRepository
+import com.sungan.postApi.repository.CommentRepository
+import com.sungan.postApi.repository.NestedCommentRepository
+import com.sungan.postApi.repository.SunganRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class CommentService(
     val sunganRepository: SunganRepository,
     val commentRepository: CommentRepository,
     val nestedCommentRepository: NestedCommentRepository,
-    val sunganLikeRepository: SunganLikeRepository,
     val commentLikeRepository: CommentLikeRepository
 ) {
     fun createComment(userId: Long, postCommentRequestDto: PostCommentRequestDto): CommentVo {
@@ -76,5 +80,23 @@ class CommentService(
                 comment.nestedComments.map { nestedComment -> nestedComment.convertToVo() }
             )
         }.toList()
+    }
+
+    fun destroyNestedComment(userId: Long, nestedCommentId: Long) {
+        val nestedComment = nestedCommentRepository.findById(nestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        nestedCommentRepository.delete(nestedComment)
+    }
+
+    fun updateNestedComment(
+        userId: Long,
+        nestedCommentId: Long,
+        patchNestedCommentRequestDto: PatchNestedCommentRequestDto
+    ) {
+        val nestedComment = nestedCommentRepository.findById(nestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        nestedComment.content = patchNestedCommentRequestDto.content
     }
 }

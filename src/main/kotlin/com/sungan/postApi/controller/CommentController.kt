@@ -1,10 +1,7 @@
 package com.sungan.postApi.controller
 
 import com.sungan.postApi.application.support.SunganResponse
-import com.sungan.postApi.dto.CommentVo
-import com.sungan.postApi.dto.PatchCommentRequestDto
-import com.sungan.postApi.dto.PostCommentRequestDto
-import com.sungan.postApi.dto.PostNestedCommentReqDto
+import com.sungan.postApi.dto.*
 import com.sungan.postApi.service.CommentService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
@@ -45,5 +42,26 @@ class CommentController(
     ): SunganResponse<Any> {
         commentService.createNestedComment(userId, commentId, postNestedCommentReqDto)
         return SunganResponse(HttpStatus.OK, "대댓글 생성 완료")
+    }
+
+    @DeleteMapping("/reply/{id}")
+    @ApiModelProperty(value = "대댓글 삭제하기 API")
+    fun deleteNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long,
+    ): SunganResponse<Any> {
+        commentService.destroyNestedComment(userId, nestedCommentId)
+        return SunganResponse(HttpStatus.OK, "순간 대댓글 삭제 성공")
+    }
+
+    @PatchMapping("/reply/{id}")
+    @ApiModelProperty(value = "대댓글 수정하기 API")
+    fun updateNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long,
+        @RequestBody patchNestedCommentRequestDto: PatchNestedCommentRequestDto
+    ): SunganResponse<Any> {
+        commentService.updateNestedComment(userId, nestedCommentId, patchNestedCommentRequestDto)
+        return SunganResponse(HttpStatus.OK, "순간 대댓글 수정 성공")
     }
 }

@@ -66,6 +66,17 @@ class ReportService(
         reportCommentRepository.delete(reportComment)
     }
 
+    fun updateReportComment(
+        userId: Long,
+        reportCommentId: Long,
+        content: String
+    ) {
+        val reportComment = reportCommentRepository.findById(reportCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (reportComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        reportComment.content = content
+    }
+
     fun readReportCommentsWithLikes(
         userId: Long,
         reportId: Long
@@ -107,6 +118,13 @@ class ReportService(
             .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
         reportNestedCommentRepository.delete(nestedComment)
+    }
+
+    fun updateNestedComment(userId: Long, nestedCommentId: Long, content: String) {
+        val nestedComment = reportNestedCommentRepository.findById(nestedCommentId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (nestedComment.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        nestedComment.content = content
     }
 
     fun createReportCommentLike(userId: Long, commentId: Long) {

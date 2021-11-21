@@ -72,6 +72,17 @@ class HotplaceController(
         return SunganResponse(HttpStatus.OK, "핫플 댓글 삭제 성공")
     }
 
+    @PatchMapping("/comment/{id}")
+    @ApiOperation(value = "핫플 댓글 수정하기")
+    fun updatePlaceNestedComment(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "대댓글 id") @PathVariable(value = "id") hotplaceCommentId: Long,
+        @RequestBody patchHotplaceCommentReqDto: PatchHotplaceCommentReqDto
+    ): SunganResponse<Any> {
+        hotplaceCommentService.updateHotplaceComment(userId, hotplaceCommentId, patchHotplaceCommentReqDto.content)
+        return SunganResponse(HttpStatus.OK, "핫플 댓글 수정 성공")
+    }
+
     @PostMapping("/{id}/like")
     @ApiOperation(value = "핫플 좋아요 누르기")
     fun postPlaceLike(
@@ -110,6 +121,17 @@ class HotplaceController(
     ): SunganResponse<Any> {
         hotplaceCommentService.destroyHotplaceNestedComment(userId, nestedCommentId)
         return SunganResponse(HttpStatus.OK, "핫플 대댓글 삭제 성공")
+    }
+
+    @PatchMapping("/comment/reply/{id}")
+    @ApiOperation(value = "핫플 대댓글 수정하기")
+    fun patchNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long,
+        @RequestBody patchHotplaceCommentReqDto: PatchHotplaceCommentReqDto
+    ): SunganResponse<Any> {
+        hotplaceCommentService.updateHotplaceNestedComment(userId, nestedCommentId, patchHotplaceCommentReqDto.content)
+        return SunganResponse(HttpStatus.OK, "핫플 대댓글 수정 성공")
     }
 
     @PostMapping("/comment/{id}/like")

@@ -56,13 +56,25 @@ class ReportController(
 
     @DeleteMapping("/comment/{id}")
     @ApiOperation(value = "민원 댓글 삭제하기")
-    fun deletePlaceComment(
+    fun deleteReportComment(
         @ApiIgnore userId: Long,
         @ApiParam(value = "민원 id") @PathVariable(value = "id") reportId: Long
     ): SunganResponse<Any> {
         reportService.destroyReportComment(userId, reportId)
         return SunganResponse(HttpStatus.OK, "민원 댓글 삭제 성공")
     }
+
+    @PatchMapping("/comment/{id}")
+    @ApiOperation(value = "민원 댓글 수정하기")
+    fun patchReportComment(
+        @ApiIgnore userId: Long,
+        @ApiParam(value = "민원 댓글 id") @PathVariable(value = "id") reportCommentId: Long,
+        @RequestBody patchReportCommentReqDto: PatchReportCommentReqDto
+    ): SunganResponse<Any> {
+        reportService.updateReportComment(userId, reportCommentId, patchReportCommentReqDto.content)
+        return SunganResponse(HttpStatus.OK, "민원 댓글 수정 성공")
+    }
+
     @GetMapping("/{id}/comments")
     @ApiOperation(value = "신고글의 모든 댓글 보기")
     fun getAllComments(
@@ -110,6 +122,16 @@ class ReportController(
     ): SunganResponse<Any> {
         reportService.destroyNestedComment(userId, nestedCommentId)
         return SunganResponse(HttpStatus.OK, "민원 대댓글 삭제 성공")
+    }
+
+    @PatchMapping("/comment/reply/{id}")
+    fun updateReportNestedComment(
+        @ApiIgnore userId: Long,
+        @PathVariable(value = "id") nestedCommentId: Long,
+        @RequestBody patchReportNestedCommentReqDto: PatchReportNestedCommentReqDto
+    ): SunganResponse<Any> {
+        reportService.updateNestedComment(userId, nestedCommentId, patchReportNestedCommentReqDto.content)
+        return SunganResponse(HttpStatus.OK, "민원 대댓글 수정 성공")
     }
 
     @PostMapping("/comment/{id}/like")

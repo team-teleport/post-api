@@ -1,6 +1,7 @@
 package com.sungan.postApi.dto
 
 import com.sungan.postApi.domain.UserInfo
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -41,6 +42,11 @@ data class PostCommentRequestDto(
 data class PatchCommentRequestDto(
     @ApiModelProperty(required = true, example = "1")
     val commentId: Long,
+    @ApiModelProperty(required = true, example = "수정된 댓글 내용입니다.")
+    val content: String
+)
+
+data class PatchNestedCommentRequestDto(
     @ApiModelProperty(required = true, example = "수정된 댓글 내용입니다.")
     val content: String
 )
