@@ -5,6 +5,7 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.report.*
 import com.sungan.postApi.domain.report.Report
 import com.sungan.postApi.dto.*
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +18,8 @@ class ReportService(
     val reportCommentLikeRepository: ReportCommentLikeRepository,
     val reportNestedCommentRepository: ReportNestedCommentRepository,
     val reportLikeRepository: ReportLikeRepository,
-    val reportTypeRepository: ReportTypeRepository
+    val reportTypeRepository: ReportTypeRepository,
+    val notiEventPublisher: NotiEventPublisher,
 ) {
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {
         val type = reportTypeRepository.findByLabel(postReportReqDto.label)
@@ -50,13 +52,14 @@ class ReportService(
     fun createReportComment(userId: Long, postReportCommentReqDto: PostReportCommentReqDto) {
         val report = reportRepository.findById(postReportCommentReqDto.reportId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        reportCommentRepository.save(
+        val newComment = reportCommentRepository.save(
             ReportComment(
                 postReportCommentReqDto.content,
                 report,
                 postReportCommentReqDto.makeUserInfo(userId)
             )
         )
+        notiEventPublisher.publishCommentRegisteredEvent(report.userInfo.userId, newComment.userInfo.userName)
     }
 
     fun destroyReportComment(userId: Long, reportCommentId: Long) {

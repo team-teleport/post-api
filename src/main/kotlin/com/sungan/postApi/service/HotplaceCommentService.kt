@@ -9,6 +9,7 @@ import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
 import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.HotplaceCommentLikeRepository
 import com.sungan.postApi.repository.HotplaceCommentRepository
 import com.sungan.postApi.repository.HotplaceNestedCommentRepository
@@ -23,6 +24,7 @@ class HotplaceCommentService(
     private val hotplaceCommentRepository: HotplaceCommentRepository,
     private val hotplaceNestedCommentRepository: HotplaceNestedCommentRepository,
     private val hotplaceCommentLikeRepository: HotplaceCommentLikeRepository,
+    private val notiEventPublisher: NotiEventPublisher,
 ) {
     fun readHotplaceCommentList(
         userId: Long,
@@ -48,13 +50,14 @@ class HotplaceCommentService(
     fun createHotplaceComment(userId: Long, postHotplaceCommentReqDto: PostHotplaceCommentReqDto) {
         val hotplace = hotplaceRepository.findById(postHotplaceCommentReqDto.hotplaceId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        hotplaceCommentRepository.save(
+        val newComment = hotplaceCommentRepository.save(
             HotplaceComment(
                 postHotplaceCommentReqDto.content,
                 postHotplaceCommentReqDto.makeUserInfo(userId),
                 hotplace
             )
         )
+        notiEventPublisher.publishCommentRegisteredEvent(hotplace.userInfo.userId, newComment.userInfo.userName)
     }
 
     fun destroyHotplaceComment(userId: Long, commentId: Long) {
