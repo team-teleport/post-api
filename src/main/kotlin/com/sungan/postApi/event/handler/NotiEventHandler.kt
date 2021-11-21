@@ -2,6 +2,7 @@ package com.sungan.postApi.event.handler
 
 import com.google.gson.Gson
 import com.sungan.postApi.event.NotiRegisteredEvent
+import mu.KotlinLogging
 import okhttp3.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
@@ -13,6 +14,7 @@ class NotiEventHandler {
     private lateinit var apiKey: String
     private val client: OkHttpClient = OkHttpClient()
     private val pushUrl: String = "https://api.metasgid.com/api/v1/push"
+    private val logger = KotlinLogging.logger {  }
 
     @EventListener
     fun push(event: NotiRegisteredEvent) {
@@ -30,7 +32,7 @@ class NotiEventHandler {
             .build()
         val call: Call = client.newCall(request)
         val response: Response = call.execute()
-        println(response.body()!!.string())
+        logger.info("Get response from Push server: ${response.body()!!.string()}")
         response.body()!!.close();
     }
 }

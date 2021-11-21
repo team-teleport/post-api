@@ -3,6 +3,7 @@ package com.sungan.postApi.event.publisher
 import com.sungan.postApi.dto.Goto
 import com.sungan.postApi.dto.NotificationReqDto
 import com.sungan.postApi.event.NotiRegisteredEvent
+import mu.KotlinLogging
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component
 class NotiEventPublisher(
     private val eventPublisher: ApplicationEventPublisher,
 ) {
+    private val logger = KotlinLogging.logger {  }
     @Async
     fun publishCommentRegisteredEvent(authorId: Long, commentUserNickname: String) {
         val notiReq = NotificationReqDto(
@@ -20,5 +22,6 @@ class NotiEventPublisher(
             Goto("Home")
         )
         eventPublisher.publishEvent(NotiRegisteredEvent(notiReq))
+        logger.info("published comment registered event! Notification request Obj: ${notiReq}")
     }
 }
