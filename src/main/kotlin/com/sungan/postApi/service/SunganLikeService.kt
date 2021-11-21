@@ -4,8 +4,9 @@ import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.sungan.SunganLike
 import com.sungan.postApi.dto.SunganLikeVo
-import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
+import com.sungan.postApi.event.publisher.NotiType
+import com.sungan.postApi.event.publisher.PostType
 import com.sungan.postApi.repository.SunganLikeRepository
 import com.sungan.postApi.repository.SunganRepository
 import org.springframework.stereotype.Service
@@ -30,14 +31,20 @@ class SunganLikeService(
         sungan.likeCnt += 1
         sunganRepository.save(sungan)
         if (userId != sungan.userInfo.userId) {
-            notiEventPublisher.publishLikeRegisteredEvent(sungan.userInfo.userId, userId, LikeType.Post)
+            notiEventPublisher.publishLikeRegisteredEvent(
+                sungan.userInfo.userId,
+                userId,
+                NotiType.Post,
+                PostType.Sungan,
+                sunganId
+            )
         }
         return newLike.convertToVo()
     }
 
     @Transactional
     fun destroySunganLike(userId: Long, sunganId: Long) {
-        val sungan = sunganRepository.findById(sunganId).orElseThrow {SunganException(SunganError.BAD_REQUEST)}
+        val sungan = sunganRepository.findById(sunganId).orElseThrow { SunganException(SunganError.BAD_REQUEST) }
         val sunganLike = sunganLikeRepository.findByUserIdAndSungan(userId, sungan)
             ?: throw SunganException(SunganError.BAD_REQUEST_INVALID_ID)
         if (sunganLike.userId != userId) throw SunganException(SunganError.FORBIDDEN)

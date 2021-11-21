@@ -9,8 +9,9 @@ import com.sungan.postApi.dto.CommentWithLikeCntAndIsLiked
 import com.sungan.postApi.dto.HotplaceNestedCommentVo
 import com.sungan.postApi.dto.PostHotplaceCommentReqDto
 import com.sungan.postApi.dto.PostHotplaceNestedCommentReqDto
-import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
+import com.sungan.postApi.event.publisher.NotiType
+import com.sungan.postApi.event.publisher.PostType
 import com.sungan.postApi.repository.HotplaceCommentLikeRepository
 import com.sungan.postApi.repository.HotplaceCommentRepository
 import com.sungan.postApi.repository.HotplaceNestedCommentRepository
@@ -58,8 +59,15 @@ class HotplaceCommentService(
                 hotplace
             )
         )
-        if(userId != hotplace.userInfo.userId) {
-            notiEventPublisher.publishCommentRegisteredEvent(hotplace.userInfo.userId, newComment.userInfo.userName)
+        if (userId != hotplace.userInfo.userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(
+                hotplace.userInfo.userId,
+                newComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Hotplace,
+                hotplace.id!!,
+                newComment.id
+            )
         }
     }
 
@@ -90,14 +98,22 @@ class HotplaceCommentService(
         if (comment.hotplace.userInfo.userId != userId) {
             notiEventPublisher.publishCommentRegisteredEvent(
                 comment.hotplace.userInfo.userId,
-                newNestedComment.userInfo.userName
+                newNestedComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Hotplace,
+                comment.hotplace.id!!,
+                newNestedComment.id
             )
         }
 
-        if(comment.userInfo.userId != userId) {
+        if (comment.userInfo.userId != userId) {
             notiEventPublisher.publishNestedCommentRegisteredEvent(
                 comment.userInfo.userId,
-                newNestedComment.userInfo.userName
+                newNestedComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Hotplace,
+                comment.hotplace.id!!,
+                newNestedComment.id
             )
         }
     }
@@ -128,7 +144,14 @@ class HotplaceCommentService(
             )
         )
         if (userId != comment.userInfo.userId) {
-            notiEventPublisher.publishLikeRegisteredEvent(comment.userInfo.userId, userId, LikeType.Comment)
+            notiEventPublisher.publishLikeRegisteredEvent(
+                comment.userInfo.userId,
+                userId,
+                NotiType.Comment,
+                PostType.Hotplace,
+                comment.hotplace.id!!,
+                comment.id
+            )
         }
     }
 

@@ -7,6 +7,11 @@ data class NotificationReqDto(
     val data: Goto,
 )
 
+
 data class Goto(
-    val goto: String
+    val goto: String, // "Post"
+    val notiType: String, // 알림 누르면 이동해야하는 곳: "Post", "Comment"
+    val postType: String, // "Sungan", "Hotplace", "Report"
+    val postId: Long? = null,
+    val commentId: Long? = null,
 )

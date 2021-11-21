@@ -5,8 +5,9 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.report.*
 import com.sungan.postApi.domain.report.Report
 import com.sungan.postApi.dto.*
-import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
+import com.sungan.postApi.event.publisher.NotiType
+import com.sungan.postApi.event.publisher.PostType
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -61,7 +62,14 @@ class ReportService(
             )
         )
         if (userId != report.userInfo.userId) {
-            notiEventPublisher.publishCommentRegisteredEvent(report.userInfo.userId, newComment.userInfo.userName)
+            notiEventPublisher.publishCommentRegisteredEvent(
+                report.userInfo.userId,
+                newComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Report,
+                report.id!!,
+                newComment.id
+            )
         }
     }
 
@@ -120,13 +128,21 @@ class ReportService(
         if (comment.report.userInfo.userId != userId) {
             notiEventPublisher.publishCommentRegisteredEvent(
                 comment.report.userInfo.userId,
-                newNestedComment.userInfo.userName
+                newNestedComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Report,
+                comment.report.id!!,
+                newNestedComment.id
             )
         }
         if (comment.userInfo.userId != userId) {
             notiEventPublisher.publishNestedCommentRegisteredEvent(
                 comment.userInfo.userId,
-                newNestedComment.userInfo.userName
+                newNestedComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Report,
+                comment.report.id!!,
+                newNestedComment.id
             )
         }
     }
@@ -151,14 +167,21 @@ class ReportService(
         reportCommentLikeRepository.findByReportCommentAndUserId(reportComment, userId)?.let {
             throw SunganException(SunganError.DUPLICATE, "이미 좋아요한 댓글입니다.")
         }
-        reportCommentLikeRepository.save(
+        val newComment = reportCommentLikeRepository.save(
             ReportCommentLike(
                 reportComment,
                 userId
             )
         )
         if (userId != reportComment.userInfo.userId) {
-            notiEventPublisher.publishLikeRegisteredEvent(reportComment.userInfo.userId, userId, LikeType.Comment)
+            notiEventPublisher.publishLikeRegisteredEvent(
+                reportComment.userInfo.userId,
+                userId,
+                NotiType.Comment,
+                PostType.Report,
+                reportComment.report.id!!,
+                newComment.id
+            )
         }
     }
 
@@ -178,7 +201,13 @@ class ReportService(
             )
         )
         if (userId != report.userInfo.userId) {
-            notiEventPublisher.publishLikeRegisteredEvent(report.userInfo.userId, userId, LikeType.Post)
+            notiEventPublisher.publishLikeRegisteredEvent(
+                report.userInfo.userId,
+                userId,
+                NotiType.Post,
+                PostType.Report,
+                reportId
+            )
         }
     }
 

@@ -8,9 +8,13 @@ import com.sungan.postApi.dto.HotplaceVo
 import com.sungan.postApi.dto.HotplaceWithLikeCommendCntVo
 import com.sungan.postApi.dto.PostHotplaceReqDto
 import com.sungan.postApi.dto.UpdateHotplaceReqDto
-import com.sungan.postApi.event.publisher.LikeType
 import com.sungan.postApi.event.publisher.NotiEventPublisher
-import com.sungan.postApi.repository.*
+import com.sungan.postApi.event.publisher.NotiType
+import com.sungan.postApi.event.publisher.PostType
+import com.sungan.postApi.repository.HotplaceCommentRepository
+import com.sungan.postApi.repository.HotplaceLikeRepository
+import com.sungan.postApi.repository.HotplaceRepository
+import com.sungan.postApi.repository.Line2StationRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -72,7 +76,13 @@ class HotplaceService(
             )
         )
         if (hotplace.userInfo.userId != userId) {
-            notiEventPublisher.publishLikeRegisteredEvent(hotplace.userInfo.userId, userId, LikeType.Post)
+            notiEventPublisher.publishLikeRegisteredEvent(
+                hotplace.userInfo.userId,
+                userId,
+                NotiType.Post,
+                PostType.Hotplace,
+                hotplaceId
+            )
         }
     }
 

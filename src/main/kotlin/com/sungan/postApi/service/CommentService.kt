@@ -6,6 +6,8 @@ import com.sungan.postApi.domain.sungan.Comment
 import com.sungan.postApi.domain.sungan.NestedComment
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.event.publisher.NotiEventPublisher
+import com.sungan.postApi.event.publisher.NotiType
+import com.sungan.postApi.event.publisher.PostType
 import com.sungan.postApi.repository.CommentLikeRepository
 import com.sungan.postApi.repository.CommentRepository
 import com.sungan.postApi.repository.NestedCommentRepository
@@ -37,7 +39,14 @@ class CommentService(
         )
 
         if (userId != sungan.userInfo.userId) {
-            notiEventPublisher.publishCommentRegisteredEvent(sungan.userInfo.userId, comment.userInfo.userName)
+            notiEventPublisher.publishCommentRegisteredEvent(
+                sungan.userInfo.userId,
+                comment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Sungan,
+                sungan.id!!,
+                comment.id
+            )
         }
 
         return comment.convertToVo()
@@ -74,14 +83,22 @@ class CommentService(
         if (comment.sungan.userInfo.userId != userId) {
             notiEventPublisher.publishCommentRegisteredEvent(
                 comment.sungan.userInfo.userId,
-                newNestedComment.userInfo.userName
+                newNestedComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Sungan,
+                comment.sungan.id!!,
+                newNestedComment.id
             )
         }
 
-        if(comment.userInfo.userId != userId) {
+        if (comment.userInfo.userId != userId) {
             notiEventPublisher.publishNestedCommentRegisteredEvent(
                 comment.userInfo.userId,
-                newNestedComment.userInfo.userName
+                newNestedComment.userInfo.userName,
+                NotiType.Comment,
+                PostType.Sungan,
+                comment.sungan.id!!,
+                newNestedComment.id
             )
         }
     }
