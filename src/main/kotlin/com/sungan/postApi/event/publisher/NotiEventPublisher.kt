@@ -22,6 +22,18 @@ class NotiEventPublisher(
             Goto("Home")
         )
         eventPublisher.publishEvent(NotiRegisteredEvent(notiReq))
-        logger.info("published comment registered event! Notification request Obj: ${notiReq}")
+        logger.info("published comment registered event to user ${authorId}.")
+    }
+
+    @Async
+    fun publishNestedCommentRegisteredEvent(authorId: Long, commentUserNickname: String) {
+        val notiReq = NotificationReqDto(
+            mutableListOf(authorId),
+            "순간이동",
+            "${commentUserNickname}이 대댓글을 남겼습니다.",
+            Goto("Home")
+        )
+        eventPublisher.publishEvent(NotiRegisteredEvent(notiReq))
+        logger.info("published comment registered event to user ${authorId}.")
     }
 }

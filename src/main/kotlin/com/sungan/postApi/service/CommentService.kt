@@ -63,13 +63,27 @@ class CommentService(
     fun createNestedComment(userId: Long, commentId: Long, postNestedCommentReqDto: PostNestedCommentReqDto) {
         val comment =
             commentRepository.findById(commentId).orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        nestedCommentRepository.save(
+        val newNestedComment = nestedCommentRepository.save(
             NestedComment(
                 comment,
                 postNestedCommentReqDto.makeUserInfo(userId),
                 postNestedCommentReqDto.content
             )
         )
+
+        if (comment.sungan.userInfo.userId != userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(
+                comment.sungan.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
+
+        if(comment.userInfo.userId != userId) {
+            notiEventPublisher.publishNestedCommentRegisteredEvent(
+                comment.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
     }
 
     fun readCommentsWithLikes(userId: Long, sunganId: Long): List<CommentWithLikeCntAndIsLiked<NestedCommentVo>> {

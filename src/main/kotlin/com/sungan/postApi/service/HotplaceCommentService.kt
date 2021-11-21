@@ -77,13 +77,26 @@ class HotplaceCommentService(
     fun createHotplaceNestedComment(userId: Long, postHotplaceNestedCommentReqDto: PostHotplaceNestedCommentReqDto) {
         val comment = hotplaceCommentRepository.findById(postHotplaceNestedCommentReqDto.commentId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
-        hotplaceNestedCommentRepository.save(
+        val newNestedComment = hotplaceNestedCommentRepository.save(
             HotplaceNestedComment(
                 comment,
                 postHotplaceNestedCommentReqDto.content,
                 postHotplaceNestedCommentReqDto.makeUserInfo(userId)
             )
         )
+        if (comment.hotplace.userInfo.userId != userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(
+                comment.hotplace.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
+
+        if(comment.userInfo.userId != userId) {
+            notiEventPublisher.publishNestedCommentRegisteredEvent(
+                comment.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
     }
 
     fun destroyHotplaceNestedComment(userId: Long, hotplaceNestedCommentId: Long) {

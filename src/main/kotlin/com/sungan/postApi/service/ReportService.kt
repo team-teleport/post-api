@@ -107,13 +107,25 @@ class ReportService(
         val comment = reportCommentRepository.findById(postReportNestedCommentReqDto.commentId)
             .orElseThrow { throw SunganException(SunganError.BAD_REQUEST) }
         if (!comment.report.shouldBeUploaded) throw SunganException(SunganError.BAD_REQUEST) // 업로드 되지 않은 신고글일경우
-        reportNestedCommentRepository.save(
+        val newNestedComment = reportNestedCommentRepository.save(
             ReportNestedComment(
                 comment,
                 postReportNestedCommentReqDto.content,
                 postReportNestedCommentReqDto.makeUserInfo(userId)
             )
         )
+        if (comment.report.userInfo.userId != userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(
+                comment.report.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
+        if(comment.userInfo.userId != userId) {
+            notiEventPublisher.publishNestedCommentRegisteredEvent(
+                comment.userInfo.userId,
+                newNestedComment.userInfo.userName
+            )
+        }
     }
 
     fun destroyNestedComment(userId: Long, nestedCommentId: Long) {
