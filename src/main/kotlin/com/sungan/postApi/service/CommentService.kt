@@ -5,6 +5,7 @@ import com.sungan.postApi.application.support.SunganException
 import com.sungan.postApi.domain.sungan.Comment
 import com.sungan.postApi.domain.sungan.NestedComment
 import com.sungan.postApi.dto.*
+import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.repository.CommentLikeRepository
 import com.sungan.postApi.repository.CommentRepository
 import com.sungan.postApi.repository.NestedCommentRepository
@@ -15,14 +16,15 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class CommentService(
-    val sunganRepository: SunganRepository,
-    val commentRepository: CommentRepository,
-    val nestedCommentRepository: NestedCommentRepository,
-    val commentLikeRepository: CommentLikeRepository
+    private val sunganRepository: SunganRepository,
+    private val commentRepository: CommentRepository,
+    private val nestedCommentRepository: NestedCommentRepository,
+    private val commentLikeRepository: CommentLikeRepository,
+    private val notiEventPublisher: NotiEventPublisher,
 ) {
     fun createComment(userId: Long, postCommentRequestDto: PostCommentRequestDto): CommentVo {
         val sungan = sunganRepository.findById(postCommentRequestDto.sunganId).orElseThrow {
-            throw SunganException(
+            SunganException(
                 SunganError.BAD_REQUEST_INVALID_ID
             )
         }
@@ -33,6 +35,11 @@ class CommentService(
                 sungan
             )
         )
+
+        if (userId != sungan.userInfo.userId) {
+            notiEventPublisher.publishCommentRegisteredEvent(sungan.userInfo.userId, comment.userInfo.userName)
+        }
+
         return comment.convertToVo()
     }
 
