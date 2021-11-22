@@ -1,13 +1,9 @@
 spring:
   jpa:
     generate-ddl: true
-    hibernate:
-      ddl-auto: update
     show-sql: true
     database: mysql
-    properties:
-      hibernate:
-        format_sql: true
+#    defer-datasource-initialization: true
   servlet:
     multipart:
       max-file-size: 10MB
