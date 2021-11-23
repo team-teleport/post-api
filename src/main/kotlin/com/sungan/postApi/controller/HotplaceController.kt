@@ -34,6 +34,16 @@ class HotplaceController(
         @ApiParam(value = "핫플 id") @PathVariable(value = "id") id: Long
     ): SunganResponse<HotplaceWithLikeCommendCntVo> = SunganResponse(hotplaceService.readHotplace(userId, id))
 
+    @PatchMapping("")
+    @ApiOperation(value = "핫플 수정하기")
+    fun updatePlace(
+        @ApiIgnore userId: Long,
+        @RequestBody updateHotplaceReqDto: UpdateHotplaceReqDto
+    ): SunganResponse<HotplaceVo> {
+        val hotplaceVo = hotplaceService.updateHotplace(userId, updateHotplaceReqDto)
+        return SunganResponse(hotplaceVo)
+    }
+
     @DeleteMapping("/{id}")
     @ApiOperation(value = "핫플 삭제하기")
     fun deletePlace(

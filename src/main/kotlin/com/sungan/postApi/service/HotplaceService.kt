@@ -49,9 +49,22 @@ class HotplaceService(
         hotplaceRepository.delete(hotplace)
     }
 
-    fun updateHotplace(userId: Long, updateHotplaceReqDto: UpdateHotplaceReqDto) {
-        TODO("핫플레이스 업데이트 서비스")
+    @Transactional
+    fun updateHotplace(userId: Long, updateHotplaceReqDto: UpdateHotplaceReqDto): HotplaceVo {
+        val hotplace =
+            hotplaceRepository.findById(updateHotplaceReqDto.id)
+                .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (hotplace.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        if (updateHotplaceReqDto.text != null) hotplace.text = updateHotplaceReqDto.text
+        if (updateHotplaceReqDto.emoji != null) hotplace.emoji = updateHotplaceReqDto.emoji
+        updateHotplaceReqDto.stationName?.let {
+            val station = line2StationRepository.findByName(it) ?: throw SunganException(SunganError.BAD_REQUEST)
+            hotplace.station = station
+        }
+        if (updateHotplaceReqDto.place != null) hotplace.place = updateHotplaceReqDto.place
+        return hotplace.convertToVo()
     }
+
 
     fun readHotplace(userId: Long, hotplaceId: Long): HotplaceWithLikeCommendCntVo {
         val hotplace =

@@ -44,6 +44,18 @@ class ReportService(
         return report.convertToVo()
     }
 
+    @Transactional
+    fun updateReport(userId: Long, updateReportReqDto: UpdateReportReqDto): ReportVo {
+        val report = reportRepository.findById(updateReportReqDto.id).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
+        if (report.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
+        if (updateReportReqDto.detail != null) report.detail = updateReportReqDto.detail
+        if (updateReportReqDto.vehicleIdNum != null) report.vehicleNum = updateReportReqDto.vehicleIdNum
+        if (updateReportReqDto.shouldBeUploaded != null) {
+            report.shouldBeUploaded = updateReportReqDto.shouldBeUploaded
+        }
+        return report.convertToVo()
+    }
+
     fun destroyReport(userId: Long, reportId: Long) {
         val report = reportRepository.findById(reportId).orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (report.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
