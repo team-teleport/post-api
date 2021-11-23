@@ -27,13 +27,12 @@ data class PostHotplaceReqDto(
 ): ReqIncludeUserInfo
 
 data class UpdateHotplaceReqDto(
+    val id: Long,
     val text: String,
     val emoji: String?,
     val stationName: String?,
     val place: String,
-    override var userName: String,
-    override var userProfileImgUrl: String?
-): ReqIncludeUserInfo
+)
 
 data class HotplaceWithLikeCommendCntVo(
     val hotplace: HotplaceVo,
