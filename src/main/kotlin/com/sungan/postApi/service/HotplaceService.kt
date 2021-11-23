@@ -50,19 +50,19 @@ class HotplaceService(
     }
 
     @Transactional
-    fun updateHotplace(userId: Long, updateHotplaceReqDto: UpdateHotplaceReqDto) {
-        val (id, text, emoji, stationName, place) = updateHotplaceReqDto
+    fun updateHotplace(userId: Long, updateHotplaceReqDto: UpdateHotplaceReqDto): HotplaceVo {
         val hotplace =
-            hotplaceRepository.findById(id)
+            hotplaceRepository.findById(updateHotplaceReqDto.id)
                 .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND) }
         if (hotplace.userInfo.userId != userId) throw SunganException(SunganError.FORBIDDEN)
-        hotplace.text = text
-        hotplace.emoji = emoji
-        val station = stationName?.let {
-            line2StationRepository.findByName(stationName!!) ?: throw SunganException(SunganError.BAD_REQUEST)
+        if (updateHotplaceReqDto.text != null) hotplace.text = updateHotplaceReqDto.text
+        if (updateHotplaceReqDto.emoji != null) hotplace.emoji = updateHotplaceReqDto.emoji
+        updateHotplaceReqDto.stationName?.let {
+            val station = line2StationRepository.findByName(it) ?: throw SunganException(SunganError.BAD_REQUEST)
+            hotplace.station = station
         }
-        hotplace.station = station
-        hotplace.place = place
+        if (updateHotplaceReqDto.place != null) hotplace.place = updateHotplaceReqDto.place
+        return hotplace.convertToVo()
     }
 
 

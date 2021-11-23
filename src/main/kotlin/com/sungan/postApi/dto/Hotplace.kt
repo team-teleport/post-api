@@ -28,10 +28,10 @@ data class PostHotplaceReqDto(
 
 data class UpdateHotplaceReqDto(
     val id: Long,
-    val text: String,
+    val text: String?,
     val emoji: String?,
     val stationName: String?,
-    val place: String,
+    val place: String?,
 )
 
 data class HotplaceWithLikeCommendCntVo(

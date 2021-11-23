@@ -39,9 +39,9 @@ class HotplaceController(
     fun updatePlace(
         @ApiIgnore userId: Long,
         @RequestBody updateHotplaceReqDto: UpdateHotplaceReqDto
-    ): SunganResponse<UpdateHotplaceResDto> {
-        hotplaceService.updateHotplace(userId, updateHotplaceReqDto)
-        return SunganResponse(UpdateHotplaceResDto(updateHotplaceReqDto.id), HttpStatus.OK)
+    ): SunganResponse<HotplaceVo> {
+        val hotplaceVo = hotplaceService.updateHotplace(userId, updateHotplaceReqDto)
+        return SunganResponse(hotplaceVo)
     }
 
     @DeleteMapping("/{id}")
