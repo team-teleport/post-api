@@ -2,7 +2,9 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.dto.PostBaseVo
+import com.sungan.postApi.domain.Line2Station
+import com.sungan.postApi.dto.GetAllPostReqDto
+import com.sungan.postApi.dto.GetMainRequestDto
 import com.sungan.postApi.dto.PostBaseWithLikeByUserAndBestComment
 import com.sungan.postApi.dto.PostType
 import com.sungan.postApi.repository.*
@@ -29,6 +31,75 @@ class MainService(
         list.addAll(getMyHotplaceWithLikeByUserAndBestComment(userId))
         list.sortWith { a, b -> if (a.post.createdAt.isBefore(b.post.createdAt)) 1 else -1 }
         return list
+    }
+
+    fun readMainSungans(
+        userId: Long,
+        getAllPostReqDto: GetAllPostReqDto,
+        stationName: String?
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        var station: Line2Station? = null
+        if (stationName != null) {
+            station = line2StationRepository.findByName(stationName)
+        }
+        val sungans = sunganRepository.findSungansBeforeLastCreatedAtPaging(
+            getAllPostReqDto.size,
+            getAllPostReqDto.lastCreatedAt,
+            station
+            ).map { sungan ->
+            PostBaseWithLikeByUserAndBestComment(
+                sungan.convertToVo(),
+                PostType.SUNGAN,
+                sunganLikeRepository.existsBySunganAndUserId(sungan, userId),
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+            )
+        }
+
+        val reports = reportRepository.findReportsBeforeCreatedAtPaging(
+            getAllPostReqDto.size,
+            getAllPostReqDto.lastCreatedAt,
+        ).map { report ->
+            PostBaseWithLikeByUserAndBestComment(
+                report.convertToVo(),
+                PostType.REPORT,
+                reportLikeRepository.existsByReportAndUserId(report, userId),
+                reportCommentRepository.findByReportOrderByLikes(report)?.convertToVo()
+            )
+        }
+
+        val hotplaces = hotplaceRepository.findHotplacesBeforeCreatedAtPaging(
+            getAllPostReqDto.size,
+            getAllPostReqDto.lastCreatedAt,
+            station
+        ).map { hotplace ->
+            PostBaseWithLikeByUserAndBestComment(
+                hotplace.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.existsByHotplaceAndUserId(hotplace, userId),
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+            )
+        }
+        val res: MutableList<PostBaseWithLikeByUserAndBestComment> = ArrayList()
+        res.addAll(sungans)
+        res.addAll(reports)
+        res.addAll(hotplaces)
+        res.sortWith { a, b -> if (a.post.createdAt.isBefore(b.post.createdAt)) 1 else -1 }
+        return res.subList(0, getAllPostReqDto.size.toInt())
+    }
+
+    fun getHotplacesByPagind(userId: Long, getMainRequestDto: GetMainRequestDto) {
+        val hotplaces = hotplaceRepository.findHotplacesAfterLastHotplacePagingOrderByCreatedAtDesc(
+            getMainRequestDto.size,
+            getMainRequestDto.lastId
+        ).map { hotplace ->
+            PostBaseWithLikeByUserAndBestComment(
+                hotplace.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+            )
+        }
+        // return hotplaces
     }
 
     fun getMainList(userId: Long, station: String?): MutableList<PostBaseWithLikeByUserAndBestComment> {
@@ -93,6 +164,7 @@ class MainService(
             )
         }
     }
+
     fun getMySunganWithLikeByUserAndBestComment(
         userId: Long
     ): List<PostBaseWithLikeByUserAndBestComment> {

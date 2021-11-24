@@ -2,12 +2,10 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
+import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.hotplace.Hotplace
 import com.sungan.postApi.domain.hotplace.HotplaceLike
-import com.sungan.postApi.dto.HotplaceVo
-import com.sungan.postApi.dto.HotplaceWithLikeCommendCntVo
-import com.sungan.postApi.dto.PostHotplaceReqDto
-import com.sungan.postApi.dto.UpdateHotplaceReqDto
+import com.sungan.postApi.dto.*
 import com.sungan.postApi.event.publisher.NotiEventPublisher
 import com.sungan.postApi.event.publisher.NotiType
 import com.sungan.postApi.event.publisher.PostType
@@ -26,6 +24,30 @@ class HotplaceService(
     private val hotplaceLikeRepository: HotplaceLikeRepository,
     private val notiEventPublisher: NotiEventPublisher,
 ) {
+    fun readHotplace(
+        userId: Long,
+        getMainRequestDto: GetMainRequestDto,
+        stationName: String? = null
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        var station: Line2Station? = null
+        if (stationName != null) {
+            station = line2StationRepository.findByName(stationName) ?: throw SunganException(
+                SunganError.ENTITY_NOT_FOUND,
+                "해당 이름의 역을 찾을 수 없습니다."
+            )
+        }
+        return hotplaceRepository.findHotplacesAfterLastHotplacePagingOrderByCreatedAtDesc(
+            getMainRequestDto.size,
+            getMainRequestDto.lastId,
+            station
+        ).map { hotplace -> PostBaseWithLikeByUserAndBestComment(
+            hotplace.convertToVo(),
+            com.sungan.postApi.dto.PostType.PLACE,
+            hotplaceLikeRepository.existsByHotplaceAndUserId(hotplace, userId),
+            hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+        ) }
+    }
+
     fun createHotplace(userId: Long, postHotplaceReqDto: PostHotplaceReqDto): HotplaceVo {
         val stationName = postHotplaceReqDto.stationName
         val hotplace = hotplaceRepository.save(

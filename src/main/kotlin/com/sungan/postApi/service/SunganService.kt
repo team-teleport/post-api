@@ -2,8 +2,8 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
+import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.sungan.Sungan
-import com.sungan.postApi.domain.sungan.UserViewedSungan
 import com.sungan.postApi.dto.*
 import com.sungan.postApi.repository.*
 import org.springframework.stereotype.Service
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 class SunganService(
     val sunganRepository: SunganRepository,
     val sunganLikeRepository: SunganLikeRepository,
-    val userViewedSunganRepository: UserViewedSunganRepository,
+    val commentRepository: CommentRepository,
     val line2StationRepository: Line2StationRepository,
     val sunganChannelRepository: SunganChannelRepository
 ) {
@@ -28,6 +28,35 @@ class SunganService(
             userId == sungan.userInfo.userId,
             sunganRepository.save(sungan).convertToVo()
         )
+    }
+
+    fun readSungans(
+        userId: Long,
+        getSunganByChannelReqDto: GetSunganByChannelReqDto,
+        stationName: String? = null
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        val channel = sunganChannelRepository.findById(getSunganByChannelReqDto.channelId)
+            .orElseThrow { SunganException(SunganError.ENTITY_NOT_FOUND, "순간 채널 id로 채널 찾을 수 없음") }
+        var station: Line2Station? = null
+        if (stationName != null) {
+            station = line2StationRepository.findByName(stationName) ?: throw SunganException(
+                SunganError.ENTITY_NOT_FOUND,
+                "해당 이름의 역을 찾을 수 없습니다."
+            )
+        }
+        return sunganRepository.findSungansAfterLastSunganPagingOrderByCreatedAtDesc(
+            getSunganByChannelReqDto.size,
+            getSunganByChannelReqDto.lastId,
+            channel,
+            station,
+        ).map { sungan ->
+            PostBaseWithLikeByUserAndBestComment(
+                sungan.convertToVo(),
+                PostType.SUNGAN,
+                sunganLikeRepository.existsBySunganAndUserId(sungan, userId),
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+            )
+        }
     }
 
     fun createSungan(userId: Long, createSunganRequestDto: CreateSunganRequestDto): SunganDto {
@@ -75,55 +104,5 @@ class SunganService(
         val vo = sungan.convertToVo() // sungan을 리포지토리로 delete하면 여기서도 사용 불가, vo에 저장해놓기
         sunganRepository.delete(sungan)
         return vo
-    }
-
-    fun readMainSungansBeforeId(
-        firstSunganId: Long,
-        userId: Long,
-        getMainRequestDto: GetMainRequestDto
-    ): List<SunganWithLikeByUser> {
-
-        val firstSungan = sunganRepository.findById(firstSunganId)
-            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-
-        val sungans = sunganRepository.findSungansBeforeFirstSunganPaging(getMainRequestDto, firstSungan)
-        return sungans.asSequence().map { sungan ->
-            userViewedSunganRepository.save(UserViewedSungan(sungan, userId))
-            SunganWithLikeByUser(
-                sungan.convertToVo(),
-                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
-            )
-        }.toList()
-    }
-
-    fun readMainSungansAfterId(
-        lastSunganId: Long?,
-        userId: Long,
-        getMainRequestDto: GetMainRequestDto
-    ): List<SunganWithLikeByUser> {
-        if (lastSunganId == null) {
-            return findTopTen(userId, getMainRequestDto)
-        }
-        val lastSungan = sunganRepository.findById(lastSunganId)
-            .orElseThrow { throw SunganException(SunganError.BAD_REQUEST_INVALID_ID) }
-        val sungans = sunganRepository.findSungansAfterLastSunganPaging(getMainRequestDto, lastSungan)
-        return sungans.asSequence().map { sungan ->
-            userViewedSunganRepository.save(UserViewedSungan(sungan, userId))
-            SunganWithLikeByUser(
-                sungan.convertToVo(),
-                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
-            )
-        }.toList()
-    }
-
-    fun findTopTen(userId: Long, getMainRequestDto: GetMainRequestDto): List<SunganWithLikeByUser> {
-        val sungans: MutableList<Sungan> = sunganRepository.findLimitSizeOrderByDesc(userId, getMainRequestDto)
-        return sungans.asSequence().map { sungan ->
-            userViewedSunganRepository.save(UserViewedSungan(sungan, userId))
-            SunganWithLikeByUser(
-                sungan.convertToVo(),
-                sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null
-            )
-        }.toList()
     }
 }
