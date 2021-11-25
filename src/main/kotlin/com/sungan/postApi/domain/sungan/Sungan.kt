@@ -66,6 +66,15 @@ class Sungan(
             updatedAt
         )
 
+    fun convertToPreview() = SunganPreview(
+        id!!,
+        station?.convertToVo(),
+        sunganChannel,
+        text,
+        emoji,
+        userInfo, readCnt, likeCnt, createdAt, updatedAt
+    )
+
     override fun toString() = kotlinToString(properties = toStringProperties)
 
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)

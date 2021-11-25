@@ -30,6 +30,19 @@ data class SunganVo(
     override val updatedAt: LocalDateTime
 ): PostBaseVo()
 
+data class SunganPreview(
+    val id: Long,
+    val station: Line2StationVo?,
+    val channel: SunganChannel,
+    val text: String,
+    val emoji: String?,
+    val userInfo: UserInfo,
+    val readCnt: Long,
+    val likeCnt: Long,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime
+): PostBaseVo()
+
 
 data class VehicleVo(
     val colorCode: String,

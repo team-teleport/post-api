@@ -48,7 +48,7 @@ class MainService(
             station
             ).map { sungan ->
             PostBaseWithLikeByUserAndBestComment(
-                sungan.convertToVo(),
+                sungan.convertToPreview(),
                 PostType.SUNGAN,
                 sunganLikeRepository.existsBySunganAndUserId(sungan, userId),
                 commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
