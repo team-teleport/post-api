@@ -16,6 +16,11 @@ import javax.persistence.*
 @Entity
 @SQLDelete(sql = "UPDATE comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@Table(
+    indexes = [
+        Index(name = "comment_sungan_index", columnList = "sungan_id, deleted")
+    ]
+)
 class Comment(
     @Column(nullable = false)
     var content: String,

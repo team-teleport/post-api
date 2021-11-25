@@ -13,6 +13,11 @@ import javax.persistence.*
 @Entity
 @SQLDelete(sql = "UPDATE hotplace_comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@Table(
+    indexes = [
+        Index(name = "hotplace_id_idx", columnList = "hotplace_id")
+    ]
+)
 class HotplaceComment(
     content: String,
     @Embedded

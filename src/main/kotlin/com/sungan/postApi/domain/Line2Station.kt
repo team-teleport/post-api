@@ -9,6 +9,11 @@ import com.sungan.postApi.dto.Line2StationVo
 import javax.persistence.*
 
 @Entity
+@Table(
+    indexes = [
+        Index(name = "station_name_idx", columnList = "name")
+    ]
+)
 class Line2Station(name: String) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

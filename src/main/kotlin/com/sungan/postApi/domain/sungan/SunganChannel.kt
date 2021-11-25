@@ -4,6 +4,11 @@ import au.com.console.kassava.kotlinToString
 import javax.persistence.*
 
 @Entity
+@Table(
+    indexes = [
+        Index(name = "channel_idx", columnList = "name")
+    ]
+)
 class SunganChannel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,7 +3,10 @@ package com.sungan.postApi.domain.sungan
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
-import com.sungan.postApi.domain.*
+import com.sungan.postApi.domain.Line2Station
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.UserInfo
+import com.sungan.postApi.dto.SunganPreview
 import com.sungan.postApi.dto.SunganVo
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.SQLDelete
@@ -13,6 +16,12 @@ import javax.persistence.*
 @Entity
 @SQLDelete(sql = "UPDATE sungan SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@Table(
+    indexes = [
+        Index(name = "station_errand_id_idx", columnList = "line2_station_id, deleted"),
+        Index(name = "channel_errand_idx", columnList = "sungan_channel_id")
+    ]
+)
 class Sungan(
     @Column(nullable = false)
     var text: String,
@@ -25,7 +34,7 @@ class Sungan(
     @ManyToOne
     @JoinColumn(name = "sungan_channel_id")
     var sunganChannel: SunganChannel
-): PostBaseEntity(){
+) : PostBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
