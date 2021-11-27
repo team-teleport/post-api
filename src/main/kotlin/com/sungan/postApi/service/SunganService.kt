@@ -54,7 +54,7 @@ class SunganService(
                 sungan.convertToVo(),
                 PostType.SUNGAN,
                 sunganLikeRepository.existsBySunganAndUserId(sungan, userId),
-                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToBestComment()
             )
         }
     }

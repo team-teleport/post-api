@@ -32,7 +32,7 @@ class ReportService(
             report.convertToVo(),
             com.sungan.postApi.dto.PostType.REPORT,
             reportLikeRepository.existsByReportAndUserId(report, userId),
-            reportCommentRepository.findByReportOrderByLikes(report)?.convertToVo()
+            reportCommentRepository.findByReportOrderByLikes(report)?.convertToBestComment()
         ) }
     }
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {

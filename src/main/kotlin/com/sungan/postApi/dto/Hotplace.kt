@@ -51,6 +51,14 @@ data class HotplaceCommentVo(
     val updatedAt: LocalDateTime
 ): CommentBaseVo
 
+class HotplaceBestCommentVo(
+    override val id: Long,
+    override val content: String,
+    override val userInfo: UserInfo,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime,
+    val hotplaceId: Long,
+): BestCommentVo(id, content, userInfo, createdAt, updatedAt)
 
 data class PostHotplaceCommentReqDto(
     val hotplaceId: Long,

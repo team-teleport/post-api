@@ -58,7 +58,7 @@ data class PostBaseWithLikeByUserAndBestComment(
     val post: PostBaseVo,
     val type: PostType,
     val didLike: Boolean,
-    val bestComment: CommentBaseVo?
+    val bestComment: BestCommentVo?
 )
 
 enum class PostType {

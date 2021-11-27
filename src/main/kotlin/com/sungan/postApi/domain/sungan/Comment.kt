@@ -5,7 +5,9 @@ import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
+import com.sungan.postApi.dto.BestCommentVo
 import com.sungan.postApi.dto.CommentVo
+import com.sungan.postApi.dto.SunganBestCommentVo
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedDate
@@ -69,4 +71,6 @@ class Comment(
         this.likes.size.toLong(),
         this.nestedComments.asSequence().map { nestedComment -> nestedComment.convertToVo() }.toList()
     )
+
+    fun convertToBestComment() = SunganBestCommentVo(id!!, content, userInfo, createdAt, updatedAt, sungan.id!!)
 }

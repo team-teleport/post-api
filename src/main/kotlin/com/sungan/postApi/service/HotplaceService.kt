@@ -44,7 +44,7 @@ class HotplaceService(
             hotplace.convertToVo(),
             com.sungan.postApi.dto.PostType.PLACE,
             hotplaceLikeRepository.existsByHotplaceAndUserId(hotplace, userId),
-            hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+            hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToBestComment()
         ) }
     }
 
