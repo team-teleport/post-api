@@ -61,4 +61,12 @@ class MainController(
         val res = reportService.readReports(userId, getMainRequestDto, stationName)
         return SunganResponse(res)
     }
+
+    @GetMapping("")
+    fun getSunganMain(
+        @ApiIgnore userId: Long,
+        @ApiParam(required = false) @RequestParam(required = false) stationName: String?
+    ): SunganResponse<List<PostBaseWithLikeByUserAndBestComment>> {
+        return SunganResponse(mainService.getMainList(userId, stationName))
+    }
 }
