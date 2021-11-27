@@ -20,7 +20,7 @@ data class SunganVo(
     val station: Line2StationVo?,
     val channel: SunganChannel,
     val text: String,
-    val contents: List<SunganContentVo>,
+//    val contents: List<SunganContentVo>,
     val emoji: String?,
     val userInfo: UserInfo,
     val comments: List<CommentVo>,

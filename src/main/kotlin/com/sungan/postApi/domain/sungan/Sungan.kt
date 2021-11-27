@@ -65,7 +65,7 @@ class Sungan(
             station?.convertToVo(),
             sunganChannel,
             text,
-            contents.asSequence().map { content -> content.convertToVo() }.toList(),
+//            contents.asSequence().map { content -> content.convertToVo() }.toList(),
             emoji,
             userInfo,
             comments.asSequence().map { comment -> comment.convertToVo() }.toList(),

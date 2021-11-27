@@ -38,10 +38,10 @@ class Comment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY)
     var likes: MutableList<CommentLike> = ArrayList()
 
-    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY)
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<NestedComment> = ArrayList()
 
