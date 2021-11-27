@@ -2,6 +2,8 @@ package com.sungan.postApi.domain.hotplace
 
 import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
+import com.sungan.postApi.dto.BestCommentVo
+import com.sungan.postApi.dto.HotplaceBestCommentVo
 import com.sungan.postApi.dto.HotplaceCommentVo
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.Where
@@ -13,6 +15,11 @@ import javax.persistence.*
 @Entity
 @SQLDelete(sql = "UPDATE hotplace_comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@Table(
+    indexes = [
+        Index(name = "hotplace_id_idx", columnList = "hotplace_id")
+    ]
+)
 class HotplaceComment(
     content: String,
     @Embedded
@@ -44,4 +51,6 @@ class HotplaceComment(
         createdAt,
         updatedAt
     )
+
+    fun convertToBestComment() = HotplaceBestCommentVo(id!!, content, userInfo, createdAt, updatedAt, hotplace.id!!)
 }

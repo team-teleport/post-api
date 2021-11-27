@@ -1,96 +1,44 @@
 package com.sungan.postApi.repository.query
 
+import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.sungan.postApi.application.support.SunganError
-import com.sungan.postApi.application.support.SunganException
+import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.sungan.QSungan.sungan
-import com.sungan.postApi.domain.sungan.QUserViewedSungan.userViewedSungan
 import com.sungan.postApi.domain.sungan.Sungan
-import com.sungan.postApi.dto.GetMainRequestDto
+import com.sungan.postApi.domain.sungan.SunganChannel
+import java.time.LocalDateTime
 
 class SunganQueryRepositoryImpl(
     val query: JPAQueryFactory
 ) : SunganQueryRepository {
-    override fun findSungansAfterLastSunganPaging(
-        getMainRequestDto: GetMainRequestDto,
-        lastSungan: Sungan
+
+    override fun findSungansAfterLastSunganPagingOrderByCreatedAtDesc(
+        size: Long,
+        lastSunganId: Long?,
+        sunganChannel: SunganChannel?,
+        station: Line2Station?
     ): MutableList<Sungan> {
-        val query = query.selectFrom(sungan)
-//            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-        return when (getMainRequestDto.orderBy.name) {
-            "NEW" -> query
-                .where(sungan.createdAt.before(lastSungan.createdAt))
-                .orderBy(sungan.createdAt.desc())
-                .limit(getMainRequestDto.size)
-                .fetch()
-            "LIKE" -> query
-                .where(
-                    sungan.likeCnt.lt(lastSungan.likeCnt)
-                        .or(sungan.likeCnt.eq(lastSungan.likeCnt).and(sungan.createdAt.before(lastSungan.createdAt)))
-                )
-                .orderBy(sungan.likeCnt.desc())
-                .orderBy(sungan.createdAt.desc())
-                .limit(getMainRequestDto.size)
-                .fetch()
-            "READ" -> query
-                .where(
-                    sungan.readCnt.lt(lastSungan.readCnt)
-                        .or(sungan.readCnt.eq(lastSungan.readCnt).and(sungan.createdAt.before(lastSungan.createdAt)))
-                )
-                .orderBy(sungan.readCnt.desc())
-                .orderBy(sungan.createdAt.desc())
-                .limit(getMainRequestDto.size)
-                .fetch()
-            else -> throw SunganException(SunganError.BAD_REQUEST)
-        }
+        val predicate = BooleanBuilder()
+        if (sunganChannel != null) predicate.and(sungan.sunganChannel.eq(sunganChannel))
+        if (station != null) predicate.and(sungan.station.eq(station))
+        if (lastSunganId != null) predicate.and(sungan.id.gt(lastSunganId))
+        return query.selectFrom(sungan).where(predicate)
+            .orderBy(sungan.createdAt.desc())
+            .limit(size)
+            .fetch()
     }
 
-    override fun findSungansBeforeFirstSunganPaging(
-        getMainRequestDto: GetMainRequestDto,
-        firstSungan: Sungan
+    override fun findSungansBeforeLastCreatedAtPaging(
+        size: Long,
+        lastCreatedAt: LocalDateTime?,
+        station: Line2Station?
     ): MutableList<Sungan> {
-        val query = query.selectFrom(sungan)
-//            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-        return when (getMainRequestDto.orderBy.name) {
-            "NEW" -> query
-                .where(sungan.createdAt.after(firstSungan.createdAt))
-                .orderBy(sungan.createdAt.asc())
-                .limit(getMainRequestDto.size)
-                .fetch()
-            "LIKE" -> query
-                .where(
-                    sungan.likeCnt.gt(firstSungan.likeCnt)
-                        .or(sungan.likeCnt.eq(firstSungan.likeCnt).and(sungan.createdAt.after(firstSungan.createdAt)))
-                )
-                .orderBy(sungan.likeCnt.asc())
-                .orderBy(sungan.createdAt.asc())
-                .limit(getMainRequestDto.size)
-                .fetch()
-            "READ" -> query
-                .where(
-                    sungan.readCnt.gt(firstSungan.readCnt)
-                        .or(sungan.readCnt.eq(firstSungan.readCnt).and(sungan.createdAt.after(firstSungan.createdAt)))
-                )
-                .orderBy(sungan.readCnt.asc())
-                .orderBy(sungan.createdAt.asc())
-                .limit(getMainRequestDto.size)
-                .fetch()
-            else -> throw SunganException(SunganError.BAD_REQUEST)
-        }
-    }
-
-    override fun findLimitSizeOrderByDesc(userId: Long, getMainRequestDto: GetMainRequestDto): MutableList<Sungan> {
-        var query = query.selectFrom(sungan)
-//            .where(sungan.vehicle.name.eq(getMainRequestDto.vehicleName))
-            .leftJoin(sungan.viewedUsers, userViewedSungan)
-            .on(userViewedSungan.userId.eq(userId))
-            .where(userViewedSungan.userId.isNull)
-        query = when (getMainRequestDto.orderBy.name) {
-            "NEW" -> query.orderBy(sungan.createdAt.desc())
-            "LIKE" -> query.orderBy(sungan.likeCnt.desc())
-            "READ" -> query.orderBy(sungan.readCnt.desc())
-            else -> throw SunganException(SunganError.BAD_REQUEST)
-        }
-        return query.limit(getMainRequestDto.size).fetch()
+        val predicate = BooleanBuilder()
+        if (lastCreatedAt != null) predicate.and(sungan.createdAt.before(lastCreatedAt)) // 같은 시간에 올라온건 어케 보여주냐
+        if (station != null) predicate.and(sungan.station.eq(station))
+        return query.selectFrom(sungan).where(predicate)
+            .orderBy(sungan.id.desc())
+            .limit(size)
+            .fetch()
     }
 }

@@ -2,6 +2,8 @@ package com.sungan.postApi.domain.report
 
 import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
+import com.sungan.postApi.dto.BestCommentVo
+import com.sungan.postApi.dto.ReportBestCommentVo
 import com.sungan.postApi.dto.ReportCommentVo
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.Where
@@ -45,4 +47,6 @@ class ReportComment(
         createdAt,
         updatedAt
     )
+
+    fun convertToBestComment() = ReportBestCommentVo(id!!, content, userInfo, createdAt, updatedAt, report.id!!)
 }

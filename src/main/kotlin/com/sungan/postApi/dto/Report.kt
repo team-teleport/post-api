@@ -18,6 +18,15 @@ data class ReportVo(
     override val updatedAt: LocalDateTime
 ): PostBaseVo()
 
+class ReportBestCommentVo(
+    override val id: Long,
+    override val content: String,
+    override val userInfo: UserInfo,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime,
+    val reportId: Long,
+): BestCommentVo(id, content, userInfo, createdAt, updatedAt)
+
 data class PostReportReqDto(
     val label: String,
     val vehicleIdNum: String? = null,

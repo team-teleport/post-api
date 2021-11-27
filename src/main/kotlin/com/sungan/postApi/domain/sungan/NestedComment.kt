@@ -13,6 +13,11 @@ import javax.persistence.*
 @Entity
 @SQLDelete(sql = "UPDATE nested_comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@Table(
+    indexes = [
+        Index(name = "nexted_comment_idx", columnList = "comment_id, deleted")
+    ]
+)
 class NestedComment(
     @ManyToOne
     @JoinColumn(name = "comment_id")

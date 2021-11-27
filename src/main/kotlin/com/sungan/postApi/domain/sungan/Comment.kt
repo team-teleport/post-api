@@ -5,7 +5,9 @@ import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.sungan.postApi.domain.PostBaseEntity
 import com.sungan.postApi.domain.UserInfo
+import com.sungan.postApi.dto.BestCommentVo
 import com.sungan.postApi.dto.CommentVo
+import com.sungan.postApi.dto.SunganBestCommentVo
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedDate
@@ -16,6 +18,11 @@ import javax.persistence.*
 @Entity
 @SQLDelete(sql = "UPDATE comment SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@Table(
+    indexes = [
+        Index(name = "comment_sungan_index", columnList = "sungan_id, deleted")
+    ]
+)
 class Comment(
     @Column(nullable = false)
     var content: String,
@@ -31,10 +38,10 @@ class Comment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY)
     var likes: MutableList<CommentLike> = ArrayList()
 
-    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY)
     @OrderBy(value = "created_at DESC")
     var nestedComments: MutableList<NestedComment> = ArrayList()
 
@@ -64,4 +71,6 @@ class Comment(
         this.likes.size.toLong(),
         this.nestedComments.asSequence().map { nestedComment -> nestedComment.convertToVo() }.toList()
     )
+
+    fun convertToBestComment() = SunganBestCommentVo(id!!, content, userInfo, createdAt, updatedAt, sungan.id!!)
 }

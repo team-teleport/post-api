@@ -2,6 +2,7 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
+import com.sungan.postApi.domain.Line2Station
 import com.sungan.postApi.domain.report.*
 import com.sungan.postApi.domain.report.Report
 import com.sungan.postApi.dto.*
@@ -23,6 +24,17 @@ class ReportService(
     val reportTypeRepository: ReportTypeRepository,
     val notiEventPublisher: NotiEventPublisher,
 ) {
+    fun readReports(userId: Long, getMainRequestDto: GetMainRequestDto, stationName: String? = null): List<PostBaseWithLikeByUserAndBestComment> {
+        return reportRepository.findReportsAfterLastHotplacePagingOrderByCreatedAtDesc(
+            getMainRequestDto.size,
+            getMainRequestDto.lastId,
+        ).map { report -> PostBaseWithLikeByUserAndBestComment(
+            report.convertToVo(),
+            com.sungan.postApi.dto.PostType.REPORT,
+            reportLikeRepository.existsByReportAndUserId(report, userId),
+            reportCommentRepository.findByReportOrderByLikes(report)?.convertToBestComment()
+        ) }
+    }
     fun createReport(userId: Long, postReportReqDto: PostReportReqDto): ReportVo {
         val type = reportTypeRepository.findByLabel(postReportReqDto.label)
         val report = reportRepository.save(

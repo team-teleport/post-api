@@ -20,10 +20,23 @@ data class SunganVo(
     val station: Line2StationVo?,
     val channel: SunganChannel,
     val text: String,
-    val contents: List<SunganContentVo>,
+//    val contents: List<SunganContentVo>,
     val emoji: String?,
     val userInfo: UserInfo,
     val comments: List<CommentVo>,
+    val readCnt: Long,
+    val likeCnt: Long,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime
+): PostBaseVo()
+
+data class SunganPreview(
+    val id: Long,
+    val station: Line2StationVo?,
+    val channel: SunganChannel,
+    val text: String,
+    val emoji: String?,
+    val userInfo: UserInfo,
     val readCnt: Long,
     val likeCnt: Long,
     override val createdAt: LocalDateTime,

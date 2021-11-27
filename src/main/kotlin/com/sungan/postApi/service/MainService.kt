@@ -2,7 +2,13 @@ package com.sungan.postApi.service
 
 import com.sungan.postApi.application.support.SunganError
 import com.sungan.postApi.application.support.SunganException
-import com.sungan.postApi.dto.PostBaseVo
+import com.sungan.postApi.domain.Line2Station
+import com.sungan.postApi.domain.PostBaseEntity
+import com.sungan.postApi.domain.hotplace.Hotplace
+import com.sungan.postApi.domain.report.Report
+import com.sungan.postApi.domain.sungan.Sungan
+import com.sungan.postApi.dto.GetAllPostReqDto
+import com.sungan.postApi.dto.GetMainRequestDto
 import com.sungan.postApi.dto.PostBaseWithLikeByUserAndBestComment
 import com.sungan.postApi.dto.PostType
 import com.sungan.postApi.repository.*
@@ -31,6 +37,70 @@ class MainService(
         return list
     }
 
+    fun readMainSungans(
+        userId: Long,
+        getAllPostReqDto: GetAllPostReqDto,
+        stationName: String?
+    ): List<PostBaseWithLikeByUserAndBestComment> {
+        var station: Line2Station? = null
+        if (stationName != null) {
+            station = line2StationRepository.findByName(stationName)
+        }
+        val posts: MutableList<PostBaseEntity> = ArrayList()
+        posts.addAll(sunganRepository.findSungansBeforeLastCreatedAtPaging(
+            getAllPostReqDto.size,
+            getAllPostReqDto.lastCreatedAt,
+            station
+        ))
+        posts.addAll(reportRepository.findReportsBeforeCreatedAtPaging(
+            getAllPostReqDto.size,
+            getAllPostReqDto.lastCreatedAt,
+        ))
+        posts.addAll(hotplaceRepository.findHotplacesBeforeCreatedAtPaging(
+            getAllPostReqDto.size,
+            getAllPostReqDto.lastCreatedAt,
+            station
+        ))
+        posts.sortWith { a, b -> if (a.createdAt.isBefore(b.createdAt)) 1 else -1 }
+        val late = posts.subList(0, getAllPostReqDto.size.toInt())
+        return late.map { e -> when (e) {
+            is Hotplace -> PostBaseWithLikeByUserAndBestComment(
+                e.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.existsByHotplaceAndUserId(e, userId),
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(e)?.convertToBestComment()
+            )
+            is Sungan -> PostBaseWithLikeByUserAndBestComment(
+                e.convertToPreview(),
+                PostType.SUNGAN,
+                sunganLikeRepository.existsBySunganAndUserId(e, userId),
+                commentRepository.findBySunganOrderByLikes(e)?.convertToBestComment()
+            )
+            is Report -> PostBaseWithLikeByUserAndBestComment(
+                e.convertToVo(),
+                PostType.REPORT,
+                reportLikeRepository.existsByReportAndUserId(e, userId),
+                reportCommentRepository.findByReportOrderByLikes(e)?.convertToBestComment()
+            )
+            else -> throw SunganException(SunganError.UNKNOWN_ERROR, "메인 불러오기 실패")
+        } }
+    }
+
+    fun getHotplacesByPagind(userId: Long, getMainRequestDto: GetMainRequestDto) {
+        val hotplaces = hotplaceRepository.findHotplacesAfterLastHotplacePagingOrderByCreatedAtDesc(
+            getMainRequestDto.size,
+            getMainRequestDto.lastId
+        ).map { hotplace ->
+            PostBaseWithLikeByUserAndBestComment(
+                hotplace.convertToVo(),
+                PostType.PLACE,
+                hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToBestComment()
+            )
+        }
+        // return hotplaces
+    }
+
     fun getMainList(userId: Long, station: String?): MutableList<PostBaseWithLikeByUserAndBestComment> {
         val list: MutableList<PostBaseWithLikeByUserAndBestComment> = ArrayList()
         val now = LocalDateTime.now()
@@ -57,7 +127,7 @@ class MainService(
                 sungan.convertToVo(),
                 PostType.SUNGAN,
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
-                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToBestComment()
             )
         }
     }
@@ -72,7 +142,7 @@ class MainService(
                 report.convertToVo(),
                 PostType.REPORT,
                 reportLikeRepository.findByReportAndUserId(report, userId) != null,
-                reportCommentRepository.findByReportOrderByLikes(report)?.convertToVo()
+                reportCommentRepository.findByReportOrderByLikes(report)?.convertToBestComment()
             )
         }
     }
@@ -89,10 +159,11 @@ class MainService(
                 sungan.convertToVo(),
                 PostType.SUNGAN,
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
-                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToBestComment()
             )
         }
     }
+
     fun getMySunganWithLikeByUserAndBestComment(
         userId: Long
     ): List<PostBaseWithLikeByUserAndBestComment> {
@@ -102,7 +173,7 @@ class MainService(
                 sungan.convertToVo(),
                 PostType.SUNGAN,
                 sunganLikeRepository.findByUserIdAndSungan(userId, sungan) != null,
-                commentRepository.findBySunganOrderByLikes(sungan)?.convertToVo()
+                commentRepository.findBySunganOrderByLikes(sungan)?.convertToBestComment()
             )
         }
     }
@@ -117,7 +188,7 @@ class MainService(
                 hotplace.convertToVo(),
                 PostType.PLACE,
                 hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
-                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToBestComment()
             )
         }
     }
@@ -130,7 +201,7 @@ class MainService(
                 hotplace.convertToVo(),
                 PostType.PLACE,
                 hotplaceLikeRepository.findByHotplaceAndUserId(hotplace, userId) != null,
-                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToVo()
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(hotplace)?.convertToBestComment()
             )
         }
     }
@@ -147,7 +218,7 @@ class MainService(
                 place.convertToVo(),
                 PostType.PLACE,
                 hotplaceLikeRepository.findByHotplaceAndUserId(place, userId) != null,
-                hotplaceCommentRepository.findByHotplaceOrderByLikes(place)?.convertToVo()
+                hotplaceCommentRepository.findByHotplaceOrderByLikes(place)?.convertToBestComment()
             )
         }
     }
@@ -160,7 +231,7 @@ class MainService(
                 report.convertToVo(),
                 PostType.REPORT,
                 reportLikeRepository.findByReportAndUserId(report, userId) != null,
-                reportCommentRepository.findByReportOrderByLikes(report)?.convertToVo()
+                reportCommentRepository.findByReportOrderByLikes(report)?.convertToBestComment()
             )
         }
     }

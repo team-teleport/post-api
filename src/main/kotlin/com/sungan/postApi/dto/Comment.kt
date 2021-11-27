@@ -19,6 +19,23 @@ data class CommentVo(
 
 interface CommentBaseVo
 
+open class BestCommentVo(
+    open val id: Long,
+    open val content: String,
+    open val userInfo: UserInfo,
+    open val createdAt: LocalDateTime,
+    open val updatedAt: LocalDateTime,
+)
+
+class SunganBestCommentVo(
+    override val id: Long,
+    override val content: String,
+    override val userInfo: UserInfo,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime,
+    val sunganId: Long,
+): BestCommentVo(id, content, userInfo, createdAt, updatedAt)
+
 data class CommentWithLikeCntAndIsLiked<T>(
     val id: Long,
     val content: String,

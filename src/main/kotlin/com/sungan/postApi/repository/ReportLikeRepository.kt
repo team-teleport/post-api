@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface ReportLikeRepository : JpaRepository<ReportLike, Long> {
     fun findByReportAndUserId(report: Report, userId: Long): ReportLike?
+    fun existsByReportAndUserId(report: Report, userId: Long): Boolean
 }
