@@ -70,6 +70,11 @@ dependencies {
 
     // okhttp
     implementation ("com.squareup.okhttp3:okhttp:3.8.1")
+
+    // user-grpc-interface
+    implementation ("com.github.team-teleport:user-grpc-java:aceb4f2")
+    // grpc-client spring boot
+    implementation ("net.devh:grpc-client-spring-boot-starter:2.13.1.RELEASE")
 }
 
 sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
