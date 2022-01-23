@@ -21,6 +21,11 @@ auth-api:
   key: ZGt3a2Rrd2tnaGtkbHdrIQ==
   user-info:
     url: https://api.metasgid.com/api/v1/auth/admin/user
+grpc:
+  client:
+    auth:
+      address: static://127.0.0.1:9090
+      negotiationType: PLAINTEXT
 ---
 
 spring:
